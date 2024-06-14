@@ -1,0 +1,321 @@
+﻿@model CedulasEvaluacion.Entities.Models.Preregistro;
+@{
+    ViewData["Title"] = "Preregistro CASESG";
+}
+
+<div class="container-fluid">
+    <div class="col-lg-12 mt-4">
+        <h4>Preregistro CASESG</h4>
+    </div>
+    <div class="card mt-3">
+        <div class="card-header bg-joke text-white">
+            <h4>Datos del Empleado</h4>
+        </div>
+        <div class="card-body">
+            <div class="row col-lg-12">
+                <div class="row mt-4 col-lg-12">
+                    <div class="form-group col-md-3" id="divNombre">
+                        <label for="name">Nombre Completo: *</label>
+                        <input type="text" class="form-control" name="nombre" id="nombre" />
+                        <div class="col-sm-12" id="error_nombre">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture su Nombre Completo
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" id="divExpediente">
+                        <label for="name">Número de Expediente: *</label>
+                        <input type="text" class="form-control" name="nombre" id="expediente" maxlength="6" />
+                        <div class="col-sm-12" id="error_expediente">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture su Número de Expediente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3" id="divUsuario">
+                        <label for="name">Usuario CASESG: *</label>
+                        <input type="text" class="form-control" name="nombre" id="usuario" />
+                        <div class="col-sm-12" id="error_usuario">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture su Usuario de acceso a CASESG
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3" id="divEmail">
+                        <label for="name">Correo Electrónico Institucional: *</label>
+                        <input type="text" class="form-control" name="nombre" id="email" />
+                        <div class="col-sm-12" id="error_email">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture su Correo Institucional
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-lg-3" id="divAdministracion">
+                        <label for="name">Administración: *</label>
+                        <input type="text" class="form-control" name="nombre" id="inmueble" data-toggle="tooltip" title="Capture el nombre de su administración, Ejemplo: Periférico 1950" data-placement="top" />
+                        <div class="col-sm-12" id="error_inmueble">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture su Administración Asignada(Inmueble)
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-lg-3" id="divClienteEstafeta">
+                        <label for="name">Cliente Estafeta: *</label>
+                        <input type="text" class="form-control" name="nombre" id="clienteEstafeta" maxlength="10" data-toggle="tooltip" title="Capture el Cliente de Estafeta, lo puede encontrar en una Factura como Folio SAP" />
+                        <div class="col-sm-12" id="error_cliente">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture su Administración Asignada(Inmueble)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="row col-lg-12">
+                        <h3>Servicios a Evaluar</h3>
+                    </div>
+                    <div class="row col-lg-12">
+                        <p class="text-justify">
+                            Dentro del área <b>Servicios a Evaluar, </b> favor de seleccionar los servicios que usted evaluará, ya que no podrá accesar a ningún servicio que no haya seleccionado; <br><br /><b>Ejemplo:</b><br />
+                            <br />
+                            Si usted selecciona unicamente el <b>Servicio de Limpieza</b> <b class="text-danger" style="text-decoration: underline">no podrá evaluar ningún otro servicio que NO sea el Servicio de Limpieza, </b> en caso de requerir la activación para evaluar otro servicio
+                            favor de realizar la solicitud a <b class="text-primary" style="text-decoration: underline">jymiranda@cjf.gob.mx</b> con copia a <b class="text-primary" style="text-decoration: underline">jacolinp@cjf.gob.mx</b> y <b class="text-primary" style="text-decoration: underline">lcbriseno@cjf.gob.mx.</b>
+                            </b>
+                    </div>
+                    <div class="form-check-inline i-checks mt-3">
+                        <strong class="text-black mr-3">Limpieza</strong>
+                        <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                               data-onstyle="success" data-offstyle="danger" value="Limpieza">
+                    </div>
+                    <div class="form-check-inline i-checks mt-3">
+                        <strong class="text-black mr-3">Fumigación</strong>
+                        <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                               data-onstyle="success" data-offstyle="danger" value="Fumigación">
+                    </div>
+                    <div class="form-check-inline i-checks mt-3">
+                        <strong class="text-black mr-3">Mensajería Acelerada</strong>
+                        <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                               data-onstyle="success" data-offstyle="danger" value="Mensajería Acelerada">
+                    </div>
+                    <div class="form-check-inline i-checks mt-3">
+                        <strong class="text-black mr-3">RPBI (Residuos Peligrosos Biologicos - Infecciosos)</strong>
+                        <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                               data-onstyle="success" data-offstyle="danger" value="RPBI">
+                    </div>
+                    <div class="form-check-inline i-checks mt-3">
+                        <strong class="text-black mr-3">Agua Purificada para Beber</strong>
+                        <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                               data-onstyle="success" data-offstyle="danger" value="Agua Purificada para Beber">
+                    </div>
+                </div>
+            </div>
+            <div class="row col-lg-12 mt-4">
+                <div class="row col-lg-12">
+                    <div class="form-group col-lg-3" id="divRevisaCedula">
+                        <label for="name">Persona que Revisará la Cédula: *</label>
+                        <input type="text" class="form-control" name="nombre" id="revisaCedula" maxlength="100" data-toggle="tooltip" title="Capture el nombre de quien revisará la cédula de evaluacion" />
+                        <div class="col-sm-12" id="error_revisa">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el nombre de quien revisará la cédula de evaluación
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3" id="divValidaCedula">
+                        <label for="name">Persona que Validará la Cédula: *</label>
+                        <input type="text" class="form-control" name="nombre" id="validaCedula" maxlength="100" data-toggle="tooltip" title="Capture el nombre del Administrador del Inmueble" />
+                        <div class="col-sm-12" id="error_valida">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el nombre de quien validará la cédula de evaluación
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                <a href="/logout" class="btn btn-danger float-right ml-3">Cancelar</a>
+                <button type="button" class="btn btn-success float-right btn_guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            Swal.fire({
+                'icon': 'info',
+                'title': 'Pre-registro CASESG',
+                'html': '<center>Bienvenido al Sistema CASESG</center><br><br>' +
+                    '<p style="text-align: justify;">Por favor realizá la captura de los datos que a continuación se solicitan.</p>'
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('#error_nombre').css('display', 'none');
+            $('#error_expediente').css('display', 'none');
+            $('#error_usuario').css('display', 'none');
+            $('#error_email').css('display', 'none');
+            $('#error_inmueble').css('display', 'none');
+            $('#error_cliente').css('display', 'none');
+            $('#error_valida').css('display', 'none');
+            $('#error_revisa').css('display', 'none');
+
+            $('#divClienteEstafeta').css('display', 'none');
+
+            function validaCamposArchivo() {
+                if ($('#nombre').val() != "" && $('#expediente').val() != "" && $('#usuario').val() != "" && $('#email').val() != "" && $('#inmueble').val() != ""
+                    && $('#validaCedula').val() != "" && $('#revisaCedula').val() != "") {
+                    return true;
+                } else {
+                    $('#nombre').addClass('is-invalid');
+                    $('#error_nombre').css('display', 'block');
+
+                    $('#expediente').addClass('is-invalid');
+                    $('#error_expediente').css('display', 'block');
+
+                    $('#usuario').addClass('is-invalid');
+                    $('#error_usuario').css('display', 'block');
+
+                    $('#email').addClass('is-invalid');
+                    $('#error_email').css('display', 'block');
+
+                    $('#inmueble').addClass('is-invalid');
+                    $('#error_inmueble').css('display', 'block');
+
+                    $('#validaCedula').addClass('is-invalid');
+                    $('#error_valida').css('display', 'block');
+
+                    $('#revisaCedula').addClass('is-invalid');
+                    $('#error_revisa').css('display', 'block');
+                }
+
+                return false;
+            }
+
+            $(".btn_guardar").click(function () {
+                var nombre = $('#nombre').val();
+                var usuario = $('#usuario').val();
+                var expediente = $('#expediente').val();
+                var email = $('#email').val();
+                var inmueble = $('#inmueble').val();
+                var clienteEstafeta = $('#clienteEstafeta').val();
+                var validaCedula = $('#validaCedula').val();
+                var revisaCedula = $('#revisaCedula').val();
+
+                var servicios = "";
+
+                $('.selected_checkbox').each(function () {
+                    if ($(this).prop('checked') == true && $(this).val() == "Mensajería Acelerada") {
+                        if (clienteEstafeta == "") {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Pre-registro CASESG',
+                                'html': 'Por favor captura el número de cliente de estafeta.'
+                            });
+                            $('#clienteEstafeta').addClass('is-invalid');
+                            $('#error_cliente').css('display', 'block');
+                        }
+                        servicios += $(this).val() + "/";
+                    } else if ($(this).prop('checked') == true) {
+                        servicios += $(this).val() + "/";
+                    }
+                });
+                
+                if (validaCamposArchivo()) {
+                    /*if (clienteEstafeta == '') {
+                        clienteEstafeta = "";
+                    }*/
+                    if (servicios != "") {
+                        axios.post('/home/inserta/preregistro', {
+                            Nombre: nombre, Usuario: usuario, Inmueble: inmueble, Servicios: servicios, Expediente: expediente, Correo: email,
+                            Cliente: clienteEstafeta, Revisa: revisaCedula, Valida: validaCedula
+                        }).then(response => {
+                            Swal.fire({
+                                'icon': 'success',
+                                'title': 'Pre-registro CASESG',
+                                'html': '<p style="text-align: justify">Su preregistro está completo, podrá accesar el sistema a partir del día <b>8 de Febrero de 2022</b> a través de esta misma liga.<br><br></p>' +
+                                    '<p>Presione el botón <b>Terminar</b> para concluir su preregistro</p>',
+                                'confirmButtonText': 'Terminar y Cerrar Sesión',
+                            }).then(function () {
+                                window.location.href = "/logout";
+                            });
+                        }).catch (error => {
+
+                        });
+                    } else {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Pre-registro CASESG',
+                            'html': 'Para continuar, por favor seleccione los servicios que evaluará.'
+                        });
+                    }
+                }
+            });
+
+            $(".selected_checkbox").change(function () {
+                if ($(this).val() == "Mensajería Acelerada") {
+                    $('#divClienteEstafeta').css('display', 'block');
+                }
+            });
+
+            $('#nombre').change(function () {
+                if ($("#nombre").hasClass("is-invalid")) {
+                    $("#nombre").removeClass("is-invalid");
+                    $("#nombre").addClass("is-valid");
+
+                    $('#error_nombre').css('display', 'none');
+                }
+            });
+
+            $('#usuario').change(function(){
+                if ($("#usuario").hasClass("is-invalid")) {
+                    $("#usuario").removeClass("is-invalid");
+                    $("#usuario").addClass("is-valid");
+
+                    $('#error_usuario').css('display', 'none');
+                }
+            });
+
+            $('#expediente').change(function(){
+                if ($("#expediente").hasClass("is-invalid")) {
+                    $("#expediente").removeClass("is-invalid");
+                    $("#expediente").addClass("is-valid");
+
+                    $('#error_expediente').css('display', 'none');
+                }
+            });
+
+            $('#email').change(function(){
+                if ($("#email").hasClass("is-invalid")) {
+                    $("#email").removeClass("is-invalid");
+                    $("#email").addClass("is-valid");
+
+                    $('#error_email').css('display', 'none');
+                }
+            });
+
+            $('#inmueble').change(function(){
+                if ($("#inmueble").hasClass("is-invalid")) {
+                    $("#inmueble").removeClass("is-invalid");
+                    $("#inmueble").addClass("is-valid");
+
+                    $('#error_inmueble').css('display', 'none');
+                }
+
+            });
+
+            $('#clienteEstafeta').change(function(){
+                if ($("#clienteEstafeta").hasClass("is-invalid")) {
+                    $("#clienteEstafeta").removeClass("is-invalid");
+                    $("#clienteEstafeta").addClass("is-valid");
+
+                    $('#error_cliente').css('display', 'none');
+                }
+            });
+
+        });
+    </script>
+}

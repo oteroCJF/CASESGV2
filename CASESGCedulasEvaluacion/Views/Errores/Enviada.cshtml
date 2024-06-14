@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Cédula Enviada y en Revisión";
+}
+
+<div class="row col-lg-12 d-flex justify-content-end">
+    <a href="javascript: history.go(-1)" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="row col-lg-12">
+            <div class="col-lg-5 mt-5">
+                <div class="ibox-content mt-5 text-right">
+                    <img src="~/img/revision.jpg" alt="Cédula Enviada" width="350">
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5">
+                <p class="h2 mt-5 text-primary text-justify">
+                    La cédula que intentas modificar se encuentra en revisión por parte del equipo de la "Dirección de Administración de Servicios",
+                    en cuanto se realice una <strong class="text-success">Autorización</strong> o un <strong class="text-danger">Rechazo</strong> serás notificado vía correo electrónico.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+}

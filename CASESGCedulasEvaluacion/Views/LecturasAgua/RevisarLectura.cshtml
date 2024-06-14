@@ -1,0 +1,559 @@
+﻿@model CedulasEvaluacion.Entities.MLecturasAgua.LecturaAgua;
+@{
+    ViewData["Title"] = "Revisar Lectura de Agua - Inmueble "+Model.inmueble.Nombre;
+    var i = 0;
+}
+
+<div class="container-fluid" id="limpieza">
+    <div class="card">
+        <div class="card-header bg-joke text-white">
+            <h5 class="mt-2">Nueva Lectura de Agua</h5>
+        </div>
+        <div class="card-body">
+            <div class="row ">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Datos de la Lectura</a>
+                        </li>
+                        @if (Model.Id != 0)
+                        {
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="profile" aria-selected="false">Entregables de la Lectura</a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade mt-2 ml-3 show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="row col-lg-12">
+                                <div class="col-lg-1">
+                                    <strong>Año: </strong> @Model.Anio
+                                </div>
+                                <div class=" col-lg-2">
+                                    <strong>Inmueble: </strong> @Model.inmueble.Nombre
+                                </div>
+                                <div class=" col-lg-2">
+                                    <strong>Mes: </strong> @Model.Mes
+                                </div>
+                                <div class=" col-lg-2">
+                                    <strong>Ubicación: </strong> @Model.Ubicacion
+                                </div>
+                                <div class="col-lg-2">
+                                    <strong>Fecha Registro: </strong> @Model.FechaRegistro.ToString("dd/MM/yyyy")
+                                </div>
+                                <div class="col-lg-2">
+                                    <label>Lectura: </label> @Model.Lectura
+                                </div>
+                            </div>
+                            <div class="row col-lg-12 mt-3">
+                                <div class="col-lg-5">
+                                    <label for="lblObservaciones">Observaciones: </label> @Model.Observaciones
+                                </div>
+                            </div>
+                        </div>
+                        @if (Model.Id != 0)
+                        {
+                            <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="col-lg-12 mt-3">
+                                    <h3>Adjuntar Entregables</h3>
+                                    @if (((@User.Claims.ElementAt(2).Value).Contains("Administrador") || (@User.Claims.ElementAt(2).Value).Contains("CAE"))
+                                                          && !Model.Estatus.Equals("Autorizada"))
+                                    {
+                                        <a href="#" type='button' class='btn-sm btn-success mb-3 float-right addEntregables'><i class="fas fa-plus"></i></a>
+                                    }
+                                </div>
+                                <div class="row col-lg-12 mt-4">
+                                    <table class="table" id="tblEntregables">
+                                        <thead>
+                                            <tr>
+                                                <th>Entregable</th>
+                                                <th>Archivo</th>
+                                                <th>Fecha de Carga</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tEntregables">
+                                            @foreach (var en in Model.entregables)
+                                            { 
+                                                <tr>
+                                                    <td>@(en.Tipo.Equals("JPG") ? "Evidencia Fotográfica": en.Tipo)</td>
+                                                    <td>@en.NombreArchivo</td>
+                                                    <td>@en.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                                                    <td>
+                                                        <a href="#" class="text-success view_file" data-id="@en.Id" data-file="@en.NombreArchivo">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                        @if (((@User.Claims.ElementAt(2).Value).Contains("Administrador") || (@User.Claims.ElementAt(2).Value).Contains("CAE"))
+                                                            && !Model.Estatus.Equals("Autorizada"))
+                                                        {
+                                                            <a href="#" class="text-primary ml-2 btnEdit" data-id="@en.Id" data-file="@en.NombreArchivo" 
+                                                               data-tipo="@en.Tipo" data-observaciones="@en.Observaciones">
+                                                                <i class="fas fa-pencil"></i>
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                @if (Model.Estatus.Equals("Enviada"))
+                {
+                    <button type="submit" class="btn btn-danger float-right mr-2 autorizaLectura" data-estatus="Rechazada">Rechazar Lectura</button>
+                    <button type="submit" class="btn btn-success float-right mr-2 autorizaLectura" data-estatus="Autorizada">Autorizar Lectura</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal para la captura de Entregables *@
+<div class="modal fade" id="modal_entregables">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar/Modificar Entregables</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="entregableId" />
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Tipo de Entregable:</label>
+                        <select class="form-control" id="tipo_entregable">
+                            <option value="">Seleccione un archivo</option>
+                            <option value="JPG">Evidencia Fotográfica</option>
+                            <option value="Boleta">Boleta</option>
+                        </select>
+                        <div class="col-sm-12" id="error_tipoEntre">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de entregable
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFileSoporte" accept=".pdf,.jpg,.jpeg,.png">
+                            <label class="custom-file-label" id="custom-file-label-soporte" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_archivoSoporte">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el oficio correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-lg-12 mt-2" id="divComentariosSoporte">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Comentarios:</label><br>
+                            <textarea id="comentariosSoporte" class="form-control float-left"></textarea>
+                            <div class="col-sm-12" id="error_comentariosSoporte">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor capture los comentarios correspondientes
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Entregables *@
+
+@*Modal para la visualizar entregables *@
+<div class="modal fade" id="modal_ViewEntregables">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-5" id="ve_tipo">
+                    </div>
+                    <div class="col-lg-6" id="ve_observaciones">
+                    </div>
+                </div>
+                <div class="row mt-3" id="ve_entregablePDF">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la carga entregables*@
+
+@section Scripts{
+    <script>
+        window.onload = function () {
+            var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            /*Propiedades de los errores*/
+                $("#error_anio").css("display","none");
+                $("#error_inmueble").css("display","none");
+                $("#error_mes").css("display","none");
+                $("#error_cuenta").css("display","none");
+                $("#error_ubicacion").css("display","none");
+                $("#error_lectura").css("display","none");
+                $("#error_fechaRegistro").css("display","none");
+            /*Propiedades de los errores*/
+
+
+            /***********Llenamos el Combo de inmuebles*****************/
+                let optionsInmueble = "<option value='0'>Seleccione el Inmueble</option>";
+                axios.get('/inmuebles/evaluar').then(response => {
+                    response = response.data;
+                    response.forEach(function (inm) {
+                        optionsInmueble += "<option value=" + inm.id + ">" + inm.nombre + "</option>"
+                    });
+                    $("#selectInmueble").html(optionsInmueble);
+                    if (model.id)
+                    {
+                        $("#selectInmueble").val(model.inmuebleId);
+                    }
+                });
+            /************ Fin del Combo de inmuebles ******************/
+
+            /************* Llenamos el Combo de inmuebles *************/
+                let optionsMes = "<option value=''>Seleccione el Mes</option>";
+                meses.forEach(function (mes) {
+                    optionsMes += "<option value=" + mes + ">" + mes + "</option>"
+                });
+                $("#selectMes").html(optionsMes);
+            /*********** Fin del llenado del combo inmuebles *********/
+
+
+            /**************** Validación/Guardado al generar el folio ******************/
+                $('.autorizaLectura').click(function () {
+                    var id = model.id;
+                    var anio = model.anio;
+                    var mes = model.mes;
+                    var inmueble = model.inmuebleId;
+                    var cuenta = model.cuenta;
+                    var lectura = model.lectura;
+                    var ubicacion = model.ubicacion;
+                    var fechaRegistro = model.fechaRegistro;
+                    var observaciones = model.observaciones;
+                    var msg = "rechazó";
+
+                    if ($(this).data('estatus') == "Autorizada") {
+                        msg = "autorizó"
+                    }
+
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Lectura de Agua',
+                        'html': '¿Está seguro de que desea <b>Aceptar la lectura de agua</b> ?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, autorizar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.post("/lectura/actualizaLectura", {
+                                Id: parseInt(id),
+                                UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), InmuebleId: parseInt(inmueble), Anio: parseInt(anio), Mes: mes,
+                                Cuenta: cuenta, Lectura: lectura, Ubicacion: ubicacion, FechaRegistro: fechaRegistro, Estatus: $(this).data('estatus'),
+                                Observaciones: observaciones
+                            }).then(response => {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Lectura de Agua',
+                                    'html': 'Se ' + msg + ' la lectura correctamente.'
+                                }).then(function () {
+                                    window.location.href = '/lectura/inmueble/' + model.inmuebleId + '/index?Anio=' + model.anio;
+                                });
+                            });
+                        }
+                    });
+
+                });
+
+                function validaFormulario() {
+                    if ($("#selectAnio").val() != "" && $("#selectMes").val() != "" && $("#selectInmueble").val() != "" &&
+                        $("#cuenta").val() != "" && $("#lectura").val() != "" && $("#ubicacion").val() != "" && $("#fechaRegistro").val())
+                    {
+                        return true;
+                    }
+                    if ($('#selectAnio').val() == "") {
+                        $('#selectAnio').addClass('is-invalid');
+                        $('#error_anio').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#selectMes').val() == "") {
+                        $('#selectMes').addClass('is-invalid');
+                        $('#error_mes').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#selectInmueble').val() == "") {
+                        $('#selectInmueble').addClass('is-invalid');
+                        $('#error_inmueble').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#cuenta').val() == "") {
+                        $('#cuenta').addClass('is-invalid');
+                        $('#error_cuenta').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#lectura').val() == "") {
+                        $('#lectura').addClass('is-invalid');
+                        $('#error_lectura').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#ubicacion').val() == "") {
+                        $('#ubicacion').addClass('is-invalid');
+                        $('#error_ubicacion').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#fechaRegistro').val() == "") {
+                        $('#fechaRegistro').addClass('is-invalid');
+                        $('#error_fechaRegistro').css('display', 'block');
+                        return false;
+                    }
+                }
+
+            /*************** Fin de Validación/Guardado al generar el folio ************/
+
+            /***************** Llenado de Lectura si es editar **************/
+                if(model.id != 0)
+                {
+                    $("#selectAnio").val(model.anio);
+                    $("#selectMes").val(model.mes);
+                    $("#cuenta").val(model.cuenta);
+                    $("#lectura").val(model.lectura);
+                    $("#ubicacion").val(model.ubicacion);
+                    $("#fechaRegistro").val(@Html.Raw(Json.Serialize(Model.FechaRegistro.ToString("yyyy-MM-dd"))));
+                    $("#observaciones").val(model.observaciones);
+                }
+            /*************** Fin Llenado de Lectura si es editar ************/
+
+            /***************************************** Captura de Entregables ****************************************/
+                $('#error_tipoEntre').css('display', 'none');
+                $('#error_archivoSoporte').css('display', 'none');
+                $('#error_comentariosSoporte').css('display', 'none');
+
+                $(".addEntregables").click(function () {
+                    $("#modal_entregables").modal("show");
+                });
+
+                $('#tipo_entregable').change(function () {
+                        if ($('#tipo_entregable').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#tipo_entregable').removeClass('is-invalid');
+                            $('#tipo_entregable').addClass('is-valid');
+                            $('#error_tipoEntre').css('display', 'none');
+                        }
+                    });
+
+                $('#customFileSoporte').change(function () {
+                    if ($('#customFileSoporte').val() == "") {
+                        $('#customFileSoporte').addClass('is-invalid');
+                        $('#error_customFileSoporte').css('display', 'block');
+                    } else {
+                        var fileName = $("#customFileSoporte").val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext != "pdf" && ext != "PDF" && ext != "JPG" && ext != "jpg" && ext != "jpeg" && ext != "JPEG" &&
+                            ext != "PNG" && ext != "png") {
+                            $('#customFileSoporte').addClass('is-invalid');
+                            $('#error_customFileSoporte').css('display', 'block');
+                        } else {
+                            $('#customFileSoporte').removeClass('is-invalid');
+                            $('#customFileSoporte').addClass('is-valid');
+                            $('#error_customFileSoporte').css('display', 'none');
+                        }
+                    }
+                });
+
+                $('#comentarios_entregable').change(function () {
+                        if ($('#comentarios_entregable').val() == "") {
+                            $('#comentarios_entregable').addClass('is-invalid');
+                            $('#error_comentariosEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#comentarios_entregable').removeClass('is-invalid');
+                            $('#comentarios_entregable').addClass('is-valid');
+                            $('#error_comentariosEntre').css('display', 'none');
+                        }
+                    });
+
+                $("#adjuntarArchivo").click(function () {
+                    var formData = new FormData();
+                    var id = $('#entregableId').val();
+                    var tipo = $('#tipo_entregable').val();
+                    var file = document.getElementById('customFileSoporte').files[0];
+                    var observaciones = $("#comentariosSoporte").val();
+                    var txt = "insertó";
+
+                    if (parseInt(id) != 0 && id != "") {
+                        id = parseInt(id);
+                        txt = "actualizó";
+                    } else {
+                        id = 0;
+                    }
+
+                    formData.append("Id", id);
+                    formData.append("LecturaId", model.id);
+                    formData.append("Tipo", tipo);
+                    if (file != null) {
+                        formData.append("Archivo", file);
+                    }
+                    formData.append("Observaciones", observaciones);
+                    axios.post('/entregableLectura/adjuntaEntregable', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+                        $('.close').trigger('click');
+                        /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Lectura de Agua',
+                                'text': 'Se ' + txt + ' el(la) ' + tipo + ' correctamente.'
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                            $('#customFile').removeClass('is-valid');
+                            $('#oficioRec').removeClass('is-valid');
+                            $('#fechaRec').removeClass('is-valid');
+                            $('#montoRec').removeClass('is-valid');
+                            $('#obseracionesRec').removeClass('is-valid');
+                            $('#movimientoRec').removeClass('is-valid');
+                        }
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Lectura de Agua',
+                            'text': 'Se presento un error al adjuntar el oficio.'
+                        });
+                    });
+                });
+
+                $(document).on("click", '.btnEdit', function(){
+                    $("#entregableId").val($(this).data('id'));
+                    $("#tipo_entregable").val($(this).data('tipo'));
+                    $("#custom-file-label-soporte").text($(this).data('file'));
+                    $("#comentariosSoporte").val($(this).data('observaciones'));
+                    $("#modal_entregables").modal("show");
+                });
+
+                $(".btnEliminar").click(function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Lectura de Agua',
+                        'html': '¿Está seguro de eliminar el ' + $(this).data('tipo')+'?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, eliminar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(response => {
+                        if (response.isConfirmed) {
+                            axios.post('/entregables/eliminaEntregable', { Id: $(this).data('id'), SeguimientoId: parseInt(model.seguimiento.id) }).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': 'Lectura de Agua',
+                                        'text': 'Se eliminó el ' + $(this).data('tipo')+' correctamente.'
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Lectura de Agua',
+                                    'text': 'Se presentó un error al eliminar el oficio.'
+                                });
+                            });
+                        }
+                    });
+                });
+
+                /*Ver archivo en modal*/
+                    $(document).on('click', '.view_file', function () {
+                        let nombre = $(this).data('file');
+                        let id = $(this).data('id');
+                        let fileName = nombre.split("\\").pop();
+                        let ext = fileName.split('.').pop();
+                        let data = "";
+                        $('#titlePDF').text("Vista previa del entregable");
+
+                        if (ext == "pdf" || ext == "PDF") {
+                            data = "<object width='100%' height='710px' data='/entregableLectura/pdf/" + model.id + "/" + nombre + "'></object>";
+                            $('#ve_entregablePDF').html(data);
+                        }
+                        else
+                        {
+                            axios.get('/entregableLectura/' + model.id + '/' + nombre).then(response => {
+                                var img = document.createElement("img");
+                                img.src = response.data;
+                                img.width = 1120;
+                                img.height = 650;
+                                var foo = document.getElementById("ve_entregablePDF");
+                                foo.appendChild(img);
+                            });
+                        }
+                        $('#modal_ViewEntregables').modal('show');
+                    });
+                /*FIN de ver archivo en modal*/
+
+                $("#customFileSoporte").on("change", function () {
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "pdf" || ext == "PDF" || ext == "JPG" || ext == "jpg" || ext == "jpeg" || ext == "JPEG" ||
+                            ext == "PNG" || ext == "png") {
+                            $(this).siblings("#custom-file-label-soporte").addClass("selected").html(fileName);
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Lectura de Agua',
+                                'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                            });
+                            $("#custom-file-label-soporte").text("Seleccionar Archivo");
+                            document.getElementById('customFileSoporte').value = '';
+                            if ($('#customFileSoporte').hasClass('is-valid')) {
+                                $('#customFileSoporte').removeClass('is-valid');
+                            }
+                            $('#customFileSoporte').addClass('is-invalid');
+                            $('#error_customFileSoporte').css('display', 'block');
+                        }
+
+                    });
+
+            /************************************** Fin de Captura de Entregables*************************************/
+
+        }
+    </script>
+}

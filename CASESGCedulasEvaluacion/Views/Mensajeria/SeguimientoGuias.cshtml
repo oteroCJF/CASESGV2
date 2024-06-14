@@ -1,0 +1,141 @@
+﻿@* Principal de Seguimientos a Guías de Estafeta *@
+@model IEnumerable<CedulasEvaluacion.Entities.Vistas.VSeguimiento>
+@{
+    var i = 0;
+    var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
+    ViewData["Title"] = "Seguimientos Estafeta";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <section class="col-xl-12 connectedSortable">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Cédulas con Incidencias en Robos, Extravíos y/o Mal Estado
+                    </h3>
+                </div>
+                <div class="card-body" style="font-size: 14px;">
+                    <table id="tblIncidencias" class="row-border" width="100%">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Anio</th>
+                                <th>Mes</th>
+                                <th>Folio</th>
+                                <th>Inmueble</th>
+                                <th>Estatus de la Cédula</th>
+                                <th>Estatus del Seguimiento</th>
+                                <th>Total de Incidencias</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                i++;
+                                <tr>
+
+                                    <td>@i</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Anio)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Mes)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Folio)</td>                                    
+                                    <td>@item.Inmueble</td>
+                                    <td>@item.EstatusCedula</td>
+                                    <td>@item.EstatusSeguimiento</td>
+                                    <td>@item.TotalIncidencias Incidencia(s)</td>
+                                    <td>
+                                        <a href="/mensajeria/seguimientoEstafeta/@item.CedulaId" data-id ="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Seguimiento" data-placement="top">
+                                            <i class="fad fa-eye text-success"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+<style>
+    .dataTables_filter {
+        display: block;
+    }
+
+    .example-1 {
+        position: relative;
+        overflow-y: scroll;
+        height: 300px;
+        display: none;
+    }
+
+    .scrollbar-deep-purple::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .scrollbar-deep-purple::-webkit-scrollbar {
+        width: 8px;
+        background-color: #F5F5F5;
+    }
+
+    .scrollbar-deep-purple::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+        background-color: #512da8;
+    }
+
+    .scrollbar-deep-purple {
+        scrollbar-color: #512da8 #F5F5F5;
+    }
+</style>
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var idUsuario = @User.Claims.ElementAt(0).Value;
+
+             /********************************** Filtros AJAX ***********************************/
+                $('#tblIncidencias').DataTable({
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            title: 'Servicio de Mensajería Acelerada - Listado de Cédulas',
+                            className: "btn-sm bg-cjf mr-1",
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            title: 'Servicio de Mensajería Acelerada - Listado de Cédulas',
+                            className: "btn-sm bg-cjf mr-1"
+                        },
+                        {
+                            extend: 'print',
+                            title: 'Servicio de Mensajería Acelerada - Listado de Cédulas',
+                            text: 'Imprimir',
+                            className: "btn-sm bg-cjf mr-1"
+                        },
+                        /*{
+                            extend: 'colvis',
+                            text: 'Ocultar Columnas',
+                            className: "bg-cjf"
+                        }*/],
+                    //"bFilter": false,
+                    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+                    responsive: true,
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                    },
+                });
+
+                var table = $('#tblIncidencias').DataTable();
+        });
+    </script>
+}
+

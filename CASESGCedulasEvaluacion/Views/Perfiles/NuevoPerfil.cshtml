@@ -1,0 +1,115 @@
+﻿@model CedulasEvaluacion.Entities.Models.Perfiles;
+@{
+    ViewData["Title"] = "Nuevo Perfil de Usuario";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group col-lg-3">
+            <label for="name">Nombre del Perfil: *</label>
+            <input type="text" class="form-control" name="nombre" id="perfil_nombre" />
+        </div>
+    </div>
+</div>
+
+@* Modulos con sus respectivas Operaciones *@
+<div class="row mt-4">
+    <div class="card col-lg-12">
+        <div class="card-header bg-joke text-white">
+            <h3>Módulos del Sistema</h3>
+        </div>
+        <div class="card-body">
+            <div class="row mt-3">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        @foreach (var modulo in Model.Modulos)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link detailUser" aria-current="page" data-toggle="tab" href="#op_@modulo.Nombre" role="tab">@modulo.Nombre.Replace("_", " ")</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                @for (int i = 0; i < Model.Modulos.Count; i++)
+                {
+                    <div class="tab-pane fade mt-2 ml-3 show" id="op_@Model.Modulos[i].Nombre" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="col-lg-12 mb-5">
+                            <h4>@Model.Modulos[i].Nombre.Replace("_", " ")</h4>
+                        </div>
+                        @for (int j = 0; j < Model.Operaciones.Count; j++)
+                        {
+                            @if (Model.Modulos[i].Id == Model.Operaciones[j].ModuloId)
+                            {
+                                <div class="form-check-inline i-checks mt-3" id="@("op_"+@Model.Operaciones[j].Nombre+"_"+@Model.Modulos[i].Nombre)">
+                                    <strong class="text-black mr-3">@System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(@Model.Operaciones[j].Nombre)</strong>
+                                    <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                           data-onstyle="success" data-offstyle="danger" data-admin="@Model.Modulos[i].Nombre"
+                                           data-style="ios" value="@Model.Operaciones[j].Id">
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                <a href="/perfiles/index" class="btn btn-danger float-right ml-3">Cancelar</a>
+                <button type="button" class="btn btn-success float-right btn_guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+        border-radius: 20rem;
+    }
+
+        .toggle.ios .toggle-handle {
+            border-radius: 20rem;
+        }
+</style>
+
+@section Scripts{ 
+    <script>
+        window.onload = function () {
+            $('.btn_guardar').click(async function () {
+                var operaciones = new Array();
+                var id = 0;
+                var nombre = $('#perfil_nombre').val();
+                var success = 0;
+
+                await axios.post('/perfiles/insertaPerfil', { Nombre: nombre }).then(profile => {
+                    this.id = profile.data;
+                });
+
+                id = this.id;
+                $('.selected_checkbox').each(function () {
+                    if ($(this).prop('checked')) {
+                        axios.post('/operacionesPerfil/insertaOpPerfil', { PerfilId: parseInt(id), OperacionId: parseInt($(this).val()) }).then(op => {
+                            if (op.data == -1) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Perfil Creado',
+                                    'html': 'No se pudo creó el perfil "' + nombre + '" favor de contactar al administrador del sistema.'
+                                });
+                                return false;
+                            }
+                        });
+                    }
+                });
+                success = this.success;
+                if (success != -1) {
+                    Swal.fire({
+                        'icon': 'success',
+                        'title': 'Perfil Creado',
+                        'html': 'Se creó el perfil "' + nombre + '" y se asignaron los permisos seleccionados'
+                    });
+                }                 
+            });
+        };
+    </script>
+}

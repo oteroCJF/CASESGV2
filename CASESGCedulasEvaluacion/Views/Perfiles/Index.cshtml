@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CedulasEvaluacion.Entities.Models.Perfiles>
+@{
+    ViewData["Title"] = "Perfiles";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table" id="table_profiles">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in @Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => item.Id)</td>
+                        <td>@Html.DisplayFor(model => item.Nombre)</td>
+                        <td>
+                            <a asp-action="DetallePerfil" asp-controller="Perfil" asp-route-id="@item.Id" class="text-center">
+                                <i class="fad fa-eye text-success mr-2"></i>
+                            </a>
+                            <a href="/perfiles/edit/@item.Id" class="text-center">
+                                <i class="fad fa-pencil text-primary mr-2"></i>
+                            </a>
+                            <a asp-action="eliminarCedula" asp-controller="Perfil" asp-route-id="@item.Id" class="text-center">
+                                <i class="fad fa-times text-danger"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(function () {
+            $("#table_profiles").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+        });
+    </script>
+}

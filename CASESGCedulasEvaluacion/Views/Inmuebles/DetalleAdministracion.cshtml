@@ -1,0 +1,129 @@
+﻿@model CedulasEvaluacion.Entities.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Administración: " + " \" " + Model.Nombre + " \" ";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <a href="/inmuebles/administraciones" class="btn btn-warning float-right"><i class="fal fa-arrow-left"></i></a>
+    </div>
+</div>
+<div class="row mt-3">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active detailUser" aria-current="page" data-toggle="tab" href="#detalleUsuario" role="tab">Detalle de la Administración</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link inmueblesUsers" data-toggle="tab" href="#inmueblesUsuario" role="tab">Inmuebles Asignados</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade mt-2 ml-3 show active" id="detalleUsuario" role="tabpanel" aria-labelledby="home-tab">
+                <h4>Detalle de la Administración:</h4>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-5">
+                        <strong>Id: </strong>@Model.Id
+                    </div>
+                    <div class="col-lg-3">
+                        <strong>Clave: </strong>@Model.Clave
+                    </div>
+                    <div class="col-lg-4">
+                        <strong>Nombre: </strong>@Model.Nombre
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-5">
+                        <strong>Dirección: </strong>@Model.Direccion
+                    </div>
+                    @if (@Model.Tipo == 1)
+                    {
+                        <div class="col-lg-4">
+                            <strong>Tipo: </strong> Administrador
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-lg-4">
+                            <strong>Tipo: </strong> Inmueble
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="tab-pane fade mt-2 ml-3" id="inmueblesUsuario" role="tabpanel" aria-labelledby="home-tab">
+                <h4>Inmuebles Asignados</h4>
+                <div class="row col-lg-12" id="inmuebles_asignados">
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Clave</th>
+                                <th>Nombre</th>
+                                <th>Dirección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblInmUsr">
+                            <tr>
+                                <td colspan="5" class="text-center" style="font-weight: bold">El usuario no cuenta con ninguna "Administración" asginada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+    $(function () {
+        var model = @Html.Raw(Json.Serialize(@Model));
+        var table = "";
+
+        /*Asignación de Inmuebles*/
+        axios.get('/getInmueblesAdmin/' + model.id).then(response => {
+            response = response.data;
+            if (Object.keys(response).length > 0) {
+                for (var i = 0; i < Object.keys(response).length; i++) {
+                    table +=
+                        "<tr>" +
+                            "<td>" + (i+1) + "</td>" +
+                            "<td>" + (response[i].clave) + "</td>" +
+                            "<td>" + response[i].nombre + "</td>" +
+                            "<td>" + response[i].direccion + "</td>" +
+                    "<td class='text-center'>" +
+                    "<a href='/inmuebles/editar/administracion/" + response[i].id + "' class='text-primary' data-id='" + response[i].id + "'><i class='fas fa-edit mr-2'></i></a>" +
+                                "<a href='#' class='text-danger delete_admin' data-id='" + response[i].id+ "'><i class='fas fa-times'></i></a>" +
+                            "</td>" +
+                        "</tr>";
+                }
+                $('#tblInmUsr').html(table);
+            }
+        }).catch(error => {
+            Swal.fire({
+                'icon': 'error',
+                'title': 'Inmuebles Asignados',
+                'text': 'Hubo un error al cargar los inmuebles asignados'
+            });
+        });
+        /*FIN de Asignación de Inmuebles*/
+
+        /*Acciones para los inmuebles del Usuario*/
+        $(document).on('click','.view_admin',function () {
+            var id = $(this).data('id');
+            var table = "";
+            axios.get('/getInmueblesAdmin/' + id).then(response => {
+                response = response.data;
+                if (response != "") {
+                    $('#tblInm').html(response);
+                }
+            });
+            $('#modal-inmueblesAdmin').modal('show');
+        });
+        /*FIN Acciones para los inmuebles del Usuario*/
+    });
+    </script>
+}

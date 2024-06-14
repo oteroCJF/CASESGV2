@@ -1,0 +1,252 @@
+﻿@model CedulasEvaluacion.Entities.MHome.ModelsDash;
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="container-fluid">
+    <a href="#" class="btn btn-primary float-right btnAvisos"><i class="fa-regular fa-calendar-check"></i></a>
+    @if (Model.dashboards.Count > 0)
+    {
+        <div class="row col-lg-12">
+            <div class="col-lg-12 mt-3">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mt-2">Cédulas Pendientes</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row col-lg-12 mt-3">
+                            @foreach (var ds in Model.dashboards)
+                            {
+                                @if (!ds.Estatus.Equals("En Trámite") && !ds.Estatus.Equals("Trámite de Pago") && !ds.Estatus.Equals("Enviada a DGPPT") && !ds.Estatus.Equals("Pagada"))
+                                {
+                                    <div class="col-lg-3 col-6">
+                                        <!-- small box -->
+                                        <div class="small-box @ds.Fondo">
+                                            <div class="inner">
+                                                <h3>@ds.Total</h3>
+                                                @if (@ds.Estatus.Equals("Enviado a DAS"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong><p>Cédula(s) enviadas a DAS</p></strong>
+                                                    </div>
+                                                }
+                                                else if (@ds.Estatus.Equals("En Proceso"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong><p>Cédula(s) en proceso</p></strong>
+                                                    </div>
+                                                }
+                                                else if (@ds.Estatus.Equals("Trámite Rechazado"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong> <p>Cédula(s) en trámite rechazado</p></strong>
+                                                    </div>
+                                                }
+                                                else if (@ds.Estatus.Equals("Revisión CAE") || @ds.Estatus.Equals("Autorizado CAE"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong><p>Cédula(s) @Html.DisplayFor(item => ds.Estatus)</p></strong>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="form-row">
+                                                        <strong><p>Cédula(s) @Html.DisplayFor(item => ds.Estatus)s</p></strong>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="icon">
+                                                @Html.Raw(@ds.Icono)
+                                            </div>
+                                            <a href="/CedulasEstatus/@ds.Estatus" class="small-box-footer">Mas Información <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mt-2">Cédulas Atendidas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row col-lg-12 mt-3">
+                            @foreach (var ds in Model.dashboards)
+                            {
+                                @if (ds.Estatus.Equals("Trámite de Pago") || ds.Estatus.Equals("Enviada a DGPPT") || ds.Estatus.Equals("Pagada") || ds.Estatus.Equals("En Trámite"))
+                                {
+                                    <div class="col-lg-3 col-6">
+                                        <!-- small box -->
+                                        <div class="small-box @ds.Fondo">
+                                            <div class="inner">
+                                                <h3>@ds.Total</h3>
+                                                @if (@ds.Estatus.Equals("Trámite de Pago"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong><p>Cédula(s) en trámite de pago</p></strong>
+                                                    </div>
+                                                }
+                                                else if (@ds.Estatus.Equals("Enviada a DGPPT"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong><p>Cédula(s) enviadas a DGPPT</p></strong>
+                                                    </div>
+                                                }
+                                                else if (@ds.Estatus.Equals("Pagada"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong> <p>Cédula(s) pagadas</p></strong>
+                                                    </div>
+                                                }
+                                                else if (@ds.Estatus.Equals("En Trámite"))
+                                                {
+                                                    <div class="form-row">
+                                                        <strong> <p>Cédula(s) en trámite</p></strong>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="icon">
+                                                @Html.Raw(@ds.Icono)
+                                            </div>
+                                            <a href="/CedulasEstatus/@ds.Estatus" class="small-box-footer">Mas Información <i class="fas fa-arrow-circle-right"></i></a>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <br />
+    }
+    else
+    {
+        <div class="col-lg-12 text-center text-danger h4">
+            Aún no has evaluado ningún servicio
+        </div>
+    }
+</div>
+
+<style>
+    .swal-wide {
+        width: 1024px !important;
+    }
+</style>
+
+@section Scripts{
+    <script>
+    $(function () {
+        var model = @Html.Raw(Json.Serialize(@Model));
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        const aviso = []
+        const title = []
+        const comentarios = []
+        //const swalQueueStep = [];
+        for (var i = 0; i < model.avisos.length;i++) {
+            aviso[i] = (i+1);
+            title[i] = model.avisos[i].titulo;
+            comentarios[i] = model.avisos[i].comentarios;
+        }
+
+        if (model.avisosU.visible == false) {
+            $(".btnAvisos").css("display","none");
+            const swalQueueStep = Swal.mixin({
+                confirmButtonText: 'Siguiente',
+                cancelButtonText: 'Anterior',
+                customClass: 'swal-wide',
+                progressSteps: aviso,
+                reverseButtons: true,
+                footer: (model.avisosU.visible == false ? '<a href="#!" id="activaAvisos" class="text-danger activaAvisos">No mostrar avisos al iniciar</a>' :
+                    '<a href="#!" id="desactivaAvisos" class="text-success">Mostrar avisos al iniciar</a>')
+            });
+            async function backAndForth() {
+                const values = []
+                let currentStep
+                for (currentStep = 0; currentStep < aviso.length;) {
+                    var result = await swalQueueStep.fire({
+                        title: title[currentStep],
+                        html: '<p style="text-align: justify;">' + comentarios[currentStep] + '</p>',
+                        showCancelButton: currentStep > 0,
+                        currentProgressStep: currentStep,
+                        confirmButtonText: ((currentStep + 1) == aviso.length ? 'Terminar' : 'Siguiente'),
+                    });
+
+                    if (result.value) {
+                        values[currentStep] = result.value
+                        currentStep++
+                    } else if (result.dismiss === 'cancel') {
+                        currentStep--
+                    } else {
+                        break
+                    }
+                }
+            }
+            backAndForth();
+        }
+
+        $(".btnAvisos").click(function () {
+            const swalQueueStep = Swal.mixin({
+                confirmButtonText: 'Siguiente',
+                cancelButtonText: 'Anterior',
+                customClass: 'swal-wide',
+                progressSteps: aviso,
+                reverseButtons: true,
+                footer: (model.avisosU.visible == false ? '<a href="#!" id="activaAvisos" class="text-danger activaAvisos">No mostrar avisos al iniciar</a>' :
+                    '<a href="#!" id="desactivaAvisos" class="text-success desactivaAvisos">Mostrar avisos al iniciar</a>')
+            });
+            async function backAndForth() {
+                const values = []
+                let currentStep 
+                for (currentStep = 0; currentStep < aviso.length;) {
+                    var result = await swalQueueStep.fire({
+                        title: title[currentStep],
+                        html: '<p style="text-align: justify;">' + comentarios[currentStep] + '</p>',
+                        showCancelButton: currentStep > 0,
+                        currentProgressStep: currentStep,
+                        confirmButtonText: ((currentStep + 1) == aviso.length ? 'Terminar' : 'Siguiente'),
+                    });
+
+                    if (result.value) {
+                        values[currentStep] = result.value
+                        currentStep++
+                    } else if (result.dismiss === 'cancel') {
+                        currentStep--
+                    } else {
+                        break
+                    }
+                }
+            }
+            backAndForth();
+        });
+
+        $(document).on("click",".activaAvisos",function () {
+            axios.post('/avisos/activaAvisos', { UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Visible: true }).then(avisos => {
+                    Swal.fire({
+                        'icon': 'success',
+                        'title': 'Avisos CASESG',
+                        'html': 'Se desactivaron los avisos al iniciar. Para visualizarlos nuevamente presione el boton ubicado en la esquina superior de la pantalla de "Inicio" con el icono: <i class="fa-regular fa-calendar-check text-primary"></i> .'
+                    }).then(function () {
+                        window.location.reload();
+                    });
+            });
+         });
+
+        $(document).on("click",".desactivaAvisos", function () {
+            axios.post('/avisos/desactivaAvisos', { UsuarioId: parseInt(@User.Claims.ElementAt(0).Value)}).then(avisos => {
+                 Swal.fire({
+                    'icon': 'success',
+                    'title': 'Avisos CASESG',
+                    'html': 'Se activaron los avisos al iniciar.'
+                }).then(function () {
+                    window.location.reload();
+                });
+            });
+        });
+    });
+    </script>
+}

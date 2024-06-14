@@ -1,0 +1,295 @@
+﻿@model CedulasEvaluacion.Entities.MFirmantes.ModelsFirmantes;
+@{
+    var i = 0;
+    var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
+    ViewData["Title"] = "Modificación de Firmantes en la Cédula de Evaluación";
+}
+
+<div class="container-fluid">
+    <div class="row col-lg-12">
+        <p class="h5">Para modificar el firmante, primero debe seleccionar el servicio.</p>
+    </div>
+    @foreach (var md in Model.catalogo)
+    {
+        <a class="btn btn-app-firmantes @md.Fondo text-white font-weight-bold btnServicio" data-id="@md.Id">
+            @Html.Raw(md.Icono)
+            @md.Nombre
+        </a>
+    }
+
+    @if (Model.firmantes != null)
+    {
+        <div class="row mt-3">
+            <div class="col-lg-12">
+                <table class="table table-responsive-xl" id="tbl_firmantes">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Servicio</th>
+                            <th>Inmueble</th>
+                            <th>Tipo</th>
+                            <th>Tipo de Servicio</th>
+                            <th>Firmante</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fm in Model.firmantes)
+                        {
+                            i++;
+                            <tr>
+                                <td>@i</td>
+                                <td>@fm.servicio.Nombre</td>
+                                <td>@fm.inmueble.Nombre</td>
+                                <td>
+                                    @System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(
+                                        System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToLower(
+                                            String.Concat(@fm.usuario.nombre_emp, " ", @fm.usuario.paterno_emp, " ", @fm.usuario.materno_emp)
+                                            )
+                                    )
+                                </td>
+                            <td>@fm.Tipo</td>
+                            <td>@(fm.TipoServicio.Equals("") ? "No aplica": fm.TipoServicio)</td>
+                            <td class="text-center">
+                                <a href="#" class="editFirmante" data-id="@fm.Id" data-user="@fm.UsuarioId" data-esco="@fm.Escolaridad" 
+                                   data-tiposervicio="@fm.TipoServicio" data-servicio="@fm.ServicioId">
+                                    <i class="fas fa-pencil text-primary"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@*Modal para actualizar firmantes*@
+<div class="modal fade" id="modal-firmante">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Actualizar Firmante</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="divTipoServicio">
+                    <input type="hidden" id="fServicioId" />
+                    <div class="col-lg-3">
+                        <label for="">Tipo de Análisis:</label>
+                        <select class="form-control" id="TipoServicio">
+                            <option value="">Seleccione el tipo de análisis </option>
+                            <option value="CENDIS">CENDIS</option>
+                            <option value="Comedor General">Comedor General</option>
+                            <option value="Lactarios">Lactarios</option>
+                            <option value="Comedores Ejecutivos">Comedores Ejecutivos</option>
+                        </select>
+                        <div class="col-sm-12 error_selectServicio">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el análisis aplicado
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <input type="hidden" id="idFirmante" />
+                    <div class="row col-lg-12 font-weight-bold">
+                        <b>Firmante Actual: </b>
+                        <br />
+                    </div>
+                    <div class="form-row col-md-3" id="divEscolaridadA">
+                        <label for="firmanteActual">Escolaridad:</label>
+                        <select class="form-control" id="escolaridadActual"></select>
+                    </div>
+                    <div class="form-row col-md-6" id="divFirmante">
+                        <label for="firmanteActual">Firmante Actual:</label>
+                        <select class="form-control" id="firmanteActual"></select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="row col-lg-12 font-weight-bold">
+                        <b>Nuevo Firmante: </b>
+                        <br />
+                    </div>
+                    <div class="form-row col-md-3" id="divEscolaridadN">
+                        <label for="firmanteActual">Escolaridad:</label>
+                        <select class="form-control" id="escolaridadNueva"></select>
+                        <div class="col-sm-12" id="error_escolaridad">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la escolaridad del firmante.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-6" id="divFirmante">
+                        <div class="select2-purple col-lg-12">
+                            <label for="firmanteActual">Nuevo Firmante:</label>
+                            <select class="form-control select2bs4" data-dropdown-css-class="select2-purple" id="nuevoFirmante">
+                            </select>
+                        </div>
+                        <div class="col-sm-12" id="error_nuevoFirmante">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el nuevo firmante.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="actualizarFirmante">Actualizar Firmante</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin del Modal para Capturar Oficios*@
+
+@section Scripts{
+    <script>
+        $(function () {
+            var escolaridad = ["C.", "Lic.", "Ing.", "Arq.", "C.P.", "Mtro.", "Mtra.", "Dr.", "Dra.", "Act."]
+
+            $("#divTipoServicio").css("display", "none");
+            $("#error_escolaridad").css("display", "none");
+            $("#error_nuevoFirmante").css("display", "none");
+            $(".error_selectServicio").css("display", "none");
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".select2").select2();
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            $("#tbl_firmantes").DataTable({
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Firmantes - Listado de Oficios Capturados',
+                        className: "bg-cjf mr-1",
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Firmantes - Listado de Oficios Capturados',
+                        className: "bg-cjf mr-1"
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Firmantes - Listado de Oficios Capturados',
+                        text: 'Imprimir',
+                        className: "bg-cjf mr-1"
+                    }],
+                autoWidth: false,
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+            });
+
+            $(".btnServicio").click(function () {
+                window.location.href = "/firmantes/index?Servicio=" + $(this).data('id');
+            });
+
+            $(".editFirmante").click(function () {
+                $("#idFirmante").val($(this).data('id'));
+                $("#fServicioId").val($(this).data('servicio'));
+
+                if ($(this).data('servicio') == 8) {
+                    $("#divTipoServicio").css("display","block");
+                }
+
+                let options = "<option value=''>Seleccione la escolaridad</option>";
+                for (let i = 0; i < escolaridad.length; i++) {
+                    options += "<option value='" + escolaridad[i] + "'>" + escolaridad[i] + "</option>"
+                }
+                $("#escolaridadActual").html(options);
+                $("#escolaridadActual").prop("disabled", true);
+                $("#escolaridadNueva").html(options);
+
+                axios.get('/firmantes/obtieneFirmantes/' + @User.Claims.ElementAt(0).Value).then(resp => {
+                    var opAntes = "<option value=''>Seleccione un Firmante</option>";
+                    for (var i = 0; i < resp.data.length;i++) {
+                        opAntes += "<option value='" + resp.data[i].id + "'>" + resp.data[i].nombreCompleto+"</option>";
+                    }
+                    $("#escolaridadActual").val($(this).data('esco'));
+                    $("#firmanteActual").html(opAntes);
+                    $("#firmanteActual").val($(this).data('user'));
+                    $("#firmanteActual").prop("disabled",true);
+                });
+
+                axios.get('/firmantes/obtieneFirmantes/' + @User.Claims.ElementAt(0).Value).then(resp => {
+                    var opAntes = "<option value=''>Seleccione un Firmante</option>";
+                    for (var i = 0; i < resp.data.length; i++) {
+                        opAntes += "<option value='" + resp.data[i].id + "'>" + resp.data[i].nombreCompleto + "</option>";
+                    }
+                    $("#nuevoFirmante").html(opAntes);
+                });
+
+                $("#modal-firmante").modal("show");
+            });
+
+            $("#actualizarFirmante").click(function () {
+                var id = $("#idFirmante").val();
+                var servicioId = $("#fServicioId").val();
+                var usuario = $("#nuevoFirmante").val();
+                var escolaridad = $("#escolaridadNueva").val();
+                var tipoServicio = $("#TipoServicio").val();
+
+                if (tipoServicio == "" && servicioId == 8) {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Firmantes',
+                        'html': 'Por favor seleccione el tipo de servicio.',
+                    });
+
+                    $(".error_selectServicio").css("display", "block");
+
+                    return false;
+                }
+
+                if (escolaridad == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Firmantes',
+                        'html': 'Por favor seleccione la escolaridad del firmante.',
+                    });
+
+                    $("#error_escolaridad").css("display", "block");
+
+                    return false;
+                }
+
+                if (usuario == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Firmantes',
+                        'html': 'Por favor seleccione al nuevo firmante.',
+                    });
+                    $("#error_nuevoFirmante").css("display", "block");
+                    return false;
+                }
+
+                axios.post('/firmantes/actualizaFirmante', { Id: parseInt(id), UsuarioId: parseInt(usuario), Escolaridad: escolaridad, TipoServicio: tipoServicio }).then(response => {
+                    Swal.fire({
+                        'icon': 'success',
+                        'title': 'Actualización de Firmantes',
+                        'html': 'Se actualizó el firmante de la cédula correctamente.'
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                }).catch(error => {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Actualización de Firmantes',
+                        'html': 'Hubo un error al actualizar el firmante de la cédula. Contacte al administrador del sistema.'
+                    });
+                });
+            });
+        });
+    </script>
+}

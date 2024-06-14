@@ -1,0 +1,1086 @@
+﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@{
+    var title = TempData["Title"] as string;
+    ViewData["Title"] = "Revisión de la Cédula del Servicio de Transporte para Servidores Públicos: " + Model.Folio;
+}
+
+<div class="row col-lg-12">
+    <div class="col-lg-12">
+        <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3'><i class="fal fa-arrow-left"></i></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#horarios" role="tab" aria-controls="contact" aria-selected="false">Recorridos y Horarios</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#registro" role="tab" aria-controls="contact" aria-selected="false">Registro de Servidores Públicos</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#ocupacion" role="tab" aria-controls="contact" aria-selected="false">Ocupación Promedio</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#supervision" role="tab" aria-controls="contact" aria-selected="false">Supervisión del Servicio</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#comportamiento" role="tab" aria-controls="contact" aria-selected="false">Comportamiento del Personal</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables_cedula" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
+            </li>
+        </ul>
+        @{ int f = 0;}
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="informacion_general" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row justify-content-center align-items-center mt-4">
+                    <div class="col-lg-12 h3 ml-4">
+                        Información General
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 mt-3">
+                        <div class="card bg-light d-flex flex-fill">
+                            <div class="card-header border-bottom-0">
+                                <h2 class="lead"><b>Inmueble Evaluado: </b> @Model.inmuebles.Nombre</h2>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-7">
+                                        <h2 class="lead">
+                                            <strong>
+                                                Factura Capturadas:
+                                            </strong>
+                                            <a href="#" id="btn_facturas" class='btn btn-sm btn-facturas ml-2 mb-1' data-toggle="tooltip" title="Ver Facturas" data-placement="top">
+                                                <i class="fal fa-file-invoice"></i>
+                                            </a>
+                                        </h2>
+                                        <p class="text-sm">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
+                                        <ul class="ml-4 mb-0 fa-ul">
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
+                                            <li class="small mt-3">
+                                                <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
+                                                <strong>Correo:</strong>
+                                                @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
+                                                {
+                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                }
+                                                else
+                                                {
+                                                    @Model.usuarios.correo_electronico
+                                                }
+                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
+                                                    <i class="fal fa-edit"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-5">
+                                        @if (@Model.Estatus.Equals("Enviado a DAS"))
+                                        {
+                                            <h5 class="text-enviadoDAS lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Revisión CAE"))
+                                        {
+                                            <h5 class="text-primary lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("En Trámite"))
+                                        {
+                                            <h5 class="text-info lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Rechazada"))
+                                        {
+                                            <h5 class="text-danger lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Trámite Rechazado"))
+                                        {
+                                            <h5 class="text-tramiteRechazado lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Autorizada"))
+                                        {
+                                            <h5 class="text-autorizado lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Autorizado CAE"))
+                                        {
+                                            <h5 class="text-autorizadoCAE lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Trámite de Pago"))
+                                        {
+                                            <h5 class="text-tramitePago lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Enviada a DGPPT"))
+                                        {
+                                            <h5 class="text-dgppt lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        else if (@Model.Estatus.Equals("Pagada"))
+                                        {
+                                            <h5 class="text-success lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                        }
+                                        @*<p class="text-sm">
+                                                @{decimal total = Convert.ToDecimal(@Model.RespuestasEncuesta[0].MontoPenalizacion + @Model.RespuestasEncuesta[1].MontoPenalizacion +
+                                                                                                      @Model.RespuestasEncuesta[2].MontoPenalizacion + @Model.RespuestasEncuesta[3].MontoPenalizacion
+                                                                                                      + Model.PenaCalificacion + Model.capacitacion.MontoPenalizacion + Model.TotalBajoDemanda);
+                                                }
+                                                @if (total > 0)
+                                                {
+                                                    <h5 class="text-danger">
+                                                        <b>Total Penalizable:</b> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", total)
+                                                    </h5>
+                                                }
+                                                else
+                                                {
+                                                    <h5 class="text-success">
+                                                        <b>No hay Monto Penalizable</b>
+                                                    </h5>
+                                                }
+                                            </p>
+                                            <ul class="ml-4 mb-0 fa-ul">
+                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Actividades: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)</li>
+                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Uniforme: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)</li>
+                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Actividades en Equipo: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)</li>
+                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Entregables Bajo Demanda: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalBajoDemanda)</li>
+                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-star"></i></span> <b> Calificación: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.PenaCalificacion)</li>
+                                            </ul>*@
+                                        <div>
+                                            <img src="~/img/web1.jpg" alt="Alternate Text" width="40%" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @if (Model.Estatus.Equals("Enviado a DAS"))
+                            {
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                        <button href="" class="btn btn-danger float-right mr-3 failed_cedula"><i class="fas fa-times mr-2"></i>Rechazar Cédula</button>
+                                        <button href="" class="btn btn-success float-right mr-3 success_cedula"><i class="fas fa-check mr-2"></i>Aceptar Cédula</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="horarios" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Recorridos y Horarios
+                </div>
+                @if (@Model.RespuestasEncuesta[1].Respuesta == false)
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <p class="h5 text-justify text-danger ml-3">El prestador de servicios no cumplió con los recorridos y horarios establecidos en el contrato, siendo acreedor a una penalización.</p>
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Fecha de la Incidencia</th>
+                                            <th>Hora de la Incidencia</th>
+                                            <th>Comentarios</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var inci in @Model.incidencias.transporte)
+                                        {
+                                            if (inci.Pregunta.Equals(2 + ""))
+                                            {
+                                                <tr>
+                                                    <td>@inci.Tipo</td>
+                                                    <td>@inci.FechaIncidencia.ToString("dd/MM/yyyy")</td>
+                                                    <td>@inci.HoraPresentada</td>
+                                                    <td>@inci.Comentarios</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-danger ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h3 text-justify text-success">El prestador de servicios cumplió con los recorridos y horarios establecidos en el contrato, eviatndo la penalización correspondiente.</p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-success ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="tab-pane fade" id="registro" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Registro de Servidores Públicos
+                </div>
+                @if (@Model.RespuestasEncuesta[2].Respuesta == false)
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h3 text-justify text-danger">
+                                    No se llevó a cabo el registro de los servidores públicos que hicieron uso del servicio, los comentarios son los siguientes: <br />
+                                    @Model.RespuestasEncuesta[2].Detalles
+                                </p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h3 text-justify text-success">Si se llevó a cabo el registro de los servidores públicos que hicieron uso del servicio.</p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-success ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="tab-pane fade" id="ocupacion" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Ocupación Promedio
+                </div>
+                @if (@Model.RespuestasEncuesta[3].Respuesta == false)
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h5 text-justify text-danger ml-3">
+                                    La ocupación promedio registrada no fue mayor o igual al 50% de la capacidad de las unidades contratadas, los comentarios son los siguientes:
+                                    @Model.RespuestasEncuesta[3].Detalles
+                                </p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h3 text-justify text-success">La ocupación promedio registrada fue mayor o igual al 50% de la capacidad de las unidades contratadas.</p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-success ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="tab-pane fade" id="supervision" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Supervisión del Servicio
+                </div>
+                @if (@Model.RespuestasEncuesta[4].Respuesta == false)
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <p class="h5 text-justify text-danger ml-3">El prestador de servicios no supervisó la prestación del servicio, siendo acreedor a una penalización.</p>
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Fecha de la Incidencia</th>
+                                            <th>Comentarios</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var inci in @Model.incidencias.transporte)
+                                        {
+                                            if (inci.Pregunta.Equals(4 + ""))
+                                            {
+                                                <tr>
+                                                    <td>@inci.Tipo</td>
+                                                    <td>@inci.FechaIncidencia.ToString("dd/MM/yyyy")</td>
+                                                    <td>@inci.Comentarios</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-danger ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h3 text-justify text-success">El prestador de servicios supervisó la prestación del servicio, evitando la penalización correspondiente.</p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-success ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="tab-pane fade" id="supervision" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Comportamiento del Personal
+                </div>
+                @if (@Model.RespuestasEncuesta[5].Respuesta == false)
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <p class="h5 text-justify text-danger ml-3">El prestador de servicios no fue amable, cortés y porto el uniforme con logotipo de la empresa para prestar el servicio, siendo acreedor a una penalización.</p>
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Fecha de la Incidencia</th>
+                                            <th>Comentarios</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var inci in @Model.incidencias.transporte)
+                                        {
+                                            if (inci.Pregunta.Equals(4 + ""))
+                                            {
+                                                <tr>
+                                                    <td>@inci.Tipo</td>
+                                                    <td>@inci.FechaIncidencia.ToString("dd/MM/yyyy")</td>
+                                                    <td>@inci.Comentarios</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-danger ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-4">
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-9 mt-3 ml-4">
+                                <p class="h3 text-justify text-success">El prestador de servicios no fue amable, cortés y porto el uniforme con logotipo de la empresa para prestar el servicio, evitando la penalización correspondiente.</p>
+                            </div>
+                            <div class="col-lg-2" style="margin-top: -18px;">
+                                <div class="small-box bg-warning">
+                                    <div class="icon">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-success ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="tab-pane fade" id="entregables_cedula" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row col-lg-12">
+                    <div class="col-lg-8">
+                        <p class="h6">El usuario adjunto los siguientes entregables.</p>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-2 h6">
+                    <div class="col-lg-12">
+                        <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha de la Incidencia</th>
+                                    <th>Ver</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var entre in @Model.iEntregables)
+                                {
+                                    <tr>
+                                        @if (entre.Tipo.Equals("ActaER"))
+                                        {
+                                            <td>Acta Entrega - Recepción</td>
+                                        }
+                                        else if (entre.Tipo.Equals("Factura"))
+                                        {
+                                            <td>Factura</td>
+                                        }
+                                        else if (entre.Tipo.Equals("SAT"))
+                                        {
+                                            <td>Validación del SAT</td>
+                                        }
+                                        else if (entre.Tipo.Equals("NotaCredito"))
+                                        {
+                                            <td>Nota de Crédito</td>
+                                        }
+                                        else if (entre.Tipo.Equals("Reporte(s)"))
+                                        {
+                                            <td>Reporte(s)</td>
+                                        }
+                                        else if (entre.Tipo.Equals("Cedula_Firmada"))
+                                        {
+                                            <td>Cédula Firmada</td>
+                                        }
+                                        else if (entre.Tipo.Equals("Memorandum"))
+                                        {
+                                            <td>Memorándum</td>
+                                        }
+                                        <td>@entre.NombreArchivo</td>
+                                        <td>@entre.FechaCreacion.ToString("yyyy-MM-dd")</td>
+                                        <td>
+                                            <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo">
+                                                <i class='fas fa-eye text-success'></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="historial_cedula" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row justify-content-center align-items-center mt-4">
+                    <div class="col-lg-12 h3 ml-4">
+                        Seguimiento de la Cédula
+                    </div>
+                    <div class="row col-lg-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Servicio</th>
+                                    <th>Usuario</th>
+                                    <th>Comentarios</th>
+                                    <th>Estatus</th>
+                                    <th>Fecha de Actualización</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var hist in @Model.historialCedulas)
+                                {
+                                    <tr>
+                                        <td>@hist.Servicio</td>
+                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                        <td>@hist.Comentarios</td>
+                                        <td>@hist.Estatus</td>
+                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal para ver las facturas de la cedula *@
+<div class="modal fade" id="modal-ver-facturas">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Factura Capturadas</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12 mt-3">
+                        <table class="table table-responsive" id="listado_facturas">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Empresa</th>
+                                    <th>Folio Fiscal</th>
+                                    <th>Numero de la Factura</th>
+                                    <th>Subtotal de la Factura</th>
+                                    <th>Total</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="listaFacturas"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@* FIN del Modal para ver las facturas de la cedula *@
+
+@* Modal para ver los conceptos de las facturas de la cedula *@
+<div class="modal fade" id="modal-ver-conceptos">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="factura_serie"></h4>
+                <button type="button" class="close close_conceptos text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class=" row col-lg-12" id="detalle_conceptos"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+@* Fin de Modal para ver los conceptos de las facturas de la cedula *@
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_entregablesBD">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar Entregables</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="file_id" />
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione él archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3">
+                        <div class="fechaEntrega">
+                            <label for="forFechaEntrega">Fecha Entrega: </label>
+                            <input class="form-control" type="date" id="fecha_entrega" />
+                        </div>
+                        <div class="col-sm-12" id="error_fechaEntrega">
+                            <small id="fechaEntregaHelp" class="text-danger is-valid">
+                                Por favor seleccione la fecha de entrega correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3">
+                        <div class="fechaLimite">
+                            <label for="forFechaLimite">Fecha Límite: </label>
+                            <input class="form-control" type="date" id="fecha_limite" />
+                        </div>
+                        <div class="col-sm-12" id="error_fechaLimite">
+                            <small id="fechaLimiteHelp" class="text-danger">
+                                Por favor seleccione la fecha límite correspondiente
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row col-lg-4 mt-2" id="prioridadEntregableBD">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Prioridad:</label><br>
+                            <select class="form-control" id="prioridad_entregable">
+                                <option value="">Seleccione la prioridad</option>
+                                <option value="1">Normal</option>
+                                <option value="2">Urgente</option>
+                            </select>
+                            <div class="col-sm-12" id="error_prioridad">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor seleccione la prioridad del entregable
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row col-lg-12 mt-2" id="comentariosEntregableBD">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Comentarios:</label><br>
+                            <textarea id="comentarios_entregableBD" class="form-control"></textarea>
+                            <div class="col-sm-12" id="error_comentariosEntreBD">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor capture los comentarios correspondientes
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Entregables Bajo Demanda *@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="show_pdf">
+    <div class="modal-dialog modal-xl-view">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-view">
+                <table class="table">
+                    <tr>
+                        <td><strong>Folio: </strong> @Model.Folio</td>
+                        <td><strong>Año: </strong>@Model.Anio</td>
+                        <td><strong>Mes: </strong>@Model.Mes</td>
+                        <td><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                        <td><strong>Estatus: </strong>@Model.Estatus </td>
+                    </tr>
+                </table>
+                <div class="row" id="objectPdf">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+@* Modal para agregar facturas la cedula *@
+<div class="modal fade" id="modal-email">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Actualizar Correo Electrónico</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row col-lg-12 mt-2">
+                    <div class=" col-lg-12">
+                        <label for="">Correo Electrónico:</label>
+                        <input class="form-control" type="email" id="user_email" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="update_email">Actualizar Correo</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@* FIN del Modal para agregar facturas la cedula *@
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            $('[data-toggle="tooltip"]').tooltip();
+
+            /*Ver archivo en modal*/
+            $(document).on('click', '.view_file', function () {
+                let nombre = $(this).data('file');
+                let tipo = $(this).data('tipo');
+                let data = "<object width='100%' height='710px' data='/view/entregable/" + model.folio + "/" + nombre+"'></object>";
+                $('#titlePDF').text("PDF - \"" + tipo + "\"");
+                $('#objectPdf').html(data);
+                $('#show_pdf').modal('show');
+            });
+            /*FIN de ver archivo en modal*/
+
+            /*Autorizar Cedula*/
+            $(document).on('click', '.success_cedula', function () {
+                if (model.usuarios.correo_electronico == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Servicio de Transporte de Personal',
+                        'text': 'No se puede "Aceptar" la cédula ya que aún no se registra un correo electrónico para notificarle al usuario.'
+                    });
+                } else {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Transporte de Personal',
+                        'html': '¿Esta seguro de que desea <b>Aceptar la cédula con el folio: ' + model.folio + ' ?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, aceptar cédula',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            Swal.fire({
+                                icon: 'info',
+                                'title': 'Servicio de Transporte de Personal',
+                                text: 'Por favor captura el motivo por el cual Autorizas la cédula.',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                cancelButtonText: 'Cancelar',
+                                confirmButtonText: 'Autorizar',
+                                input: 'textarea',
+                                inputPlaceholder: 'Escribe los comentarios correspondientes'
+                            }).then(send => {
+                                if (send.value.length > 0) {
+                                    axios.post('/transporte/historialTransporte', {
+                                        ServicioId: model.servicioId,
+                                        CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                                        Estatus: "Autorizada", Comentarios: send.value
+                                    }).then(hist => {
+                                        if (hist.status == 200) {
+                                            axios.post('/transporte/aprovRechCed', { Id: model.id, Estatus: "Autorizada" }).then(response => {
+                                                if (response.status == 200) {
+                                                    Swal.fire({
+                                                        icon: "info",
+                                                        allowOutsideClick: false,
+                                                        'title': 'Servicio de Transporte de Personal',
+                                                        html: "Autorizando la cédula, por favor espere."
+                                                    });
+                                                    Swal.showLoading();
+                                                    axios.get('/cedula/notificacionCedula/' + model.id).then(notificacion => {
+                                                        if (notificacion.status == 200) {
+                                                            Swal.hideLoading();
+                                                            Swal.fire({
+                                                                icon: "success",
+                                                                'title': 'Servicio de Transporte de Personal',
+                                                                html: "Se autorizó la cédula de evaluación correctamente.",
+                                                            }).then(function () {
+                                                                window.location.reload();
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }).catch(er => {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de Transporte de Personal',
+                                            'text': 'Ocurrio un error al autorizar la cédula. Contacte al Administrador de Sistema.'
+                                        });
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Fumigación y Fauna Nociva',
+                                        'text': 'Capture los comentarios solicitados indicando el motivo por el cual se autoriza la cédula.'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            /*Fin de Autorizar Cedula*/
+
+            /*Rechazar Cedula*/
+            $(document).on('click', '.failed_cedula', function () {
+                if (model.usuarios.correo_electronico == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Servicio de Transporte de Personal',
+                        'text': 'No se puede "Rechazar" la cédula ya que aún no se registra un correo electrónico para notificarle al usuario.'
+                    })
+                } else {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Transporte de Personal',
+                        'html': '¿Estas seguro de que deseas <b>Rechazar la cédula con el folio: ' + model.folio + ' ?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, rechazar cédula',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            Swal.fire({
+                                icon: 'info',
+                                'title': 'Servicio de Transporte de Personal',
+                                text: 'Por favor captura el motivo por el cual rechazas la cédula.',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                cancelButtonText: 'Cancelar',
+                                confirmButtonText: 'Rechazar',
+                                input: 'textarea',
+                                inputPlaceholder: 'Escribe los comentarios correspondientes'
+                            }).then(send => {
+                                if (send.value.length > 0) {
+                                    axios.post('/transporte/historialTransporte', {
+                                        ServicioId: model.servicioId,
+                                        CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                                        Estatus: "Rechazada", Comentarios: send.value
+                                    }).then(hist => {
+                                        if (hist.status == 200) {
+                                            axios.post('/transporte/aprovRechCed', { Id: model.id, Estatus: "Rechazada" }).then(response => {
+                                                if (response.status == 200) {
+                                                    Swal.fire({
+                                                        icon: "info",
+                                                        allowOutsideClick: false,
+                                                        'title': 'Servicio de Transporte de Personal',
+                                                        html: "Rechazando la cédula, por favor espere."
+                                                    });
+                                                    Swal.showLoading();
+                                                    axios.get('/cedula/notificacionCedula/' + model.id).then(notificacion => {
+                                                        if (notificacion.status == 200) {
+                                                            Swal.hideLoading();
+                                                            Swal.fire({
+                                                                icon: "success",
+                                                                'title': 'Servicio de Transporte de Personal',
+                                                                html: "Se rechazó la cédula de evaluación correctamente.",
+                                                            }).then(function () {
+                                                                window.location.reload();
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }).catch(er => {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de Transporte de Personal',
+                                            'text': 'Ocurrio un error al rechazar la cédula. Por favor comunicate a la ext. 2574.'
+                                        });
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Transporte de Personal',
+                                        'text': 'Es necesario capturar los comentarios indicando el motivo por el cual se rechaza la cédula.'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+            /*Fin de Rechazar Cedula*/
+
+             /*Ver Facturas*/
+                $("#btn_facturas").click(function () {
+                    axios.get('/limpieza/getFacturas/' + model.id + '/' + model.servicioId).then(table => {
+                        var facturas = table.data;
+                        for (var i = 0; i < facturas.length; i++) {
+                            table += "<tr>" +
+                                "<td>" + (i + 1) + "</td>" +
+                                "<td>" + facturas[i].tipo + "</td>" +
+                                "<td>" + facturas[i].emisor.nombre + "</td>" +
+                                "<td>" + facturas[i].timbreFiscal.uuid + "</td>" +
+                                "<td>" + (facturas[i].comprobante.serie + "" + facturas[i].comprobante.folio) + "</td>" +
+                                "<td> $" + parseFloat(facturas[i].comprobante.subTotal).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                                "<td> $" + parseFloat(facturas[i].comprobante.total).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + "</td>" +
+                                "<td style='font-size: 14px;'>" +
+                                    "<a class='view_factura' href='#' data-id='" + i + "'><i class='far fa-list text-success'></i></a>" +
+                                    "<a target='_blank' href='/facturas/download/" + facturas[i].id + "/" + facturas[i].tipo + "' class='ml-2' href='#' data-id='" + i + "'><i class='fa-solid fa-download text-danger'></i></a>" +
+                                "</td>" +
+                                "</tr>";
+                        }
+                        $("#listaFacturas").html(table);
+                        if (facturas.length == 0) {
+                            $("#listado_facturas").hide();
+                        } else {
+                            $("#listado_facturas").show();
+                        }
+                    });
+                    $('#modal-ver-facturas').modal('show');
+                });
+
+                $(document).on('click','.view_factura',function () {
+                        var id = $(this).data('id');
+                        var divTbl = "";
+                        $('#modal-ver-facturas').modal('hide');
+                        axios.get('/limpieza/getFacturas/' + model.id + '/' + 10).then(table => {
+                            $("#factura_serie").text("Detalle de la Factura: " + table.data[id].comprobante.serie + table.data[id].comprobante.folio);
+                            var conceptos = table.data[id].concepto;
+
+                            for (var i = 0; i < conceptos.length; i++) {
+                                divTbl += '<div class="row col-lg-12 mt-1">' +
+                                    '<table class="table table-borderless">' +
+                                    '<tr>' +
+                                        '<td colspan="4"><strong>Concepto: </strong>' + conceptos[i].descripcion + '</td>'+
+                                    '</tr>'+
+                                    '<tr>' +
+                                    '    <td data-toggle="tooltip" title="Número de elementos que prestaron el servicio en el mes" data-placement="top" id="concepto_cantidad"><strong>Cantidad: </strong>' + table.data[id].concepto[i].cantidad + '</td>' +
+                                    '    <td data-toggle="tooltip" title="Clave del Producto o Servicio Facturado" data-placement="top" id="concepto_cveProduc"><strong>Clave del Producto: </strong>' + table.data[id].concepto[i].claveProdServ + '</td>' +
+                                    '    <td data-toggle="tooltip" title="Clave de la Medida en Base al Servicio" data-placement="top" id="concepto_medida"><strong>Clave de Medida: </strong>' + table.data[id].concepto[i].claveUnidad + '</td>' +
+                                    '    <td data-toggle="tooltip" title="Unidad de Medida" data-placement="top" id="concepto_unidadMed"><strong>Unidad de Medida: </strong>' + table.data[id].concepto[i].unidad + '</td>' +
+                                    '    <td data-toggle="tooltip" title="Tipo de CFDI" data-placement="top" id="tipo_cfdi"><strong>Uso de CFDI: </strong>' + table.data[id].receptor.usoCFDI + '</td>' +
+                                    '    <td data-toggle="tooltip" title="Valor unitario por unidad" data-placement="top" id="concepto_unitario"><strong>Precio Unitario: </strong> $ ' + (table.data[id].concepto[i].valorUnitario).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</td>' +
+                                    '</tr>' +
+                                    '<tr>' +
+                                    '    <td data-toggle="tooltip" title="IVA del subtotal del 16%" data-placement="top" id="concepto_iva"><strong>IVA: </strong> $ ' + (table.data[id].traslado.importe).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</td>' +
+                                    '    <td data-toggle="tooltip" title="Importe total de la facturación" data-placement="top" id="concepto_total"><strong>Total: </strong> $ ' + (table.data[id].concepto[i].importe).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + '</td>' +
+                                    '    <td colspan="3"></td>' +
+                                    '</tr>' +
+                                    '</table>' +
+                                    '</div>';
+                            }
+                            $("#detalle_conceptos").html(divTbl);
+                            $('#modal-ver-conceptos').modal('show');
+                        });
+                   });
+            /*Fin de Ver Facturas*/
+
+            /************** Actualizar Correo Electrónico **********************/
+            $("#btn_correo").click(function () {
+                    var email = model.usuarios.correo_electronico;
+                    $("#user_email").val(email);
+                    $("#modal-email").modal("show");
+                });
+
+                $("#update_email").click(function () {
+                    var email = $("#user_email").val();
+                    var user = model.usuarios.id;
+
+                    if(email.indexOf('@String.Format("@")', 0) == -1 || email.indexOf('.', 0) == -1) {
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Actualización de Correo Electrónico',
+                            'html': 'El correo electrónico capturado no es válido. Favor de revisar.'
+                        });
+                        return false;
+                    }
+
+                    axios.post('/usuarios/actualizaEmail', { Id: user, correo_electronico: email }).then(res => {
+                        Swal.fire({
+                            'icon': 'success',
+                            'title': 'Actualización de Correo Electrónico',
+                            'html': 'Se actualizó la dirección de correo electrónico del usuario.'
+                        }).then(function () {
+                            window.location.reload();
+                        });
+                    });
+
+                });
+            /************ Fin Actualizar Correo Electrónico ********************/
+
+        });
+    </script>
+}
+
+

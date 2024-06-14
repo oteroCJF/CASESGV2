@@ -1,0 +1,97 @@
+﻿@model CedulasEvaluacion.Entities.MLecturasAgua.ModelsLectura;
+@{
+    ViewData["Title"] = "Lecturas del Inmueble " + Model.inmueble.Nombre;
+    var i = 0;
+}
+
+
+<div class="container-fluid">
+    <div class="row d-flex justify-content-end">
+        <a href="/lectura/index?Anio=@Model.Anio" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al Listado de Cédulas de Fumigación" data-placement="top">
+            <i class="fal fa-arrow-left"></i>
+        </a>
+        <a href="/lectura/inmueble/@Model.inmueble.Id/new?Anio=@Model.Anio" class='btn-sm btn-primary float-right mr-2 mb-3' data-toggle="tooltip" title="Nueva Lectura" data-placement="top">
+            <i class="fal fa-plus"></i>
+        </a>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <table class="table table-responsive-xl" id="dt_inmuebles" width="100%">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Estatus</th>
+                        <th>Inmueble</th>
+                        <th>Año</th>
+                        <th>Mes</th>
+                        <th>Cuenta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.lectura)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td class="@(item.Fondo.Replace("bg","text"))" style="font-weight: bold">@item.Estatus</td>
+                            <td>@item.inmueble.Nombre</td>
+                            <td>@item.Anio</td>
+                            <td>@item.Mes</td>
+                            <td>@item.Cuenta</td>
+                            <td>
+                                <a href="/lectura/inmueble/@Model.inmueble.Id/revisar/@item.Id" class="text-success">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if(item.Estatus.Equals("En Proceso") || item.Estatus.Equals("Rechazada"))
+                                { 
+                                    <a href="/lectura/inmueble/@Model.inmueble.Id/actualizar/@item.Id" class="text-primary ml-2">
+                                        <i class="fas fa-pencil"></i>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#dt_inmuebles").DataTable({
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Lecturas Capturadas del Inmueble '+model.inmueble.nombre,
+                        className: "bg-cjf mr-1",
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Lecturas Capturadas del Inmueble ' + model.inmueble.nombre,
+                        className: "bg-cjf mr-1"
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Lecturas Capturadas del Inmueble ' + model.inmueble.nombre,
+                        text: 'Imprimir',
+                        className: "bg-cjf mr-1"
+                    }],
+                autoWidth: false,
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+            });
+        });
+    </script>
+}

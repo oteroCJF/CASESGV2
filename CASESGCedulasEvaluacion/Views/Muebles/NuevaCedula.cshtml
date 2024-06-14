@@ -1,0 +1,622 @@
+﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@using Newtonsoft.Json
+
+@{
+    ViewData["title"] = "Servicio de Transportación de Bienes Muebles";
+}
+<div class="container-fluid" id="limpieza">
+    <div class="card">
+        <div class="card-header bg-joke text-white">
+            <h5 class="mt-2">Generar Cédula</h5>
+        </div>
+        <div class="card-body">
+            <div class="row col-lg-12">
+                <div class="col-lg-3">
+                    <label for="">Año:</label>
+                    <select class="form-control" asp-for="@Model.Anio" id="select_anio" required>
+                        <option value="">Seleccione el Año</option>
+                        @for (var i = 2022; i <= DateTime.Now.Year; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3" id="divMes">
+                    <label for="">Mes:</label>
+                    <select class="form-control" id="select_mes"></select>
+                </div>
+                <div class="col-lg-3" id="divOrigen">
+                    <label for="">Origen:</label>
+                    <select class="form-control" id="sl_origen" required>
+                        <option value="">Seleccione el Origen</option>
+                        <option value="1">Inmueble</option>
+                        <option value="2">Otra Dirección</option>
+                    </select>
+                </div>
+                <div class="col-lg-3" id="divDestino">
+                    <label for="">Destino:</label>
+                    <select class="form-control" id="sl_destino" required>
+                        <option value="">Seleccione el Destino</option>
+                        <option value="1">Inmueble</option>
+                        <option value="2">Otra Dirección</option>
+                    </select>
+                </div>
+                <div class="form-row col-lg-12 mt-3">
+                    <div class="col-lg-4" id="divInmuebleOrigen">
+                        <label>Inmueble Origen:</label>
+                        <div class="select2-purple">
+                            <select class="form-control select2bs4" data-dropdown-css-class="select2-purple" id="select_inmuebleOrigen">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-8" id="divOrigenAlterno">
+                        <div class="form-row">
+                            <div class="col-md-5 mb-3">
+                                <label>Origen Alterno: </label>
+                                <div class="select2-purple">
+                                    <select class="form-control select2bs4" data-dropdown-css-class="select2-purple" id="select_direccionO">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 mt-2">
+                                <div class="form-check-inline i-checks mt-4 ml-4">
+                                    <input class="nuevo_origen" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                           data-onstyle="success" data-offstyle="danger" data-style="ios" value="1">
+                                    <strong class="text-black ml-2">Nuevo Origen</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12" id="divCapturaOrigen">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <div class="col-md-3 mb-3">
+                                <label>C.P., Calle y Número:</label>
+                                <input class="form-control" type="text" id="nombreOrigen" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label>Dirección Completa:</label>
+                                <input class="form-control" type="text" id="direccionOrigen" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>Estado:</label>
+                                <div class="select2-purple">
+                                    <select class="form-control select2bs4" id="sl_estadosOrigen"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-2">
+                    <div class="col-lg-4" id="divInmuebleDestino">
+                        <label>Inmueble Destino:</label>
+                        <div class="select2-purple">
+                            <select class="form-control select2bs4" data-dropdown-css-class="select2-purple" id="select_inmuebleDestino">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-lg-8" id="divDestinoAlterno">
+                        <div class="form-row">
+                            <div class="col-md-5 mb-3">
+                                <label>Destino Alterno: </label>
+                                <div class="select2-purple">
+                                    <select class="form-control select2bs4" data-dropdown-css-class="select2-purple" id="select_direccionD">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 mt-2">
+                                <div class="form-check-inline i-checks mt-4 ml-4">
+                                    <input class="nuevo_destino" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                           data-onstyle="success" data-offstyle="danger" data-style="ios" value="1">
+                                    <strong class="text-black ml-2">Nuevo Destino</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12" id="divCapturaDestino">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <div class="col-md-3 mb-3">
+                                <label>C.P., Calle y Número:</label>
+                                <input class="form-control" type="text" id="nombreDestino" />
+                            </div>
+                            <div class="col-lg-6 mb-3">
+                                <label>Dirección:</label>
+                                <input class="form-control" type="text" id="direccionDestino" />
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label>Estado:</label>
+                                <div class="select2-purple">
+                                    <select class="form-control select2bs4" id="sl_estadosDestino"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-3">
+                    <div class="col-lg-6  text-cjf" id="divDOrigen">
+                        
+                    </div>
+                    <div class="col-lg-6 mt-1 text-success" id="divDDestino">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                <a href="/home" class="btn btn-danger float-right ml-2">Cancelar</a>
+                <button type="submit" class="btn btn-success float-right" id="verificarPeriodo">Generar Cédula</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+        window.onload = function () {
+            var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            var facturas = new Array();
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $('[data-toggle="tooltip"]').tooltip();
+            $(".select2").select2();
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            /*Ocultamos las listas despleglables*/
+                $("#divInmuebleOrigen").css("display","none");
+                $("#divOrigen").css("display","none");
+                $("#divMes").css("display","none");
+                $("#divDestino").css("display","none");
+                $("#divOrigenAlterno").css("display","none");
+                $("#divInmuebleDestino").css("display","none");
+                $("#divDestinoAlterno").css("display","none");
+                $("#divCapturaOrigen").css("display", "none");
+                $("#divCapturaDestino").css("display", "none");
+            /*Fin Ocultamos las listas despleglables*/
+
+
+
+            /***********Llenamos el Combo de inmuebles*****************/
+                $("#select_anio").change(function () {
+                    let optionsMes = "<option value=''>Seleccione el Mes</option>";
+                    $('#select_mes').prop("disabled", false);
+                    meses.forEach(function (mes) {
+                        optionsMes += "<option value=" + mes + ">" + mes + "</option>"
+                    });
+                    $("#select_mes").html(optionsMes);
+                    $('#divMes').css("display", "block");
+
+                    if ($(this).val() == "") {
+                        $("#divInmuebleOrigen").css("display", "none");
+                        $("#divOrigen").css("display", "none");
+                        $("#divMes").css("display", "none");
+                        $("#divDestino").css("display", "none");
+                        $("#divOrigenAlterno").css("display", "none");
+                        $("#divInmuebleDestino").css("display", "none");
+                        $("#divDestinoAlterno").css("display", "none");
+                        $("#divCapturaOrigen").css("display", "none");
+                        $("#divCapturaDestino").css("display", "none");
+                        $('#select_inmuebleOrigen').val("");
+                        $('#select_inmuebleDestino').val("");
+                        $('#nombreDestino').val("");
+                        $('#direccionDestino').val("");
+                        $('#sl_estadosDestino').val("");
+                        $('#nombreOrigen').val("");
+                        $('#direccionOrigen').val("");
+                        $('#sl_estadosOrigen').val("");
+                        $("#sl_origen").val("");
+                        $("#sl_destino").val("");                        
+                    }
+                });
+
+                $("#select_mes").change(function(){
+                    $("#divOrigen").css("display", "block");
+                });
+                
+                $("#sl_origen").change(function () {
+                    if ($(this).val() == 1) {
+                        let optionsInmueble = "<option value=''>Seleccione el Inmueble</option>";
+                        $('#select_inmuebleOrigen').prop("disabled", false);
+                        axios.get('/inmuebles/getInmuebles').then(response => {
+                            response = response.data;
+                            response.forEach(function (inm) {
+                                optionsInmueble += "<option value=" + inm.id + " data-direccion='" + inm.direccion + "'" +
+                                    " data-nombre='" + inm.nombre+ "'>" + inm.nombre + "</option>"
+                            });
+                            $("#select_inmuebleOrigen").html(optionsInmueble);
+                        });
+                        $("#divInmuebleOrigen").css("display", "block");
+                        $("#divOrigenAlterno").css("display", "none");
+                        $("#divCapturaOrigen").css("display", "none");
+                        $(".nuevo_origen").parent().removeClass("btn-success");
+                        $(".nuevo_origen").parent().addClass("btn-danger off");
+                        $(".nuevo_origen").prop("checked",false);
+                        $('#nombreOrigen').val("");
+                        $('#direccionOrigen').val("");
+                        $('#sl_estadosOrigen').val("");
+                    }
+                    else
+                    {
+                        let direcciones = "<option value=''>Seleccione la Dirección</option>";
+                        $("#divDOrigen").html("");
+                        axios.get('/inmuebles/getDireccionesBM').then(response => {
+                            response = response.data;
+                            response.forEach(function (dir) {
+                                direcciones += "<option value=" + dir.id + " data-direccion='"+dir.direccion+"'>" + dir.nombre+ "</option>"
+                            });
+                            $("#select_direccionO").html(direcciones);
+                        });
+                        $("#select_inmuebleOrigen").val("");
+                        $("#select_inmuebleOrigen").html("");
+                        $("#divOrigenAlterno").css("display", "block");
+                        $("#divInmuebleOrigen").css("display", "none");
+                    }
+
+                    if ($(this).val() == "") {
+                        $("#divDestino").css("display", "none");
+                    } else {
+                        $("#divDestino").css("display", "block");
+                    }
+                });
+
+                $("#select_inmuebleOrigen").change(function () {
+                    var origen = $(this).find(':selected').attr('data-direccion');
+                    var inmueble = $(this).find(':selected').attr('data-nombre');
+                    $("#divDOrigen").html("<strong>"+$("#sl_origen").find(':selected').text()+": </strong> <p>" + inmueble +"</p>"+"<strong>Dirección de Origen: </strong> <p>"+origen+"</p>");
+                    $("#divDestino").css("display", "block");
+                });
+
+                $("#select_inmuebleDestino").change(function () {
+                    var destino = $(this).find(':selected').attr('data-direccion');
+                    var inmueble = $(this).find(':selected').attr('data-nombre');
+                    $("#divDDestino").html("<strong>" + $("#sl_destino").find(':selected').text()+": </strong> <p>" + inmueble + "</p>" + "<strong>Dirección de Destino: </strong> <p>" + destino + "</p>");
+                });
+
+                $("#select_direccionD").change(function () {
+                    var destino = $(this).find(':selected').attr('data-direccion');
+                    var inmueble = "Dirección de Destino"
+                    $("#divDDestino").html("<strong>" + inmueble + ": </strong> <p>" + $(this).find(':selected').text() +"</p>"+"<strong>Dirección de Destino: </strong> <p>"+destino+"</p>");
+                    $("#divDestino").css("display", "block");
+                });
+
+                $("#select_direccionO").change(function () {
+                    var origen = $(this).find(':selected').attr('data-direccion');
+                    var inmueble = "Dirección de Origen";
+                    $("#divDOrigen").html("<strong>" + inmueble + ": </strong> <p>" + $(this).find(':selected').text() + "</p>" + "<strong>Dirección de Origen: </strong> <p>" + origen + "</p>");
+                });
+
+                 $("#direccionOrigen").change(function () {
+                     var origen = $(this).val();
+                    var inmueble = "Dirección de Origen";
+                     $("#divDOrigen").html("<strong>" + inmueble + ": </strong> <p>" + $("#nombreOrigen").val() + "</p>" + "<strong>Dirección de Origen: </strong> <p>" + origen + "</p>");
+                });
+
+                 $("#direccionDestino").change(function () {
+                    var destino = $(this).val();
+                    var inmueble = "Dirección Destino";
+                     $("#divDDestino").html("<strong>" + inmueble + ": </strong> <p>" + $("#nombreDestino").val() + "</p>" + "<strong>Dirección de Destino: </strong> <p>" + destino + "</p>");
+                });
+
+                $(".nuevo_origen").change(function(){
+                    let estados = "<option value=''>Seleccione el Estado</option>";
+                    if ($(this).prop("checked")) {
+                        $('#select_direccionO').prop("disabled", true);
+                        $("#select_direccionO").html("");
+                        $("#select_direccionO").val("");
+                        axios.get('/inmuebles/getEstadosRM').then(response => {
+                            response = response.data;
+                            response.forEach(function (eddos) {
+                                estados += "<option value='" + eddos.estado + "'>" + eddos.estado+ "</option>"
+                            });
+                            $("#divCapturaOrigen").css("display", "block");
+                            $("#sl_estadosOrigen").html(estados);
+                        });
+                    }
+                    else
+                    {
+                        let direcciones = "<option value=''>Seleccione el Inmueble</option>";
+                        axios.get('/inmuebles/getDireccionesBM').then(response => {
+                            response = response.data;
+                            response.forEach(function (dir) {
+                                direcciones += "<option value='" + dir.id + "'>" + dir.nombre + "</option>"
+                            });
+                            $("#select_direccionO").html(direcciones);
+                        });
+                        $("#sl_estadosOrigen").val("");
+                        $("#sl_estadosOrigen").html("");
+                        $("#nombreOrigen").val("");
+                        $("#direccionOrigen").val("");
+                        $("#select_direccionO").prop("disabled", false);
+                        $("#divCapturaOrigen").css("display", "none");
+                    }
+                });
+
+                $("#sl_destino").change(function () {
+                    if ($(this).val() == 1)
+                    {
+                        let optionsInmueble = "<option value=''>Seleccione el Inmueble</option>";
+                        $('#select_inmuebleDestino').prop("disabled", false);
+                        axios.get('/inmuebles/getInmuebles').then(response => {
+                            response = response.data;
+                            response.forEach(function (inm) {
+                                optionsInmueble += "<option value=" + inm.id + " data-direccion='" + inm.direccion + "'" +
+                                    " data-nombre='" + inm.nombre + "'>" + inm.nombre + "</option>"                            });
+                            $("#select_inmuebleDestino").html(optionsInmueble);
+                        });
+                        $("#divInmuebleDestino").css("display", "block");
+                        $("#divDestinoAlterno").css("display", "none");
+                        $(".nuevo_destino").parent().removeClass("btn-success");
+                        $(".nuevo_destino").parent().addClass("btn-danger off");
+                        $(".nuevo_destino").prop("checked", false);
+                        $('#nombreDestino').val("");
+                        $('#direccionDestino').val("");
+                        $('#sl_estadosDestino').val("");
+                    }
+                    else
+                    {
+                        let direcciones = "<option value=''>Seleccione la Dirección</option>";
+                        $("#divDDestino").html("");
+                        axios.get('/inmuebles/getDireccionesBM').then(response => {
+                            response = response.data;
+                            response.forEach(function (dir) {
+                                direcciones += "<option value=" + dir.id + " data-direccion='"+dir.direccion+"'>" + dir.nombre + "</option>"
+                            });
+                            $("#select_direccionD").html(direcciones);
+                        });
+                        $("#divDestinoAlterno").css("display", "block");
+                        $("#divInmuebleDestino").css("display", "none");
+                    }
+                });
+
+                $(".nuevo_destino").change(function(){
+                    let estados = "<option value=''>Seleccione el Estado</option>";
+                    if ($(this).prop("checked")) {
+                        $('#select_direccionD').prop("disabled", true);
+                        $("#select_direccionD").html("");
+                        $("#select_direccionD").val("");
+                        axios.get('/inmuebles/getEstadosRM').then(response => {
+                            response = response.data;
+                            response.forEach(function (eddos) {
+                                estados += "<option value='" + eddos.estado + "'>" + eddos.estado+ "</option>"
+                            });
+                            $("#divCapturaDestino").css("display", "block");
+                            $("#sl_estadosDestino").html(estados);
+                        });
+                    }
+                    else
+                    {
+                        let direcciones = "<option value=''>Seleccione el Inmueble</option>";
+                        axios.get('/inmuebles/getDireccionesBM').then(response => {
+                            response = response.data;
+                            response.forEach(function (dir) {
+                                direcciones += "<option value='" + dir.id + "'>" + dir.nombre + "</option>"
+                            });
+                            $("#select_direccionD").html(direcciones);
+                        });
+                        $("#sl_estadosDestino").val("");
+                        $("#sl_estadosDestino").html("");
+                        $("#nombreDestino").val("");
+                        $("#direccionDestino").val("");
+                        $("#select_direccionD").prop("disabled", false);
+                        $("#divCapturaDestino").css("display", "none");
+                    }
+                });
+            /************ Fin del Combo de inmuebles ******************/
+
+            /********************************** Funciones Adicionales *********************************/
+                function insertaDireccion(estado, direccion, nombre) {
+                    var isContinue = 0;
+                    $.ajax({
+                        url: '/inmuebles/nuevaDireccion',
+                        type: 'POST',
+                        async: false,
+                        data: {Estado: estado,Direccion: direccion, Nombre: nombre },
+                        success: function (json) {
+                            isContinue = json;
+                        },
+                    });
+                    return isContinue;
+                }
+
+            /********************************** FIN Funciones Asincronas*********************************/
+
+            /**************** Validación/Guardado al generar el folio ******************/
+            $('#verificarPeriodo').click(function (event) {
+                event.preventDefault();
+                var isContinue = validaFormulario();
+                var inmuebleOrigen = 0;
+                var inmuebleDestino = 0;
+                var anio = $('#select_anio').val();
+                var mes = $('#select_mes').val();
+
+                var origen = $("#sl_origen").val();
+                var destino = $("#sl_destino").val();
+
+                var nOrigen = $(".nuevo_origen").prop("checked");
+                var nDestino = $(".nuevo_destino").prop("checked");
+
+                var nombreDestino = $('#nombreDestino').val();
+                var direccionDestino = $('#direccionDestino').val();
+                var estadosD = $('#sl_estadosDestino').val();
+
+                var nombreOrigen = $('#nombreOrigen').val();
+                var direccionOrigen = $('#direccionOrigen').val();
+                var estadosO = $('#sl_estadosOrigen').val();
+
+                if (isContinue == true) {
+
+                    /*Validacion de estados*/
+                    if (nOrigen == true && nDestino == true) {
+                        //validamos que en el origen sea CDMX
+                        if (estadosO != "Ciudad de México" && estadosD != "Ciudad de México") {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Bienes Muebles',
+                                'html': 'El estado de origen o destino de la cédula debe de ser <b>Ciudad de México</b>.'
+                            });
+                            return false;
+                        }
+                    }
+
+                    if (origen == 1) {
+                        inmuebleOrigen = $('#select_inmuebleOrigen').val()
+                    } else if (nOrigen == true) {
+                        inmuebleOrigen = insertaDireccion(estadosO, direccionOrigen, nombreOrigen);
+                    } else {
+                        inmuebleOrigen = $("#select_direccionO").val();
+                    }
+
+                    if (destino == 1) {
+                        inmuebleDestino = $('#select_inmuebleDestino').val()
+                    } else if (nDestino != "") {
+                        inmuebleDestino = insertaDireccion(estadosD, direccionDestino, nombreDestino);
+                    } else {
+                        inmuebleDestino = $("#select_direccionD").val();
+                    }
+                    
+                    axios.post('/muebles/new', {
+                        InmuebleId: parseInt(inmuebleOrigen), InmuebleDestinoId: parseInt(inmuebleDestino), Anio: parseInt(anio), Mes: mes, ServicioId: parseInt(model.servicioId)
+                    }).then(res => {
+                        Swal.fire({
+                            'icon': 'success',
+                            'title': 'Servicio de Bienes Muebles',
+                            'text': 'La cédula del servicio de bienes muebles fue generada de manera correcta.'
+                        }).then(function () {
+                            window.location.href = '/muebles/evaluacion/' + res.data;
+                        });
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Bienes Muebles',
+                            'text': 'Error al generar la cédula del servicio de bienes muebles'
+                        });
+                    });
+                }
+            });
+
+            function validaFormulario() {
+                var anio = $('#select_anio').val();
+
+                var origen = $("#sl_origen").val();
+                var destino = $("#sl_destino").val();
+
+                var inmuebleOrigen = $('#select_inmuebleOrigen').val();
+                var inmuebleDestino = $('#select_inmuebleDestino').val();
+
+                var oAlterno = $('#select_direccionO').val();
+                var dAlterno = $('#select_direccionD').val();
+
+                var nuevoO = $('.nuevo_origen').prop("checked");
+                var nuevoD = $('.nuevo_destino').prop("checked");
+
+                var nombreDestino = $('#nombreDestino').val();
+                var direccionDestino = $('#direccionDestino').val();
+                var estadosD = $('#sl_estadosDestino').val();
+
+                var nombreOrigen = $('#nombreOrigen').val();
+                var direccionOrigen = $('#direccionOrigen').val();
+                var estadosO = $('#sl_estadosOrigen').val();
+
+
+                var mes = $('#select_mes').val();
+
+                if (anio == "") {
+                    Swal.fire({
+                        'icon': "error",
+                        'title': 'Servicio de Bienes Muebles',
+                        'html': 'Por favor seleccione el año correspondiente.'
+
+                    });
+
+                    return false;
+                }
+
+                if (mes == "") {
+                    Swal.fire({
+                        'icon': "error",
+                        'title': 'Servicio de Transportación de Bienes',
+                        'html': 'Por favor seleccione el mes correspondiente.'
+                    });
+
+                    return false;
+                }
+
+                if ((inmuebleOrigen == null && origen == 1) || (inmuebleOrigen == "" && origen == 1))
+                {
+                    Swal.fire({
+                        'icon': "error",
+                        'title': 'Servicio de Bienes Muebles',
+                        'html': 'Por favor seleccione el inmueble válido para poder generar la cédula.'
+                    });
+
+                    return false;
+                }
+                else if ((origen != 1 && oAlterno == null && nuevoO == false) || (origen != 1 && oAlterno == "" && nuevoO == false))
+                {
+                    Swal.fire({
+                        'icon': "error",
+                        'title': 'Servicio de Bienes Muebles',
+                        'html': 'Por favor seleccione o capture una dirección de origen válida para poder generar la cédula.'
+                    });
+
+                    return false;
+                }
+                else if (origen != 1 && nuevoO == true) {
+                    if (nombreOrigen == "" || direccionOrigen == "" || estadosO == "") {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Servicio de Bienes Muebles',
+                            'html': 'Por favor verifique que lleno todos los campos para la nueva dirección de origen.'
+                        });
+
+                        return false;
+                    }
+                }
+
+                if ((inmuebleDestino == null && destino == 1) || (inmuebleDestino == "" && destino == 1)) {
+                    Swal.fire({
+                        'icon': "error",
+                        'title': 'Servicio de Bienes Muebles',
+                        'html': 'Por favor seleccione el inmueble válido para poder generar la cédula.'
+                    });
+
+                    return false;
+                }
+                else if ((destino != 1 && dAlterno == null && nuevoD == false) || (destino != 1 && dAlterno == "" && nuevoD == false)) {
+                    Swal.fire({
+                        'icon': "error",
+                        'title': 'Servicio de Bienes Muebles',
+                        'html': 'Por favor seleccione o capture una dirección de destino válida para poder generar la cédula.'
+                    });
+
+                    return false;
+                }
+                else if (destino != 1 && nuevoD == true) {
+                    if (nombreDestino == "" || direccionDestino == "" || estadosD == "") {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Servicio de Bienes Muebles',
+                            'html': 'Por favor verifique que lleno todos los campos para la nueva dirección de destino.'
+                        });
+
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+
+
+            /*************** Fin de Validación/Guardado al generar el folio ************/
+
+        }
+    </script>
+}
+

@@ -1,0 +1,1085 @@
+﻿@* Incidencias Celular *@
+@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@{
+    ViewData["Title"] = "Requerimientos en la Cédula de Telefonía Celular e Internet Móvil con folio: " + Model.Folio;
+}
+<div class="container-fluid" id="limpieza">
+    <div class="row float-right">
+        <a href="/telCelular/evaluacion/@Model.Id@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar a la evaluación" data-placement="top">
+            <i class="fal fa-arrow-to-left"></i>
+        </a>
+        <a href="#" class='btn-sm btn-primary float-right mr-2 mb-3' id="btn_add" data-toggle="tooltip" title="Capturar Incidencia" data-placement="top">
+            <i class="fal fa-plus"></i>
+        </a>
+    </div>
+    <div class="row col-lg-12">
+        <div class="row ">
+            <div class="col-lg-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#altaEquipo" role="tab" aria-controls="home" aria-selected="true">Alta con Equipo</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#alta" role="tab" aria-controls="profile" aria-selected="false">Alta sin Equipo</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#baja" role="tab" aria-controls="contact" aria-selected="false">Baja de Servicios</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#reactivacion" role="tab" aria-controls="contact" aria-selected="false">Reactivación por Robo/Extravío</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#suspension" role="tab" aria-controls="contact" aria-selected="false">Suspensión por Robo/Extravío</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#perfil" role="tab" aria-controls="contact" aria-selected="false">Cambio de Perfil</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#sim" role="tab" aria-controls="contact" aria-selected="false">Switcheo de SIM Card</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#cambio" role="tab" aria-controls="contact" aria-selected="false">Cambio de Número o Región</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#vozDatos" role="tab" aria-controls="contact" aria-selected="false">Voz/Datos</a>
+                    </li>
+                    @if (Model.Mes.Equals("Enero") || Model.Mes.Equals("Febrero") || Model.Mes.Equals("Marzo"))
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#diagnostico" role="tab" aria-controls="contact" aria-selected="false">Diagnóstico de Equipo</a>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#reparacion" role="tab" aria-controls="contact" aria-selected="false">Reparación de Equipo</a>
+                        </li>
+                    }
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    @* Alta/Equipo *@
+                    <div class="tab-pane fade mt-2 ml-3 show active" id="altaEquipo" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Requerimiento Alta con Equipo</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ var i = 0;}
+                                        @foreach (var p1 in Model.incidencias.celular)
+                                        {
+                                            if (p1.Tipo == "Alta_Equipo")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Alta/Equipo</td>
+                                                    <td>@p1.perfilesCelular.Nombre</td>
+                                                    <td>@p1.Linea</td>
+                                                    <td>@p1.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p1.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p1.HorasAtencion</td>
+                                                    <td>@p1.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p1.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p1.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")" data-id="@p1.Id"
+                                                           data-cate="@p1.Tipo" data-linea="@p1.Linea" data-perfil="@p1.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p1.Id" data-cate="@p1.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Alta/Equipo*@
+                    @* Alta sin equipo*@
+                    <div class="tab-pane fade mt-2 ml-3" id="alta" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Alta de Servicio sin Equipo</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "Alta")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>@p2.Tipo</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Alta sin Equipo*@
+                    @* Baja *@
+                    <div class="tab-pane fade mt-2 ml-3" id="baja" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Baja de Servicios</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "Baja")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Baja de Servicios</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Baja *@
+                    @* Reactivacion *@
+                    <div class="tab-pane fade mt-2 ml-3" id="reactivacion" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Reactivación por Robo/Extravío</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "Reactivacion")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Reactivación por Robo/Extravío</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Reactivacion *@
+                    @* Suspension *@
+                    <div class="tab-pane fade mt-2 ml-3" id="suspension" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Suspensión por Robo/Extravío</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "Suspension")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Suspensión por Robo/Extravío</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Suspension *@
+                    @* Perfil *@
+                    <div class="tab-pane fade mt-2 ml-3" id="perfil" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Cambio de Perfil</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "Perfil")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Cambio de Perfil</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Perfil *@
+                    @* SIM *@
+                    <div class="tab-pane fade mt-2 ml-3" id="sim" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Switcheo de SIM Card</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "SIM")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Switcheo de SIM Card</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de SIM *@
+                    @* Cambio de Número o Región *@
+                    <div class="tab-pane fade mt-2 ml-3" id="cambio" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Cambio de Número o Región</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "CambioNumeroRegion")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Cambio de Número o Región</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de Cambio de Número o Región *@
+                    @* VozDatos *@
+                    <div class="tab-pane fade mt-2 ml-3" id="vozDatos" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <h4 class="mt-2 mb-2">Solicitud de Servicios de Voz/Datos</h4>
+                            <div class="col-lg-12 mt-3">
+                                <table class="table display" style="width:101%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Perfil</th>
+                                            <th>Línea</th>
+                                            <th>Fecha y Hora de Solicitud</th>
+                                            <th>Fecha y Hora de Atención</th>
+                                            <th>Horas de Atención</th>
+                                            <th>Horas de Retraso</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ i = 0;}
+                                        @foreach (var p2 in Model.incidencias.celular)
+                                        {
+                                            if (p2.Tipo == "VozDatos")
+                                            {
+                                                i = i + 1;
+                                                <tr>
+                                                    <td>@i</td>
+                                                    <td>Solicitud de Servicios de Voz/Datos</td>
+                                                    <td>@p2.perfilesCelular.Nombre</td>
+                                                    <td>@p2.Linea</td>
+                                                    <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@p2.HorasAtencion</td>
+                                                    <td>@p2.HorasRetraso</td>
+                                                    <td>
+                                                        <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                           data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                        <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de VozDatos *@
+                    @if (Model.Mes.Equals("Enero") || Model.Mes.Equals("Febrero") || Model.Mes.Equals("Marzo"))
+                    {
+                        @* Diagnostico *@
+                        <div class="tab-pane fade mt-2 ml-3" id="diagnostico" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="row">
+                                <h4 class="mt-2 mb-2">Diagnóstico de Equipo</h4>
+                                <div class="col-lg-12 mt-3">
+                                    <table class="table display" style="width:101%">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tipo</th>
+                                                <th>Perfil</th>
+                                                <th>Linea</th>
+                                                <th>Fecha y Hora de Solicitud</th>
+                                                <th>Fecha y Hora de Atención</th>
+                                                <th>Días de Atención</th>
+                                                <th>Dias de Retraso</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ i = 0;}
+                                            @foreach (var p2 in Model.incidencias.celular)
+                                            {
+                                                if (p2.Tipo == "Diagnostico")
+                                                {
+                                                    i = i + 1;
+                                                    <tr>
+                                                        <td>@i</td>
+                                                        <td>Diagnóstico de Equipo</td>
+                                                        <td>@p2.perfilesCelular.Nombre</td>
+                                                        <td>@p2.Linea</td>
+                                                        <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                        <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                        <td>@p2.DiasAtencion</td>
+                                                        <td>@p2.DiasRetraso</td>
+                                                        <td>
+                                                            <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                               data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                                <i class="fas fa-pencil text-primary mr-2"></i>
+                                                            </a>
+                                                            <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @* Fin de Diagnostico *@
+                        @* Reparación *@
+                        <div class="tab-pane fade mt-2 ml-3" id="reparacion" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="row">
+                                <h4 class="mt-2 mb-2">Reparación de Equipo</h4>
+                                <div class="col-lg-12 mt-3">
+                                    <table class="table display" style="width:101%">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tipo</th>
+                                                <th>Perfil</th>
+                                                <th>Línea</th>
+                                                <th>Fecha y Hora de Solicitud</th>
+                                                <th>Fecha y Hora de Atención</th>
+                                                <th>Días de Atención</th>
+                                                <th>Días de Retraso</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{ i = 0;}
+                                            @foreach (var p2 in Model.incidencias.celular)
+                                            {
+                                                if (p2.Tipo == "Reparacion")
+                                                {
+                                                    i = i + 1;
+                                                    <tr>
+                                                        <td>@i</td>
+                                                        <td>Reparación de Equipo</td>
+                                                        <td>@p2.perfilesCelular.Nombre</td>
+                                                        <td>@p2.Linea</td>
+                                                        <td>@p2.FechaSolicitud.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                        <td>@p2.FechaAtencion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                        <td>@p2.DiasAtencion</td>
+                                                        <td>@p2.DiasRetraso</td>
+                                                        <td>
+                                                            <a href="#" class="update_incidencia" data-fechas="@p2.FechaSolicitud.ToString("yyyy-MM-ddTHH:mm")" data-fechaa="@p2.FechaAtencion.ToString("yyyy-MM-ddTHH:mm")"
+                                                               data-id="@p2.Id" data-cate="@p2.Tipo" data-linea="@p2.Linea" data-perfil="@p2.PerfilCelularId">
+                                                                <i class="fas fa-pencil text-primary mr-2"></i>
+                                                            </a>
+                                                            <a href="#" class="delete_incidencia" data-id="@p2.Id" data-cate="@p2.Tipo"><i class="fas fa-times text-danger"></i></a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        @* Fin de Reparación *@
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_incidenciasExcel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar incidencias desde "Excel"</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Categoria:</label>
+                        <select class="form-control" id="tipo_categoria">
+                            <option value="">Seleccione la Categoría</option>
+                            <option value="Recoleccion">Recolección de Guías</option>
+                            <option value="Entrega">Guías Entregadas</option>
+                            <option value="Acuses">Acuses Entregados</option>
+                            <option value="Mal Estado">Guías en Mal Estado</option>
+                            <option value="Extraviadas">Extraviadas</option>
+                        </select>
+                        <div class="col-sm-12" id="error_tipoCate">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la categoría
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo de Excel: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input incidencias_excel" id="fileExcel" accept=".xlsx,.xls">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor el archivo de excel correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="addExcel">Adjuntar Excel</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la captura de Incidencias *@
+<div class="modal fade" id="modal-incidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar Requerimiento</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="id_incidencias" />
+                            <div class="form-group col-lg-4">
+                                <label for="tipoIncidencia">Categoria:</label>
+                                <select class="form-control" id="categoria">
+                                    <option value="">Seleccione la Categoría</option>
+                                    <option value="Alta_Equipo">Alta con Equipo</option>
+                                    <option value="Alta">Alta Sin Equipo</option>
+                                    <option value="Baja">Baja de Servicios</option>
+                                    <option value="Reactivacion">Reactivación de Servicio por Robo/Extravio</option>
+                                    <option value="Suspension">Suspensión de Servicio por Robo/Extravio</option>
+                                    <option value="Perfil">Cambio de Perfil</option>
+                                    <option value="SIM">Switcheo de SIM Card</option>
+                                    <option value="CambioNumeroRegion">Cambio de Número o Región</option>
+                                    <option value="VozDatos">Solicitud de Servicios de Voz/Datos</option>
+                                    <option value="Diagnostico">Diagnostico de Equipo</option>
+                                    <option value="Reparacion">Reparación de Equipo</option>
+                                </select>
+                                <div class="col-sm-12" id="error_tipoCategoria">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor seleccione la categoría
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4" id="divTipoPerfil">
+                                <label for="tipoIncidencia">Tipo Perfil:</label>
+                                <select class="form-control" id="tipoPerfil"></select>
+                                <div class="col-sm-12" id="error_tipoPerfil">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor seleccione el Perfil
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-4" id="div_fechaSolicitud">
+                        <label for="fechaSolicitud">Fecha Solicitud: </label>
+                        <input type="datetime-local" name="meeting-time" id="fecha_solicitud" class="form-control">
+                        <div class="col-sm-12" id="error_fechaSolicitud">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture la Fecha de Solicitud
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4" id="div_fechaAtencion">
+                        <label for="fechaAtencion">Fecha Atención: </label>
+                        <input type="datetime-local" name="meeting-time" id="fecha_atencion" class="form-control">
+                        <div class="col-sm-12" id="error_fechaAtencion">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture la Fecha de Atención
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-4" id="div_linea">
+                        <label for="lineaTelefonica">Línea:</label>
+                        <input type="text" class="form-control" id="linea_telefonica" maxlength="10" />
+                        <div class="col-sm-12" id="error_linea">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture la Línea Telefónica
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="guardaIncidencia">Guardar Requerimiento</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@section Scripts{
+    <script>
+        window.onload = function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var tiposIncidencias = ["Alta_Equipo", "Alta", "Baja", "Reactivacion", "Suspension", "Perfil", "SIM", "CambioNumeroRegion", "VozDatos", "Diagnostico", "Reparacion"];
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            /*DataTables de las Incidencias*/
+
+            $('.display').DataTable({
+                paging: true,
+                responsive: true,
+                bLengthChange: false,
+                pageLength: 5,
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+            });
+
+            /*Mensajes de Error*/
+                $('#error_tipoCategoria').css('display', 'none');
+                $('#error_tipoPerfil').css('display', 'none');
+                $('#error_fechaSolicitud').css('display', 'none');
+                $('#error_fechaAtencion').css('display', 'none');
+                $('#error_linea').css('display', 'none');
+            /*Fin de Mensajes de Error*/
+
+            /*Ocultamos los Elementos*/
+                $('#div_fechaSolicitud').css('display', 'none');
+                $('#div_fechaSolicitud').css('display', 'none');
+                $('#divTipoPerfil').css('display', 'none');
+                $('#div_linea').css('display', 'none');
+            /*Fin de Ocultar los Elementos*/
+
+            /*Campos a Llenar al seleccionar la categoria de incidencias*/
+                $("#categoria").change(function(){
+                    $("#id_incidencia").val("");
+                    $("#fecha_solicitud").val("");
+                    $("#fecha_atencion").val("");
+                    $("#linea_telefonica").val("");
+
+                    $('#div_fechaSolicitud').css('display', 'block');
+                    $('#div_fechaAtencion').css('display', 'block');
+                    $('#divTipoPerfil').css('display', 'block');
+                    $('#div_linea').css('display', 'block');
+                });
+            /*FIN de Campos a Llenar al seleccionar la categoria de incidencias*/
+
+
+            /********************** Capturar Incidencias ***********************/
+                var opTipo = "<option>Seleccione un Perfil</option>";
+                    axios.get('/perfilesCelular/getPerfilesCelular').then(response => {
+                        response = response.data;
+                        for (let i = 0; i < response.length;i++) {
+                            opTipo += '<option value="'+response[i].id+'">'+response[i].nombre+'</option>';
+                        }
+                        $("#tipoPerfil").html(opTipo);
+                    });
+
+                $("#btn_add").click(function () {
+                    $('#div_fechaSolicitud').css('display', 'none');
+                    $('#div_fechaAtencion').css('display', 'none');
+                    $('#divTipoPerfil').css('display', 'none');
+                    $('#div_linea').css('display', 'none');
+                    $("#modal-incidencias").modal('show');
+                    $("#categoria").val("");
+                    $("#id_incidencias").val("");
+                    $("#fecha_solicitud").val("");
+                    $("#fecha_atencion").val("");
+                    $("#linea_telefonica").val("");
+
+                    $("#categoria").prop('disabled', false);
+                });
+
+                function validaCampos(){
+                    var categoria = $("#categoria").val();
+
+                    if (categoria != "") {
+                        if ($("#fecha_solicitud").val() != "" && $("#fecha_atencion").val() != "" && $("#linea_telefonica").val() != "" &&
+                            $("#tipoPerfil").val() != "") {
+                            return true;
+                        }
+
+                        if ($("#fecha_solicitud").val() == "") {
+                            $('#fecha_solicitud').addClass('is-invalid');
+                            $('#error_fechaSolicitud').css('display', 'block');
+                        }
+
+                        if ($("#fecha_atencion").val() == "") {
+                            $('#fecha_atencion').addClass('is-invalid');
+                            $('#error_fechaAtencion').css('display', 'block');
+                        }
+
+                        if ($("#linea_telefonica").val() == "") {
+                            $('#linea_telefonica').addClass('is-invalid');
+                            $('#error_linea').css('display', 'block');
+                        }
+
+                        if ($("#tipoPerfil").val() == "") {
+                            $('#tipoPerfil').addClass('is-invalid');
+                            $('#error_tipoPerfil').css('display', 'block');
+                            $('#divTipoPerfil').css('display', 'block');
+                        }
+
+                    } else {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Telefonía Celular e Internet Móvil',
+                            'html': 'Por favor seleccione el Perfil Controlado'
+                        });
+                    }
+
+                    return false;
+            }
+
+                $("#guardaIncidencia").click(function () {
+                    var id = $("#id_incidencias").val();
+                    var categoria = $("#categoria").val();
+                    var fechaSolicitud = $("#fecha_solicitud").val();
+                    var fechaAtencion = $("#fecha_atencion").val();
+                    var perfil = $("#tipoPerfil").val();
+                    var linea = $("#linea_telefonica").val() + "";
+                    var pregunta = ($.inArray(categoria, tiposIncidencias)+1);
+
+                    if (categoria == "") {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Telefonía Célular',
+                            'html': 'Seleccione una categoria para la captura de incidencias'
+                        });
+                        return false;
+                    }
+
+                    if (fechaSolicitud > fechaAtencion) {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Telefonía Célular',
+                            'html': 'La <strong>Fecha de Atención</strong> no puede ser menor a la <strong>Fecha de Solicitud</strong>. Favor de Revisar'
+                        });
+                        return false;
+                    }
+
+                    if (id == "") {
+                        id = 0;
+                    } else {
+                        id = parseInt(id);
+                    }
+
+                    if (validaCampos()) {
+                        if (id != "") {
+                            axios.post('/telCelular/actualiza/incidencia', {
+                                Id: id,
+                                CedulaCelularId: parseInt(model.id), Tipo: categoria, FechaSolicitud: fechaSolicitud, Pregunta: parseInt(pregunta),
+                                FechaAtencion: fechaAtencion, Linea: linea, PerfilCelularId: parseInt(perfil)
+                            }).then(res => {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': "Servicio de Telefonía Célular",
+                                    'html': 'La incidencia fue actualizada de forma correcta.'
+                                }).then(function () {
+                                    window.location.reload();
+                                });
+                            }).catch(e => {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': "Servicio de Telefonía Célular",
+                                    'html': 'La incidencia no fue actualizada de forma correcta.'
+                                });
+                            });
+                        } else {
+                            axios.post('/telCelular/inserta/incidencia', {
+                                CedulaCelularId: parseInt(model.id), Tipo: categoria, FechaSolicitud: fechaSolicitud, Pregunta: parseInt(pregunta),
+                                FechaAtencion: fechaAtencion, Linea: linea, PerfilCelularId: parseInt(perfil)
+                            }).then(res => {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': "Servicio de Telefonía Célular",
+                                    'html': 'La incidencia fue agregada de forma correcta.'
+                                }).then(function () {
+                                    window.location.reload();
+                                });
+                            }).catch(e => {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': "Servicio de Telefonía Célular",
+                                    'html': 'La incidencia no fue agregada de forma correcta.'
+                                });
+                            });
+                        }
+                    }
+
+                });
+
+                $(".update_incidencia").click(function(){
+                    var id = $(this).data("id");
+                    var categoria = $(this).data("cate");
+                    var perfil = $(this).data("perfil");
+                    var fechaSolicitud = $(this).data("fechas");
+                    var fechaAtencion = $(this).data("fechaa");
+                    var linea = $(this).data("linea");
+
+                    $("#id_incidencias").val(id);
+                    $("#categoria").val(categoria).change();
+                    $("#tipoPerfil").val(perfil).change();
+                    $("#categoria").prop('disabled', true);
+                    $("#fecha_solicitud").val(fechaSolicitud);
+                    $("#fecha_atencion").val(fechaAtencion);
+                    $("#linea_telefonica").val(linea);
+
+                    $("#modal-incidencias").modal('show');
+
+                });
+
+                $(".delete_incidencia").click(function(){
+                    var id = $(this).data("id");
+                    var categoria = $(this).data("tipo");
+                    var tipo = $("#categoria option[value='"+categoria+"']").text();
+                    var numeroGuia = $(this).data("numero");
+
+                    Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Telefonía Celular',
+                            'html': '¿Estás seguro de eliminar la incidencia ?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, Eliminar Incidencia',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.get("/telCelular/incidencia/eliminar/"+id).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire(
+                                            'Servicio de Telefonía Celular',
+                                            'La incidencia fue eliminada con éxito.',
+                                            'success'
+                                        ).then(function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire(
+                                        'Servicio de Telefonía Celular',
+                                        'No se pudo eliminar la incidencia del servicio de mensajería. Contacta a tu Administrador.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+
+                });
+            /****************** Fin de Capturar Incidencias*********************/
+
+            /****************** Validaciones al Capturar Incidencias*********************/
+
+                //$("#fecha_programada").change(function(){
+                //    if ($('#fecha_programada').hasClass('is-invalid')) {
+                //        $('#fecha_programada').removeClass('is-invalid');
+                //        $('#fecha_programada').addClass('is-valid');
+                //        $('#error_fechaProgramada').css('display', 'none');
+                //    }
+                //});
+
+                //$("#fecha_efectiva").change(function(){
+                //    if ($('#fecha_efectiva').hasClass('is-invalid')) {
+                //        $('#fecha_efectiva').removeClass('is-invalid');
+                //        $('#fecha_efectiva').addClass('is-valid');
+                //        $('#error_fechaEfectiva').css('display', 'none');
+                //    }
+                //});
+
+                //$("#codigo_rastreo").change(function(){
+                //    if ($('#codigo_rastreo').hasClass('is-invalid')) {
+                //        $('#codigo_rastreo').removeClass('is-invalid');
+                //        $('#codigo_rastreo').addClass('is-valid');
+                //        $('#error_codigoRastreo').css('display', 'none');
+                //    }
+                //});
+
+                //$("#numero_guia").change(function(){
+                //     if ($('#numero_guia').hasClass('is-invalid')) {
+                //         $('#numero_guia').removeClass('is-invalid');
+                //         $('#numero_guia').addClass('is-valid');
+                //        $('#error_numeroGuia').css('display', 'none');
+                //    }
+                // });
+
+                //$("#tipo_servicio").change(function(){
+                //    if ($('#tipo_servicio').hasClass('is-invalid')) {
+                //        $('#tipo_servicio').removeClass('is-invalid');
+                //        $('#tipo_servicio').addClass('is-valid');
+                //        $('#error_tipoServicio').css('display', 'none');
+                //    }
+                //});
+
+                //$("#acuses_faltantes").change(function () {
+                //    if ($('#acuses_faltantes').hasClass('is-invalid')) {
+                //        $('#acuses_faltantes').removeClass('is-invalid');
+                //        $('#acuses_faltantes').addClass('is-valid');
+                //        $('#error_totalAcuses').css('display', 'none');
+                //    }
+                //});
+            /**************** Fin Validaciones al Capturar Incidencias ******************/
+
+
+
+
+        }
+    </script>
+}
+

@@ -1,0 +1,525 @@
+﻿@model CedulasEvaluacion.Entities.Models.Usuarios
+
+@{
+    ViewData["Title"] = "Detalle de Usuario";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <a href="/usuarios/index" class="btn btn-warning float-right"><i class="fal fa-arrow-left"></i></a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active detailUser" aria-current="page" data-toggle="tab" href="#detalleUsuario" role="tab">Detalle del Usuario</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link profilesUsers" data-toggle="tab" href="#perfilesUsuario" role="tab">Perfiles de Acceso</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link inmueblesUsers" data-toggle="tab" href="#inmueblesUsuario" role="tab">Asignar Administración(es)</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade mt-2 ml-3 show active" id="detalleUsuario" role="tabpanel" aria-labelledby="home-tab">
+                <h4 class="mt-3">Detalle del Usuario:</h4>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-5">
+                        <strong>Id: </strong>@Model.Id
+                    </div>
+                    <div class="col-lg-3">
+                        <strong>Expediente: </strong>@Model.exp
+                    </div>
+                    <div class="col-lg-4">
+                        <strong>Usuario: </strong>@Model.cve_usuario
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-5">
+                        <strong>Nombre: </strong>@Model.nombre_emp @Model.paterno_emp @Model.materno_emp
+                    </div>
+                    <div class="col-lg-4">
+                        <strong>Correo electrónico: </strong>@Model.correo_electronico
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-3">
+                        <strong>Clave de Puesto: </strong>@Model.cve_puesto
+                    </div>
+                    <div class="col-lg-4">
+                        <strong>Puesto: </strong>@Model.nom_pue
+                    </div>
+                </div>
+                <h4 class="mt-4"> Detalle de la Administración:</h4>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-3">
+                        <strong>Clave del Área Adscrita: </strong>@Model.areas.cveArea
+                    </div>
+                    <div class="col-lg-4">
+                        <strong>Clave de Adscripción: </strong>@Model.areas.cve_adscripcion
+                    </div>
+                    <div class="col-lg-4">
+                        <strong>Administración Adscrita: </strong>@Model.areas.nom_area
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade mt-2 ml-3" id="perfilesUsuario" role="tabpanel" aria-labelledby="home-tab">
+                <h4 class="mt-3">Perfiles asignados:</h4>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="#" class="btn btn-primary float-right" id="add_perfil"><i class="fal fa-plus"></i></a>
+                    </div>
+                </div>
+                <div class="row col-lg-12" id="perfiles_asignados">
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Perfil</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblUser">
+                            <tr>
+                                <td colspan="5" class="text-center" style="font-weight: bold">El usuario no cuenta con ningún "Perfil" asginado</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane fade mt-2 ml-3" id="inmueblesUsuario" role="tabpanel" aria-labelledby="home-tab">
+                <h4 class="mt-3">Administraciones Asignadas</h4>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a href="#" class="btn btn-primary float-right" id="add_admin"><i class="fal fa-plus"></i></a>
+                    </div>
+                </div>
+                <div class="row col-lg-12" id="inmuebles_asignados">
+                    <table class="table mt-3">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Clave</th>
+                                <th>Administración</th>
+                                <th>Dirección</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tblInmUsr">
+                            <tr>
+                                <td colspan="5" class="text-center" style="font-weight: bold">El usuario no cuenta con ninguna "Administración" asginada</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal para la asignación de administraciones*@
+<div class="modal fade" id="modal-administraciones">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Asignar Administraciones</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="usuarioId" />
+                            <div class="form-group col-md-6">
+                                <label for="administracionId">Administración: </label>
+                                <select class="form-control select2bs4 admins" id="administracionId" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-primary" id="asignaAdmins">Asignar Administración(es)</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la asignación de administraciones*@
+
+@* Modal para la asignación de perfiles*@
+<div class="modal fade" id="modal-perfiles">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Asignar Perfil(es)</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="usuarioId" />
+                            <div class="form-group col-md-6">
+                                <label for="administracionId">Perfiles: </label>
+                                <select class="form-control select2bs4 perfiles" id="PerfilesId" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-primary" id="asignaPerfiles">Asignar Perfil(es)</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la asignación de perfiles*@
+
+@* Modal para mostrar los inmuebles por administraciones*@
+<div class="modal fade" id="modal-inmueblesAdmin">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Asignar Administraciones</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Clave</th>
+                            <th>Administración</th>
+                            <th>Dirección</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblInm"></tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@* FIN modal para mostrar los inmuebles por administraciones*@
+
+@section Scripts{
+    <script>
+    $(function () {
+        var model = @Html.Raw(Json.Serialize(@Model));
+        var inm = "";
+        var perf = "";
+
+        /*Inicialización del Select2*/
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+
+        /*Fin de la Inicialización de Select2*/
+
+        /*********************************** Asignar Administraciones************************************/
+        /*Asignación de Inmuebles*/
+        axios.get('/getInmueblesUser/' + model.id).then(response => {
+            response = response.data;
+            if (Object.keys(response).length > 0) {
+                for (var i = 0; i < Object.keys(response).length; i++) {
+                    inm +=
+                        "<tr>" +
+                            "<td>" + (i+1) + "</td>" +
+                            "<td>" + (response[i].clave) + "</td>" +
+                            "<td>" + response[i].inmueble + "</td>" +
+                            "<td>" + response[i].direccion + "</td>" +
+                            "<td>" +
+                                "<a href='#' class='text-success mr-2 view_admin' data-id='" + response[i].administracionId + "'><i class='fas fa-eye'></i></a>" +
+                                "<a href='#' class='text-danger delete_admin'  data-user='" + model.id + "' data-admin='" + response[i].administracionId + "'><i class='fas fa-times'></i></a>" +
+                            "</td>" +
+                        "</tr>";
+                }
+                $('#tblInmUsr').html(inm);
+            }
+        });
+        /*FIN de Asignación de Inmuebles*/
+
+        /*Acciones para los inmuebles del Usuario*/
+        $(document).on('click','.view_admin',function () {
+            var id = $(this).data('id');
+            var table = "";
+            axios.get('/getTableInmueblesAdmin/' + id).then(response => {
+                response = response.data;
+                if (response != "") {
+                    $('#tblInm').html(response);
+                }
+            });
+            $('#modal-inmueblesAdmin').modal('show');
+        });
+        /*FIN Acciones para los inmuebles del Usuario*/
+
+        /*Metodos para agregar las administraciones*/
+        $('#add_admin').click(function () {
+            var options = "<option value='' disabled>Seleccione una opción</option>";
+            axios.get('/inmuebles/getAdministraciones').then(response => {
+                response = response.data;
+                if (Object.keys(response).length > 0) {
+                    for (var i = 0; i < Object.keys(response).length; i++) {
+                        options +=
+                            "<option value='"+response[i].id+"'>" + response[i].nombre + "</option>";
+                    }
+                    $('#administracionId').html(options);
+                }
+            });
+            $('#modal-administraciones').modal('show');
+        });
+
+        $('#asignaAdmins').click(function () {
+            var admins = $('.admins').val();
+            var array = new Array();
+            var table = "";
+            if (admins.length == 0) {
+                Swal.fire({
+                    'icon': 'error',
+                    'title': 'Detalle de Usuario',
+                    'html': 'No se ha seleccionado ninguna Administración para asignar al usuario. Favor de revisar.'
+                });
+                return false;
+            }
+
+            for (var i = 0; i < admins.length; i++) {
+                array.push({ AdministracionId: parseInt(admins[i]), UsuarioId: parseInt(model.id) });
+            }
+
+            axios.post('/usuarios/asignaAdmins', array).then(response => {
+                Swal.fire({
+                    'icon': 'success',
+                    'title': 'Detalle de Usuario',
+                    'text': 'Se asignaron las administraciones al usuario de forma correcta.'
+                });
+                axios.get('/getInmueblesUser/' + model.id).then(response => {
+                    response = response.data;
+                    if (Object.keys(response).length > 0) {
+                        for (var i = 0; i < Object.keys(response).length; i++) {
+                            table +=
+                                "<tr>" +
+                                "<td>" + (i + 1) + "</td>" +
+                                "<td>" + (response[i].clave) + "</td>" +
+                                "<td>" + response[i].inmueble + "</td>" +
+                                "<td>" + response[i].direccion + "</td>" +
+                                "<td>" +
+                                "<a href='#' class='text-success mr-2 view_admin' data-id='" + response[i].administracionId + "'><i class='fas fa-eye'></i></a>" +
+                                "<a href='#' class='text-danger delete_admin' data-id='" + response[i].administracionId + "'><i class='fas fa-times'></i></a>" +
+                                "</td>" +
+                                "</tr>";
+                        }
+                        $('#tblInmUsr').html(table);
+                    }
+                });
+                $('.close').trigger('click');
+            }).catch(error => {
+                Swal.fire({
+                    'icon': 'error',
+                    'title': 'Detalle de Usuario',
+                    'text': 'No se asignaron las administraciones al usuario de forma correcta, verifique que no fue agregada previamente o contacte al administrador del sistema.'
+                });
+            });
+        });
+        /*FIN Metodos para agregar las administraciones*/
+
+        /*Metodos para eliminar Administraciones*/
+        $(document).on('click', '.delete_admin', function () {
+            var usuario = $(this).data('user');
+            var administracion = $(this).data('admin');
+            Swal.fire({
+                'icon': 'warning',
+                'title': '¿Deseas Continuar?',
+                'text': '¿Está seguro de eliminar la administración al usuario ?',
+                'confirmButtonColor': '#3085d6',
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Si, eliminar',
+                'cancelButtonText': 'Cancelar',
+                'showCancelButton': true
+            }).then(data => {
+                if (data.isConfirmed) {
+                    axios.get('/usuarios/EliminaAdministracion/' + usuario+'/'+administracion).then(response => {
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': 'success',
+                                'title': 'Detalle de Usuario',
+                                'text': 'Se eliminó la administración y sus inmuebles al usuario de forma correcta.'
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Detalle de Usuario',
+                                'text': 'No se eliminó la administración y sus inmuebles al usuario, contacte a su administrador.'
+                            });
+                        }
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Detalle de Usuario',
+                            'text': 'No se eliminó la administración y sus inmuebles al usuario, contacte a su administrador.'
+                        });
+                    });
+                }
+            });
+        });
+        /*FIn de metodos para eliminar administraciones*/
+
+        /********************************* FIN Asignar Administraciones **********************************/
+
+        /********************************* Asignar Perfiles **********************************/
+            /* Mostramos los Perfiles*/
+                axios.get('/perfiles/getPerfileUser/' + model.id).then(perfil => {
+                    perfil = perfil.data;
+                    for (var i = 0; i < perfil.length; i++) {
+                        perf +=
+                            "<tr>" +
+                            "<td>" + (i + 1) + "</td>" +
+                            "<td>" + (perfil[i].nombre) + "</td>" +
+                            "<td>" +
+                            //"<a href='#' class='text-success mr-2 view_admin' data-id='" + perfil[i].administracionId + "'><i class='fas fa-eye'></i></a>" +
+                        "<a href='#' class='text-danger delete_perfil' data-id='" + perfil[i].id + "' data-user='" + model.id +"'><i class='fas fa-times'></i></a>" +
+                            "</td>" +
+                            "</tr>";
+                    }
+                    $('#tblUser').html(perf);
+                });            
+            /* Fin de Mostramos los Perfiles*/
+            $('#add_perfil').click(function () {
+                var options = "<option value='' disabled>Seleccione una opción</option>";
+                axios.get('/perfiles/getperfiles').then(response => {
+                    response = response.data;
+                    for (var i = 0; i < response.length; i++) {
+                        options +=
+                            "<option value='" + response[i].id + "'>" + response[i].nombre + "</option>";
+                    }
+                    $('#PerfilesId').html(options);
+                });
+                $('#modal-perfiles').modal('show');
+            });
+
+            $("#asignaPerfiles").click(function () {
+                var perfiles = $('.perfiles').val();
+                var array = new Array();
+                var table = "";
+                if (perfiles.length == 0) {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Detalle de Usuario',
+                        'html': 'No se ha seleccionado ningún Perfil para asignar al usuario. Favor de revisar.'
+                    });
+                    return false;
+                }
+
+                for (var i = 0; i < perfiles.length; i++) {
+                    array.push({ UsuarioId: parseInt(model.id), PerfilId: parseInt(perfiles[i])});
+                }
+
+                axios.post('/usuarios/asignaPerfil', array).then(response => {
+                    Swal.fire({
+                        'icon': 'success',
+                        'title': 'Detalle de Usuario',
+                        'text': 'Se asignaron los Perfiles al usuario de forma correcta.'
+                    });
+                    axios.get('/perfiles/getPerfileUser/' + model.id).then(perfil => {
+                        perfil = perfil.data;
+                            for (var i = 0; i < perfil.length; i++) {
+                                table +=
+                                    "<tr>" +
+                                    "<td>" + (i + 1) + "</td>" +
+                                    "<td>" + (perfil[i].nombre) + "</td>" +
+                                    "<td>" +
+                                        //"<a href='#' class='text-success mr-2 view_admin' data-id='" + perfil[i].administracionId + "'><i class='fas fa-eye'></i></a>" +
+                                        "<a href='#' class='text-danger delete_perfil' data-id='" + perfil[i].id + "' data-user='"+model.id+"'><i class='fas fa-times'></i></a>" +
+                                    "</td>" +
+                                    "</tr>";
+                            }
+                            $('#tblUser').html(table);
+                    });
+                    $('.close').trigger('click');
+                }).catch(error => {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Detalle de Usuario',
+                        'text': 'No se asignaron los Perfiles al usuario de forma correcta, verifique que no fueron agregados previamente o contacte al administrador del sistema.'
+                    });
+                });
+            });
+
+            /*Metodos para eliminar Administraciones*/
+                $(document).on('click', '.delete_perfil', function () {
+                    var id = $(this).data('id');
+                    var p = "";
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Detalle de Usuario',
+                        'text': '¿Estás seguro de quitar el Perfil al usuario ?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, quitar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(data => {
+                        if (data.isConfirmed) {
+                            axios.get('/perfiles/eliminaPerfilByUser/' + id + '/' + model.id).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': 'success',
+                                        'title': 'Detalle de Usuario',
+                                        'text': 'Se revóco el Perfil y los permisos que contiene al usuario de forma correcta.'
+                                    });
+                                    axios.get('/perfiles/getPerfileUser/' + model.id).then(perfil => {
+                                        perfil = perfil.data;
+                                        for (var i = 0; i < perfil.length; i++) {
+                                            p +=
+                                                "<tr>" +
+                                                "<td>" + (i + 1) + "</td>" +
+                                                "<td>" + (perfil[i].nombre) + "</td>" +
+                                                "<td>" +
+                                                //"<a href='#' class='text-success mr-2 view_admin' data-id='" + perfil[i].administracionId + "'><i class='fas fa-eye'></i></a>" +
+                                                "<a href='#' class='text-danger delete_perfil' data-id='" + perfil[i].id + "' data-user='" + model.id + "'><i class='fas fa-times'></i></a>" +
+                                                "</td>" +
+                                                "</tr>";
+                                        }
+                                        $('#tblUser').html(p);
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Detalle de Usuario',
+                                        'text': 'No se eliminó el Perfil y los permisos al usuario, contacte a su administrador.'
+                                    });
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Detalle de Usuario',
+                                    'text': 'No se revóco el Perfil y los permisos al usuario, contacte a su administrador.'
+                                });
+                            });
+                        }
+                    });
+                });
+ 
+            /*FIn de metodos para eliminar administraciones*/
+        /********************************* FIN Asignar Perfiles**********************************/
+    });
+    </script>
+}

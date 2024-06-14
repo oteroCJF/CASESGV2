@@ -1,0 +1,431 @@
+﻿@model CedulasEvaluacion.Entities.MCatalogoServicios.ModelsCatalogo;
+@{
+    ViewData["Title"] = "Detalle de Contratos del Servicio de " + @Model.servicio.Nombre;
+    var i = 0;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3 text-center mt-3">
+                            <img src="~/img/servicios/@String.Concat(@Model.servicio.Id, ".png")" alt="" class="img-fluid" width="100" height="100">
+                        </div>
+                        <div class="col-7 ml-3">
+                            <h2 class="lead"><b>Servicio de @Model.servicio.Nombre</b></h2>
+                            <p class="text-muted text-sm"><b>Contrato actual: </b> @Model.contrato.NumeroContrato </p>
+                            <p class="text-muted text-sm">
+                                <b>Vigencia: </b> Del @Model.contrato.FechaInicio.ToString("dd") de @Model.contrato.FechaInicio.ToString("MMMM", @System.Globalization.CultureInfo.CreateSpecificCulture("es"))
+                                @Model.contrato.FechaInicio.ToString("yyyy") al @Model.contrato.FechaFin.ToString("dd") de @Model.contrato.FechaFin.ToString("MMMM", @System.Globalization.CultureInfo.CreateSpecificCulture("es"))
+                                @Model.contrato.FechaFin.ToString("yyyy")
+                            </p>
+                            <p class="text-muted text-sm"><b>Prestador de Servicio: </b> @Model.contrato.Empresa </p>
+                            <p class="text-muted text-sm"><b>RFC: </b> @Model.contrato.RFC</p>
+                            <p class="text-muted text-sm"><b>Dirección: </b> @Model.contrato.Direccion</p>
+                            <p class="text-muted text-sm"><b>Representante Legal: </b>@(Model.contrato.Representante != null && !@Model.contrato.Representante.Equals("") ? @Model.contrato.Representante : "Por Capturar")</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="col-lg-12">
+                        <a href="/catalogo/index" type='button' class="btn btn-sm btn-warning float-right"
+                           data-toggle="tooltip" title='Regresar a "Obligaciones del Prestador de Servicio - Servicios Generales"' data-placement="top">
+                            <i class="fal fa-arrow-left"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-success float-right mr-2" id="newContrato" data-toggle="tooltip" title='Capturar Contrato'>
+                            <i class="fal fa-file-signature"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row col-lg-12">
+        <table class="table table-responsive-xl">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Número de Contrato</th>
+                    <th>Empresa</th>
+                    <th>Monto Mínimo</th>
+                    <th>Monto Máximo</th>
+                    <th>Volumetría Mínima</th>
+                    <th>Volumetría Máxima</th>
+                    <th class="text-center">Vigente</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cont in @Model.contratos)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@cont.NumeroContrato</td>
+                        <td>@cont.Empresa</td>
+                        <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @cont.MontoMin)</td>
+                        <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @cont.MontoMax)</td>
+                        <td>@cont.VolumetriaMin</td>
+                        <td>@cont.VolumetriaMax</td>
+                        <td class="text-center">
+                            @if (@cont.Activo)
+                            {
+                                <div class="icon">
+                                    <i class="fas fa-check-circle text-success"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="icon">
+                                    <i class="fas fa-times-circle text-danger"></i>
+                                </div>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a href="/catalogo/detalleContrato/@cont.Id" class="text-center ml-2" data-toggle="tooltip" title="Ver obligaciones del prestador de servicios" data-placement="top">
+                                <i class="fad fa-eye text-success"></i>
+                            </a>
+                            <a href="#" class="text-center ml-2 btn_editContrato" data-toggle="tooltip" title="Modificar Contrato" data-placement="top"
+                               data-id="@cont.Id" data-contrato="@cont.NumeroContrato" data-empresa="@cont.Empresa" data-replegal="@cont.Representante"
+                               data-fechai="@cont.FechaInicio.ToString("yyyy-MM-dd")" data-fechaf="@cont.FechaFin.ToString("yyyy-MM-dd")" data-activo="@cont.Activo"
+                               data-montomin="@cont.MontoMin" data-montomax="@cont.MontoMax" data-volmin="@cont.VolumetriaMin" data-volmax="@cont.VolumetriaMax"
+                               data-rfc="@cont.RFC" data-direccion ="@cont.Direccion">
+                                <i class="fad fa-pencil text-primary"></i>
+                            </a>
+                            <a href="#" class="eliminarContrato" data-id="@cont.Id">
+                                <i class="fad fa-times text-danger ml-2"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*Modal para Capturar Contratos*@
+<div class="modal fade" id="modal-contratos">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Nuevo Contrato</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row col-lg-12">
+                    <input class="form-control" type="hidden" id="contratoId" />
+                    <div class="form-row col-md-3" id="divServicio">
+                        <label for="">Servicios:</label>
+                        <input class="form-control" type="text" id="servicio" value="@Model.servicio.Nombre" disabled />
+                    </div>
+                    <div class="form-row col-md-3" id="divContrato">
+                        <label for="Anio">Número de Contrato: </label>
+                        <input class="form-control" type="text" id="contrato" />
+                        <div class="col-sm-12" id="error_contrato">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el número de contrato
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-4" id="divEmpresa">
+                        <label for="">Empresa:</label>
+                        <input class="form-control" id="empresa" type="text" />
+                        <div class="col-sm-12" id="error_empresa">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el nombre de la empresa
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divEmpresaRFC">
+                        <label for="">RFC:</label>
+                        <input class="form-control" id="rfcEmpresa" type="text" />
+                        <div class="col-sm-12" id="error_rfc">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el nombre de la empresa
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-2">
+                    <div class="form-row col-md-4" id="divRepresentante">
+                        <label for="">Representante Legal:</label>
+                        <input class="form-control" id="representante" type="text" />
+                        <div class="col-sm-12" id="error_representante">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el nombre del representante Legsal
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divFechaInicio">
+                        <label for="">Fecha de Inicio:</label>
+                        <input class="form-control" type="date" id="fechaInicio" />
+                        <div class="col-sm-12" id="error_fechaInicio">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la Fecha de Inicio
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divContrato">
+                        <label for="">Fecha de Término:</label>
+                        <input class="form-control" type="date" id="fechaFin" />
+                        <div class="col-sm-12" id="error_fechaFin">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la Fecha de Término
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-2">
+                    <div class="form-row col-md-2" id="divMontoContrato">
+                        <label for="">Monto Mínimo:</label>
+                        <input class="form-control" id="montoContratoMin" type="number" />
+                        <div class="col-sm-12" id="error_montoMin">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el monto mínimo
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-2" id="divMontoContrato">
+                        <label for="">Monto Máximo:</label>
+                        <input class="form-control" id="montoContratoMax" type="number" />
+                        <div class="col-sm-12" id="error_montoMax">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el monto máximo
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-2 mt-2" id="divMontoContrato">
+                        <label for="">Volumetría Mínima:</label>
+                        <input class="form-control" id="volMinima" type="number" />
+                        <div class="col-sm-12" id="error_volMin">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la volumetría mínima
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-2 mt-2" id="divMontoContrato">
+                        <label for="">Volumetría Máxima:</label>
+                        <input class="form-control" id="volMaxima" type="number" />
+                        <div class="col-sm-12" id="error_volMax">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la volumetría máxima
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-3">
+                    <label for="">Dirección:</label>
+                    <textarea class="form-control" id="direccionEmpresa" type="number" resize: none></textarea>
+                    <div class="col-sm-12" id="error_direccion">
+                        <small id="dateHelp" class="text-danger">
+                            Capture la dirección
+                        </small>
+                    </div>
+                </div>
+                <div class="row col-lg-12">
+                    <div class="form-row col-md-6" id="divActivo">
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Vigente</strong>
+                            <input class="predeterminado" id="predeterminado" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" name="aFirmada">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="crearContrato"></button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin del Modal para Capturar Oficios*@
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            /*Errores de Captura de Contrato*/
+                $("#error_contrato").css('display','none');
+                $("#error_representante").css('display','none');
+                $("#error_empresa").css('display','none');
+                $("#error_fechaInicio").css('display','none');
+                $("#error_fechaFin").css('display','none');
+                $("#error_montoMin").css('display','none');
+                $("#error_montoMax").css('display','none');
+                $("#error_volMin").css('display','none');
+                $("#error_volMax").css('display','none');
+                $("#error_rfc").css('display','none');
+                $("#error_direccion").css('display','none');
+            /*Fin Errores de Captura de Contrato*/
+
+            $("#newContrato").click(function () {
+                $("#contratoId").val("");
+                $("#contrato").val("");
+                $("#empresa").val("");
+                $("#representante").val("");
+                $("#fechaInicio").val("");
+                $("#fechaFin").val("");
+                $("#montoContratoMin").val(0);
+                $("#montoContratoMax").val(0);
+                $("#volMinima").val(0);
+                $("#volMaxima").val(0);
+                $("#rfcEmpresa").val("");
+                $("#direccionEmpresa").val("");
+                $("#crearContrato").text("Crear Contrato");
+                $("#modal-contratos").modal("show");
+            });
+
+            function validaCampos() {
+                var contrato = $("#contrato").val();
+                var empresa = $("#empresa").val();
+                var representante = $("#representante").val();
+                var fechaInicio = $("#fechaInicio").val();
+                var fechaFin = $("#fechaFin").val();
+
+                if (contrato != "" && empresa != "" && representante != "" && fechaInicio != "" && fechaFin != "") {
+                    return true;
+                }
+
+                if (contrato == "") {
+                    $("#error_contrato").css('display', 'block');
+                }
+
+                if (empresa == "") {
+                    $("#error_empresa").css('display', 'block');
+                }
+
+                if (fechaInicio == "") {
+                    $("#error_fechaInicio").css('display', 'block');
+                }
+
+                if (fechaFin== "") {
+                    $("#error_fechaFin").css('display', 'block');
+                }
+
+                if (representante == "") {
+                    $("#error_representante").css('display', 'block');
+                }
+
+                return false;
+            }
+
+            $("#crearContrato").click(function () {
+                var id = $("#contratoId").val();
+                var contrato = $("#contrato").val();
+                var empresa = $("#empresa").val();
+                var representante = $("#representante").val();
+                var fechaInicio = $("#fechaInicio").val();
+                var fechaFin = $("#fechaFin").val();
+                var montomin = $("#montoContratoMin").val();
+                var montomax = $("#montoContratoMax").val();
+                var volMin = $("#volMinima").val();
+                var volMax = $("#volMaxima").val();
+                var activo = $("#predeterminado").prop('checked');
+                var rfc = $("#rfcEmpresa").val();
+                var direccion = $("#direccionEmpresa").val();
+
+                if (fechaInicio > fechaFin) {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Contratos del servicio de "' + model.servicio.nombre + '"',
+                        'html': 'La fecha de inicio no puede ser mayor a la fecha de término. Favor de corregir'
+                    });
+                }
+
+                if (validaCampos()) {
+                    if (id == 0) {
+                        axios.post('/contratos/insertaContrato', {
+                            ServicioId: model.servicio.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                            NumeroContrato: contrato, Empresa: empresa, Representante: representante, FechaInicio: fechaInicio,
+                            FechaFin: fechaFin, Activo: activo, MontoMin: parseFloat(montomin), MontoMax: parseFloat(montomax),
+                            VolumetriaMin: parseInt(volMin), VolumetriaMax: parseInt(volMax), Direccion: direccion, RFC: rfc
+                        }).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Contratos del servicio de "' + model.servicio.nombre+'"',
+                                    'html': 'El contrato se creó correctamente.'
+                                }).then(function () {
+                                    window.location.href = "/catalogo/detalleContrato/" + response.data;
+                                });
+                            }
+                        });
+                    } else {
+                        axios.post('/contratos/actualizaContrato', {Id: parseInt(id),ServicioId: model.servicio.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                            NumeroContrato: contrato, Empresa: empresa, Representante: representante, FechaInicio: fechaInicio,
+                            FechaFin: fechaFin, Activo: activo, MontoMin: parseFloat(montomin), MontoMax: parseFloat(montomax),
+                            VolumetriaMin: parseInt(volMin), VolumetriaMax: parseInt(volMax), Direccion: direccion, RFC: rfc
+                        }).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Contratos del servicio de "' + model.servicio.nombre + '"',
+                                    'html': 'El contrato se actualizó correctamente.'
+                                }).then(function () {
+                                    window.location.href = "/catalogo/detalleServicio/" + model.contrato.servicioId;
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            $(".btn_editContrato").click(function () {
+                $("#contratoId").val($(this).data('id'));
+                $("#contrato").val($(this).data('contrato'));
+                $("#empresa").val($(this).data('empresa'));
+                $("#representante").val($(this).data('replegal'));
+                $("#fechaInicio").val($(this).data('fechai'));
+                $("#fechaFin").val($(this).data('fechaf'));
+                $("#montoContratoMin").val($(this).data('montomin'));
+                $("#montoContratoMax").val($(this).data('montomax'));
+                $("#volMinima").val($(this).data('volmin'));
+                $("#volMaxima").val($(this).data('volmax'));
+                $("#direccionEmpresa").val($(this).data('direccion'));
+                $("#rfcEmpresa").val($(this).data('rfc'));
+                if ($(this).data('activo') == 1) {
+                    $("#predeterminado").prop('checked');
+                }
+                $("#crearContrato").text("Actualizar Contrato");
+                $("#modal-contratos").modal("show");
+            });
+
+            $(".eliminarContrato").click(function () {
+                var contrato = $(this).data('id');
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Contratos del servicio de "' + model.servicio.nombre + '"',
+                    'text': '¿Está seguro de eliminar el contrato?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, eliminar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(response => {
+                    if (response.isConfirmed) {
+                        axios.get('/contratos/eliminarContrato/' + contrato).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Contratos del servicio de "' + model.servicio.nombre + '"',
+                                    'html': 'El contrato se eliminó correctamente.'
+                                }).then(function () {
+                                    window.location.href = "/catalogo/detalleServicio/" + model.servicio.id;
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+        });
+    </script>
+}

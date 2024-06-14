@@ -1,0 +1,1919 @@
+﻿@* Cuestionario RPBI *@
+@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@{
+    ViewData["Title"] = "Cédula de Recolección y Disposición Final de Residuos Biológico-Infecciosos - Folio: " + Model.Folio;
+    var f = 0;
+    var cf = 0;
+    var i = 1;
+    decimal totalConceptos = 0;
+    decimal totalIVA = 0;
+}
+
+<div class="row col-lg-12 d-flex justify-content-end">
+    <a href="/residuos/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip"
+       title="Regresar al listado de cédulas de RPBI" data-placement="top">
+        <i class="fal fa-arrow-left"></i>
+    </a>
+</div>
+<div class="row col-lg-12">
+    <div class="row col-lg-12">
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#evaluacion" role="tab" aria-controls="home" aria-selected="true">Evaluación del Servicio</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#facturacion" role="tab" aria-controls="profile" aria-selected="false">Facturación</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!-- Pestaña de Evaluación -->
+                <div class="tab-pane fade mt-3 ml-3 show active" id="evaluacion" role="tabpanel" aria-labelledby="home-tab">
+                    <h4>Evaluación del Servicio</h4>
+                    <div class="row col-lg-12 mt-4 mb-3">
+                        <table class="table">
+                            <tr>
+                                <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;"><strong>Folio: </strong> @Model.Folio</td>
+                                <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
+                                <td data-toggle="tooltip" title="Mes evaluado" data-placement="top"><strong>Mes: </strong>@Model.Mes</td>
+                                <td data-toggle="tooltip" title="Administración/Inmueble evaluado" data-placement="top"><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                                <td data-toggle="tooltip" title="Estatus de la cédula del servicio de RPBI" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
+                            </tr>
+                            <tr>
+                                <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes" del inmueble "@Model.inmuebles.Nombre"' data-placement="top">
+                                    <strong>Facturas asignadas: </strong> @Model.facturas.Count
+                                </td>
+                                <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
+                                    <strong>Monto Total IVA Incluido: </strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-joke text-white">
+                            <h5 class="mt-2">Evaluación de la cédula</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        @foreach (var pr in Model.preguntas)
+                                        {
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link @(pr.NoPregunta == 1 ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
+                                            </li>
+                                        }
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        @foreach (var pr in Model.preguntas)
+                                        {
+                                            <div class="tab-pane fade mt-2 ml-3 @(pr.NoPregunta ==1 ? "show active":"")" id="pregunta_@pr.NoPreguntaUsuario" role="tabpanel" aria-labelledby="home-tab">
+                                                <p class="text-black h5">
+                                                    @pr.NoPreguntaUsuario.- @pr.Pregunta
+                                                    <a href="#" class="text-primary ml-2 btnAyuda" data-toggle="tooltip" title="Ayuda" data-placement="top" data-ayuda="@pr.Ayuda">
+                                                        <i class="fa-solid fa-circle-question"></i>
+                                                    </a>
+                                                </p>
+                                                @if (!pr.Cierre) //Si la pregunta no es cierre, aplicamos las opciones directamente
+                                                {
+                                                    <div class="icheck-success d-inline">
+                                                        <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="true" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                               data-pusuario="@pr.NoPreguntaUsuario">
+                                                        <label for="@String.Concat("radioSuccess", @i)">Si</label>
+                                                    </div>
+                                                    i++;
+                                                    <div class="icheck-success d-inline ml-3">
+                                                        <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="false" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                               data-pusuario="@pr.NoPreguntaUsuario">
+                                                        <label for="@String.Concat("radioSuccess", @i)">No</label>
+                                                    </div>
+                                                    i++;
+                                                    @if (pr.NoAplica)
+                                                    {
+                                                        <div class="icheck-success d-inline ml-3">
+                                                            <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="Anticipada" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                                   data-pusuario="@pr.NoPreguntaUsuario">
+                                                            <label for="@String.Concat("radioSuccess", @i)">N/A</label>
+                                                        </div>
+                                                        i++;
+                                                    }
+                                                    @if (pr.Incidencias)
+                                                    {
+                                                        <div class="row col-lg-12 mt-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                            <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="@pr.NoPregunta"
+                                                                    data-pusuario="@pr.NoPreguntaUsuario" id="addIncidencias_@pr.NoPregunta">
+                                                                Capturar Incidencia
+                                                            </button>
+                                                            <button type='button' class='btn btn-primary viewIncidencias mt-2' data-pregunta="@pr.NoPregunta"
+                                                                    data-pusuario="@pr.NoPreguntaUsuario">
+                                                                Consultar Incidencias
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                    else if (pr.Fechas)
+                                                    {
+                                                        <div class="form-row col-lg-12 mt-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                            <div class="form-row">
+                                                                <div class="col col-lg-2">
+                                                                    <label for="fechaCierre">Fecha Programada</label>
+                                                                    <input type="date" id="fechaProgramada_@pr.NoPreguntaUsuario" class="form-control">
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <label for="fechaCierre">Fecha Entrega</label>
+                                                                    <input type="date" id="fechaEntrega_@pr.NoPreguntaUsuario" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                        }
+                                        @* Entregables *@
+                                        <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                                            <div class="col-lg-12 mt-3">
+                                                <h3>Adjuntar Entregables</h3>
+                                                Favor de Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
+                                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                            </div>
+                                            <div class="row col-lg-12 mt-3">
+                                                <table class="table" id="tblEntregables">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Entregable</th>
+                                                            <th>Archivo</th>
+                                                            <th>Fecha de Carga</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tEntregables"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        @* Fin de Entregables *@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class=" col-lg-12">
+                                <button type="button" class="btn btn-primary float-right ml-3 btn_enviar">Enviar a DAS</button>
+                                <button type="button" class="btn btn-success float-right btn_guardar">Guardar Cédula</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin de la Pestaña de Evaluación -->
+                <!-- Pestaña de Facturación -->
+                <div class="tab-pane fade mt-2 ml-3" id="facturacion" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="col-lg-12 h3 mt-4">
+                        Facturación del Servicio
+                    </div>
+                    <div class="row col-lg-12 d-flex justify-content-end">
+                        <button class='btn btn-sm btn-primary ml-2 mb-3' data-toggle="tooltip" title="Agregar Facturas" data-placement="top" id="add_facturas">
+                            <i class="fal fa-plus text-white"></i> Agregar Factura
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="row col-lg-12">
+                            <p class="text-justify ml-3">
+                                <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
+                                la información de la factura que fue agregada.
+                            </p>
+                            <div class="col-lg-12 mt-3 ml-2">
+                                <table class="table tblIncidencias tablaFacturas" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tipo</th>
+                                            <th>Empresa</th>
+                                            <th>Folio Fiscal</th>
+                                            <th>Número Factura</th>
+                                            <th>Subtotal Factura</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="AA">
+                                        @foreach (var fac in Model.facturas)
+                                        {
+                                            f++;
+                                            <tr>
+                                                <td>@f</td>
+                                                <td>@fac.Tipo</td>
+                                                <td>@fac.emisor.Nombre</td>
+                                                <td>@fac.timbreFiscal.UUID</td>
+                                                <td>@fac.comprobante.Folio</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.SubTotal)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.traslado.Importe)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.Total)</td>
+                                                <td class="text-center">
+                                                    <a href="#" class="viewConceptosF" id="viewConceptos_@fac.Id" data-factura="@fac.Id" data-toggle="tooltip" title="Ver conceptos de la factura" data-placement="top">
+                                                        <i class="fas fa-eye text-success"></i>
+                                                    </a>
+                                                    @if (fac.Tipo.Equals("Factura") && (Model.Estatus.Equals("En Proceso") || Model.Estatus.Equals("Rechazada")))
+                                                    {
+                                                        <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Factura" data-placement="top">
+                                                            <i class="fas fa-times text-danger"></i>
+                                                        </a>
+                                                    }
+
+                                                    @if (fac.Tipo.Equals("NC") && (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado")))
+                                                    {
+                                                        <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Nota de Crédito" data-placement="top">
+                                                            <i class="fas fa-times text-danger"></i>
+                                                        </a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12 mt-3 ml-2 mb-3">
+                                @foreach (var fac in Model.facturas)
+                                {
+                                    <div class="conceptosFactura" id="conceptoFactura_@fac.Id">
+                                        <h3>Conceptos de la Factura con Folio: @fac.comprobante.Folio</h3>
+                                        <table id="@fac.comprobante.Folio" style="width: 90%" class="table tableConceptos mt-3 float-right">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Unidad</th>
+                                                    <th>Descripción</th>
+                                                    <th>Precio Unitario</th>
+                                                    <th>SubTotal</th>
+                                                    <th>IVA</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var con in fac.concepto)
+                                                {
+                                                    if (@fac.Id == con.FacturaId)
+                                                    {
+                                                        cf++;
+                                                        <tr>
+                                                            <td>@cf</td>
+                                                            <td>@con.Cantidad</td>
+                                                            <td>@con.Unidad</td>
+                                                            <td>@con.Descripcion</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.ValorUnitario)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.IVA)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe + con.IVA)</td>
+                                                        </tr>
+                                                        totalConceptos = totalConceptos + con.Importe;
+                                                        totalIVA = totalIVA + Convert.ToDecimal(con.IVA.ToString("N2"));
+                                                    }
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="5">Total:</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalIVA)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos + totalIVA)</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin de la Pestaña de Facturación-->
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal para agregar facturas la cedula *@
+<div class="modal fade" id="modal-facturas">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Agregar Factura</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" id="idFactura" type="hidden" />
+                <div class="row col-lg-12 mt-2">
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar factura en XML: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input file_factura" id="fileFactura" accept=".xml">
+                            <label class="custom-file-label" for="customFile">Subir factura en formato "XML"</label>
+                        </div>
+                        <div class="col-sm-12 error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="agregarFactura">Guardar Factura</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@* FIN del Modal para agregar facturas la cedula *@
+
+@* Modal para la captura de Incidencias *@
+<div class="modal fade" id="modal-pregunta4">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Incidencia en el "Manifiesto de Entrega"</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id_manifiesto" />
+                <input type="hidden" id="pregunta" />
+                <p>Por favor marque los datos que NO contiene el Manifiesto de Entrega</p>
+                <div class="row col-lg-12">
+                    <div class="col-lg-4 mt-3" style="text-align: justify">
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Nombre, sello y firma del titular del servicio médico.</strong>
+                            <input class="manifiestoEntrega1" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="DatosTitularMedico" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Domicilio del consultorio donde se brinda el servicio.</strong>
+                            <input class="manifiestoEntrega2" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="ConsultorioBrindaServicio" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Descripción e identificación del tipo de residuo.</strong>
+                            <input class="manifiestoEntrega3" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="DescripcionResiduo" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Nombre y firma del responsable de la recolección.</strong>
+                            <input class="manifiestoEntrega4" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="DatosRecoleccion" name="manifiesto[]">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-3" style="text-align: justify">
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Cantidad y unidad de medida del residuo.</strong>
+                            <input class="manifiestoEntrega5" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="DetallesResiduo" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Envase o contenedor utilizado.</strong>
+                            <input class="manifiestoEntrega6" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="EnvaseUtilizado" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Instrucciones especiales e información para su manejo seguro.</strong>
+                            <input class="manifiestoEntrega7" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="ManejoSeguro" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Descripción general de la transportación y del centro de acopio o destinatario.</strong>
+                            <input class="manifiestoEntrega8" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="CentroDestinatario" name="manifiesto[]">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mt-3" style="text-align: justify">
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Número de registro ambiental.</strong>
+                            <input class="manifiestoEntrega9" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="RegistroAmbiental" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Fecha y número de manifiesto.</strong>
+                            <input class="manifiestoEntrega10" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="NumeroManifiesto" name="manifiesto[]">
+                        </div>
+                        <div class="form-check-inline i-checks mt-3">
+                            <strong class="text-black mr-3">Clasificación.</strong>
+                            <input class="manifiestoEntrega11" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="Clasificacion" name="manifiesto[]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="savePregunta4">Guardar Incidencia</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la captura de Incidencias *@
+<div class="modal fade" id="modal-pregunta5">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar Incidencia</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="incidenciaIdPregunta5" />
+                            <input type="hidden" id="pregunta" />
+                            <div class="form-group col-md-4">
+                                <label for="tipoIncidencia">Tipo: </label>
+                                <select id="tipo_incidencia" class="form-control">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Overol o Camisola y Pantalón">Overol o Camisola y Pantalón</option>
+                                    <option value="Botas de Tipo Industrial">Botas de Tipo Industrial</option>
+                                    <option value="Guantes de Hule">Guantes de Hule</option>
+                                    <option value="Guantes de Carnaza">Guantes de Carnaza</option>
+                                    <option value="Faja de estibador">Faja de estibador</option>
+                                    <option value="Casco">Casco</option>
+                                    <option value="Chaleco Reflejante">Chaleco Reflejante</option>
+                                    <option value="Cono y/o Banderola">Cono y/o Banderola</option>
+                                </select>
+                                <div class="col-sm-12" id="error_tipoIncidencia">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture el Tipo de Incidencia
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-lg-12">
+                        <label for="areaIncidencia">Comentarios:</label>
+                        <textarea type="textarea" id="comentarios_incidencias" class="form-control" style="resize: none;" maxlength="256"></textarea>
+                    </div>
+                    <div class="col-sm-12" id="error_comentariosInci">
+                        <small id="dateHelp" class="text-danger">
+                            Por favor capture los comentarios correspondientes
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="savePregunta5">Guardar Incidencia</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para mostrar las Incidencias *@
+<div class="modal fade" id="modal-viewPregunta4">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Incidencias en Manifiesto de Entrega</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-responsive-xl">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Incidencias</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyPregunta4"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cerrar_modal">Cerrar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para mostrar las Incidencias *@
+
+@* Modal para mostrar las Incidencias *@
+<div class="modal fade" id="modal-viewPregunta5">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Lista de Incidencias en Equipo de Protección</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-responsive-xl">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Comentarios</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyPregunta5"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="cerrar_modal">Cerrar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para mostrar las Incidencias *@
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_evidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar Entregables</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="file_id" />
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Tipo de Entregable:</label>
+                        <select class="form-control" id="tipo_entregable">
+                            <option value="">Seleccione un Entregable</option>
+                        </select>
+                        <div class="col-sm-12" id="error_tipoEntre">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de entregable
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione él archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-lg-12 mt-2" id="comentariosEntregable">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Comentarios:</label><br>
+                            <textarea id="comentarios_entregable" class="form-control float-left"></textarea>
+                            <div class="col-sm-12" id="error_comentariosEntre">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor capture los comentarios correspondientes
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="show_pdf">
+    <div class="modal-dialog modal-xl-view">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-view">
+                <table class="table">
+                    <tr>
+                        <td><strong>Folio: </strong> @Model.Folio</td>
+                        <td><strong>Año: </strong>@Model.Anio</td>
+                        <td><strong>Mes: </strong>@Model.Mes</td>
+                        <td><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                        <td><strong>Estatus: </strong>@Model.Estatus </td>
+                    </tr>
+                </table>
+                <div class="row" id="objectPdf">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+@section Scripts{
+    <script>
+            window.onload = function () {
+             var totalPreguntas = '@Model.RespuestasEncuesta.Count';
+            var respuestas = @Html.Raw(Json.Serialize(@Model.RespuestasEncuesta));
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var perfil = @Html.Raw(Json.Serialize((@User.Claims.ElementAt(2).Value).Contains("Evaluador")));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".tablaFacturas").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".tableConceptos").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".error_customFile").css("display", "none");
+            $(".cIncidencias").css("display", "none");
+            $(".conceptosFactura").css("display", "none");
+
+
+            /*Errores en Adjuntar Archivos*/
+                $('#error_tipoEntre').css('display', 'none');
+                $('#error_customFile').css('display', 'none');
+                $('#error_comentariosEntre').css('display', 'none');
+                /*Fin Errores en Adjuntar Archivos*/
+
+                 /********************************** Agregar/Cambiar Facturas *************************************/
+                /*Proceso para editar la cedula*/
+                    $(document).on('click', '.eliminarFactura', function () {
+                        var id = $(this).data('factura');
+                        var folio = $(this).data('folio');
+
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de RPBI',
+                            'html': '<strong>Advertencia:</strong><p>¿Desea eliminar la factura con Folio <strong>' + folio + '</strong>?</p>',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, continuar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(yes => {
+                            if (yes.isConfirmed) {
+                                Swal.fire({
+                                    'icon': 'warning',
+                                    'title': 'Servicio de RPBI',
+                                    'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el borrado de la factura con folio: '+folio,
+                                    'confirmButtonColor': '#3085d6',
+                                    'cancelButtonColor': '#d33',
+                                    'confirmButtonText': 'Si, eliminar',
+                                    'cancelButtonText': 'Cancelar',
+                                    'showCancelButton': true,
+                                    'input': 'text',
+                                    'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                }).then(del => {
+                                    if (del.value == 'ELIMINAR' || del.value == 'eliminar') {
+                                        axios.delete('/facturas/deleteFactura/' + id).then(del => {
+                                            Swal.fire({
+                                                'icon': 'success',
+                                                'title': 'Servicio de RPBI',
+                                                'html': 'La factura fue eliminada exitósamente.',
+                                            }).then(function () {
+                                                window.location.reload();
+                                            });
+                                        })
+                                    } else {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de RPBI',
+                                            'html': 'La factura no fue eliminada exitósamente, favor de escribir correctamente la palabra <b>ELIMINAR</b>',
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    $(".file_factura").change(function (e) {
+                        var archivo = e.target.files[0];
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "xml" || ext == "XML") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            if ($('.file_factura').hasClass('is-invalid')) {
+                                $('.file_factura').removeClass('is-invalid');
+                                $('.file_factura').addClass('is-valid');
+                                $('.error_customFile').css('display', 'none')
+                            } else {
+                                $('.file_factura').addClass('is-valid');
+                            }
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de RPBI',
+                                'text': 'El archivo que intenta adjuntar no es válido. Favor de solo seleccionar archivos "Xml"'
+                            });
+
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+
+                            if ($('.file_factura').hasClass('is-valid')) {
+                                $('.file_factura').removeClass('is-valid');
+                                $('.file_factura').addClass('is-invalid');
+                            }
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+                        }
+                    });
+
+                    function validaCamposArchivoXml() {
+                        if ($('.file_factura').val() == "") {
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+                        return true;
+                    }
+
+                    $('#agregarFactura').click(function () {
+                        var id = $("#idFactura").val();
+                        var tipo = "Factura";
+
+                        var formData = new FormData();
+                        var file = document.getElementById('fileFactura').files[0];
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("ServicioId", model.servicioId);
+                        formData.append("Tipo", tipo);
+                        formData.append("CedulaId", model.id);
+                        formData.append("Xml", file);
+                        formData.append("FechaInicial",@Html.Raw(Json.Serialize(@Model.FechaInicial)));
+                        formData.append("FechaFinal",@Html.Raw(Json.Serialize(@Model.FechaFinal)));
+
+                        if (validaCamposArchivoXml() == true) {
+                            if (id == "") {
+                                axios.post('/facturas/insertaFactura', formData).then(fact => {
+                                    if (fact.data == 1) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de RPBI',
+                                            'html': 'La factura fue agregada correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    } else if (fact.data != 1 && fact.data != -1) {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de RPBI',
+                                            'html': '<p style="text-align: justify">La factura que intenta adjuntar ya fue agregada previamente en la cédula con los siguientes datos: <br />' +
+                                                '<li> <b>Folio: </b>' + fact.data.folio + '</li>' +
+                                                '<li> <b>Inmueble: </b>' + fact.data.inmuebles.nombre + '</li></p>'
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de RPBI',
+                                        'html': '<p style="text-align: justitfy;">CASESG no puede adjuntar la factura, Contacte al administrador del Sistema.'
+                                    });
+                                });
+                            }
+                        }
+
+                        document.getElementById('customFile').value = '';
+                        $('#idFactura').val("");
+                        $(".custom-file .custom-file-label").text("Subir archivo \"XML\"");
+                        $('.file_factura').removeClass('is-valid');
+                        $("#tipoFactura").val('');
+                    });
+                /*FIN del proceso para editar la cedula*/
+
+                /*Agregar Facturas*/
+                    $('#add_facturas').click(function () {
+                        var id = $("#idFactura").val();
+                        $('#modal-ver-facturas').modal('hide');
+                        $('#modal-facturas').modal('show');
+                    });
+                /*Fin Agregar Facturas*/
+
+                /*Ver/Ocultar Conceptos de Factura*/
+                    $('.viewConceptosF').click(function () {
+                        let factura = $(this).data('factura');
+                        if ($("#conceptoFactura_" + factura).css('display') == 'none')
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "block");
+                        }
+                        else
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "none");
+                        }
+                    });
+                /*Fin Ver/Ocultar Conceptos de Factura*/
+
+                /*Ver/Ocultar Conceptos*/
+                     $(".viewConceptosF").click(function () {
+                         if ($("#viewConceptos_"+$(this).data('factura')+" > i").hasClass("text-success")) {
+                             $("#viewConceptos_" + $(this).data('factura') + " > i").removeClass("text-success");
+                             $("#viewConceptos_" + $(this).data('factura') + "> i").addClass("text-danger");
+                         } else {
+                             $("#viewConceptos_" + $(this).data('factura') +" > i").removeClass("text-danger");
+                             $("#viewConceptos_"+$(this).data('factura')+" > i").addClass("text-success");
+                        }
+                    });
+                /*Fin de Ver/Ocultar Conceptos*/
+
+
+            /******************************* FIN Agregar/Cambiar Facturas **********************************/
+
+            /********************************** Incidencias de la Cédula ************************************/
+                $(".addIncidencias").click(function () {
+                    let pregunta = $(this).data('pregunta');
+                    $("#pregunta").val(pregunta + "");
+                    $("#id_incidencia").val("");
+                    $("#modal-pregunta"+pregunta).modal('show');
+                });
+
+                $(".viewIncidencias").click(function () {
+                    let pregunta = $(this).data('pregunta');
+                    if (pregunta == 4) {
+                        axios.get('/residuos/getIncidenciasPregunta4/' + model.id + "/ManifiestoEntrega").then(response => {
+                            $("#bodyPregunta4").html(response.data);
+                        });
+                    }
+                    else {
+                        axios.get('/residuos/getIncidenciasPregunta5/' + model.id).then(response => {
+                            $("#bodyPregunta5").html(response.data);
+                        });
+                    }
+                    $('#modal-viewPregunta'+pregunta).modal('show');
+                });
+
+                function validaPregunta(pregunta) {
+                    if (pregunta == 4) {
+                        let isTrue = true;
+                        let j = 0;
+                        for (j = 0; j < 11; j++) {
+                            if ($('.manifiestoEntrega' + (j + 1)).prop('checked') != true) {
+                                isTrue = false;
+                            } else {
+                                isTrue = true;
+                                break;
+                            }
+                        }
+
+                        if (isTrue == false) {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de RPBI',
+                                'html': 'Por favor seleccione una incidencia.'
+                            });
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                    else {
+                        if ($("#tipo_incidencia").val() != "" && $("#comentarios_incidencias").val() != "") {
+                            return true;
+                        }
+
+                        if ($("#tipo_incidencia").val() == "") {
+                            $("#tipo_incidencia").addClass("is-invalid");
+                            $('#error_tipoIncidencia').css('display', 'block');
+                        }
+
+                        if ($("#comentarios_incidencias").val() == "") {
+                            $("#comentarios_incidencias").addClass("is-invalid");
+                            $('#error_comentariosInci').css('display', 'block');
+                        }
+                        return false;
+                    }
+                }
+
+                $(document).on("click", ".update_pregunta4", function () {
+                    $('#modal-viewPregunta4 .close').click();
+                    axios.get('/residuos/getIncidencias/' + model.id + "/ManifiestoEntrega").then(response => {
+                        $("#id_manifiesto").val(response.data[0].id);
+                        response = response.data[0].comentarios;
+                        var res = response.split("|");
+                        for (var i = 0; i < res.length; i++) {
+                            for (var j = 0; j < 11; j++) {
+                                if ($('.manifiestoEntrega' + (j + 1)).val() == res[i]) {
+                                    $('.manifiestoEntrega' + (j + 1)).parent().removeClass('btn-danger off');
+                                    $('.manifiestoEntrega' + (j + 1)).parent().addClass('btn-green btn-success');
+                                    $('.manifiestoEntrega' + (j + 1)).prop('checked', true);
+                                }
+                            }
+                        }
+                    });
+                    $('#modal-pregunta4').modal('show');
+                });
+
+                $(document).on("click", ".delete_pregunta4", function () {
+                    var id = $(this).data('id');
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de RPBI',
+                        'html': '¿Está seguro de eliminar la incidencia?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, eliminar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(response => {
+                        if (response.isConfirmed) {
+                            axios.get("/residuos/eliminaIncidencia/" + id).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': 'success',
+                                        'title': 'Servicio de RPBI',
+                                        'html': 'La incidencia fue eliminada correctamente.',
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de RPBI',
+                                    'html': 'No se pudo eliminar la incidencia del servicio de RPBI. Contacta a tu Administrador.',
+                                });
+                            });
+                        }
+                    });
+                });
+
+                $("#savePregunta4").click(function () {
+                    var id = $("#id_manifiesto").val();
+                    var coments = "";
+                    $("[name='manifiesto[]']:checked").each(function () {
+                        coments += $(this).val() + "|";
+                    });
+
+                    if (validaPregunta(4)) {
+                        if (id != "") {
+                            axios.post('/residuos/actualiza/incidencia', {
+                                Id: parseInt(id),
+                                CedulaResiduosId: model.id, Tipo: "ManifiestoEntrega", Comentarios: coments
+                            }).then(res => {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Servicio de RPBI',
+                                    'text': 'La(s) incidencia(s) fue(fueron) actualizada(s) correctamente.'
+                                });
+                            });
+                            $("#id_manifiesto").val("");
+                            guardaCedula();
+                        } else {
+                            axios.post('/residuos/incidencia', {
+                                CedulaResiduosId: model.id, Tipo: "ManifiestoEntrega", Comentarios: coments, Pregunta: parseInt(4)
+                            }).then(res => {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Servicio de RPBI',
+                                    'text': 'La(s) incidencia(s) fue(fueron) registrada(s) correctamente.'
+                                });
+                                guardaCedula();
+                            });
+                            $("#id_manifiesto").val("");
+                            $("#addPregunta4").css("display", "none");
+                        }
+                    }
+                    $('#modal-pregunta4').modal('hide');
+                });
+
+                $(document).on("click", ".update_pregunta5", function () {
+                    $('#modal-viewPregunta5 .close').click();
+                    var id = $(this).data('id');
+                    var tipo = $(this).data('tipo');
+                    var coments = $(this).data('coment');
+
+                    $("#incidenciaIdPregunta5").val(id);
+                    $("#tipo_incidencia").val(tipo);
+                    $("#comentarios_incidencias").val(coments);
+
+                    $('#modal-pregunta5').modal('show');
+                });
+
+                $(document).on("click", ".delete_pregunta5", function () {
+                    var id = $(this).data('id');
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de RPBI',
+                        'html': '¿Está seguro de eliminar la incidencia?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, eliminar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(response => {
+                        if (response.isConfirmed) {
+                            axios.get("/residuos/eliminaIncidencia/" + id).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': 'success',
+                                        'title': 'Servicio de RPBI',
+                                        'html': 'La incidencia fue eliminada correctamente.',
+                                    }).then(function () {
+                                        axios.get('/residuos/getIncidenciasPregunta5/' + model.id).then(response => {
+                                            $("#bodyPregunta5").html(response.data);
+                                        });
+                                    });
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de RPBI',
+                                    'html': 'No se pudo eliminar la incidencia del servicio de RPBI. Contacta a tu Administrador.',
+                                });
+                            });
+                        }
+                    });
+                });
+
+                $("#tipo_incidencia").change(function () {
+                    if ($("#tipo_incidencia").val() == "") {
+                        $("#tipo_incidencia").addClass("is-invalid");
+                        $('#error_tipoIncidencia').css('display', 'block');
+                    } else {
+                        $("#tipo_incidencia").removeClass("is-invalid");
+                        $("#tipo_incidencia").addClass("is-valid");
+                        $('#error_tipoIncidencia').css('display', 'none');
+                    }
+                });
+
+                $("#comentarios_incidencias").change(function () {
+                    if ($("#comentarios_incidencias").val() == "") {
+                        $("#comentarios_incidencias").addClass("is-invalid");
+                        $('#error_comentariosInci').css('display', 'block');
+                    } else {
+                        $("#comentarios_incidencias").removeClass("is-invalid");
+                        $("#comentarios_incidencias").addClass("is-valid");
+                        $('#error_comentariosInci').css('display', 'none');
+                    }
+                });
+
+                $("#savePregunta5").click(function () {
+                    var id = $("#incidenciaIdPregunta5").val();
+                    var tipo = $("#tipo_incidencia").val();
+                    var comentarios = $("#comentarios_incidencias").val();
+
+                    if (validaPregunta(5)) {
+                        if (id != "") {
+                            axios.post('/residuos/actualiza/incidencia', {
+                                Id: parseInt(id),
+                                CedulaResiduosId: model.id, Tipo: tipo, Comentarios: comentarios
+                            }).then(res => {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Servicio de RPBI',
+                                    'text': 'La incidencía fue actualizada correctamente.'
+                                });
+                                $("#comentarios_incidencias").removeClass("is-invalid");
+                                $("#comentarios_incidencias").removeClass("is-valid");
+                                $("#tipo_incidencia").removeClass("is-invalid");
+                                $("#tipo_incidencia").removeClass("is-valid");
+                                $("#incidenciaIdPregunta5").val("");
+                                $("#tipo_incidencia").val("");
+                                $("#comentarios_incidencias").val("");
+                            });
+                        } else {
+                            axios.post('/residuos/incidencia', {
+                                CedulaResiduosId: model.id, Tipo: tipo, Comentarios: comentarios, Pregunta: parseInt(5)
+                            }).then(res => {
+                                Swal.fire({
+                                    'icon': 'success',
+                                    'title': 'Servicio de RPBI',
+                                    'text': 'La incidencía fue capturada correctamente.'
+                                });
+                                $("#comentarios_incidencias").removeClass("is-invalid");
+                                $("#comentarios_incidencias").removeClass("is-valid");
+                                $("#tipo_incidencia").removeClass("is-invalid");
+                                $("#tipo_incidencia").removeClass("is-valid");
+                                $("#incidenciaIdPregunta5").val("");
+                                $("#tipo_incidencia").val("");
+                                $("#comentarios_incidencias").val("");
+                            });
+                        }
+                    }
+                });
+
+                axios.get('/residuos/getIncidencias/' + model.id + "/ManifiestoEntrega").then(response => {
+                    if (response.data != "") {
+                        $("#addIncidencias_4").css("display", "none");
+                    } else {
+                        $("#addIncidencias_4").css("display", "block");
+                    }
+                });
+
+            /******************************* FIN Incidencias de la Cédula **********************************/
+
+                /********************************* Validaciones para las respuestas *******************************/
+                $('.pregunta').change(function () {
+                    let pregunta = $(this).data('pregunta');
+                    let pusuario = $(this).data('pusuario');
+                    let respuesta = $('input:radio[name="pregunta_' + pusuario + '"]:checked').val();
+
+                    if (respuesta == "false" || respuesta == "Anticipada") {
+                        if (pregunta == 4) {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        } else if (pregunta == 5) {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        } else {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        }
+                    }
+                    else {
+                        if (pregunta == 1) {
+                            $("#fechaProgramada_" + pregunta).val('');
+                            $("#fechaEntrega_" + pregunta).val('');
+                        } else if (pregunta == 4) {
+                            axios.get('/residuos/totalIncidencia/' + model.id + '/' + pregunta).then(response => {
+                                if (response.data != "") {
+                                    Swal.fire({
+                                        'icon': 'warning',
+                                        'title': 'Servicio de RPBI',
+                                        'html': '<strong>Advertencia:</strong><p>Tiene incidencias capturadas en esta pregunta, al cambiar la respuesta de "NO" a "SI" ' +
+                                            '<strong>se borrarán todas las incidencias. ¿Desea continuar? </strong></p>',
+                                        'confirmButtonColor': '#3085d6',
+                                        'cancelButtonColor': '#d33',
+                                        'confirmButtonText': 'Si, eliminar',
+                                        'cancelButtonText': 'Cancelar',
+                                        'showCancelButton': true
+                                    }).then(p => {
+                                        if (p.isConfirmed) {
+                                            Swal.fire({
+                                                'icon': 'warning',
+                                                'title': 'Servicio de RPBI',
+                                                'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el cambio de respuesta.',
+                                                'confirmButtonColor': '#3085d6',
+                                                'cancelButtonColor': '#d33',
+                                                'confirmButtonText': 'Si, eliminar todo',
+                                                'cancelButtonText': 'Cancelar',
+                                                'showCancelButton': true,
+                                                'input': 'text',
+                                                'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                            }).then(res => {
+                                                if (res.value == 'ELIMINAR') {
+                                                    axios.get("/residuos/eliminaIncidencias/" + model.id + "/Pregunta4").then(response => {
+                                                        if (response.status == 200) {
+                                                            Swal.fire({
+                                                                'icon': 'success',
+                                                                'title': 'Servicio de RPBI',
+                                                                'html': 'Las(s) incidencia(s) fue(fueron) eliminada(s) correctamente.',
+                                                            }).then(function () {
+                                                                $('input:radio[name="pregunta_' + pusuario + '"][value="true"]').prop('checked', true);
+                                                                $("#divIncidencias_" + pusuario).css("display", "none");
+                                                                guardaCedula();
+                                                            });
+                                                        }
+                                                    }).catch(error => {
+                                                        Swal.fire({
+                                                            'icon': 'error',
+                                                            'title': 'Servicio de RPBI',
+                                                            'html': 'No se pudieron eliminar las incidencias del servicio de RPBI. Contacta a tu Administrador.',
+                                                        });
+                                                    });
+                                                } else {
+                                                    $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                                    $("#divIncidencias_" + pusuario).css("display", "block");
+                                                }
+                                            });
+                                        } else {
+                                            $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                            $("#divIncidencias_" + pusuario).css("display", "block");
+                                        }
+                                    });
+                                }
+                            });
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        } else if (pregunta == 5) {
+                            axios.get('/residuos/totalIncidencia/' + model.id + '/' + pregunta).then(response => {
+                                if (response.data != "") {
+                                    Swal.fire({
+                                        'icon': 'warning',
+                                        'title': 'Servicio de RPBI',
+                                        'html': '<strong>Advertencia:</strong><p>Tiene incidencias capturadas en esta pregunta, al cambiar la respuesta de "NO" a "SI" ' +
+                                            '<strong>se borrarán todas las incidencias. ¿Desea continuar? </strong></p>',
+                                        'confirmButtonColor': '#3085d6',
+                                        'cancelButtonColor': '#d33',
+                                        'confirmButtonText': 'Si, eliminar',
+                                        'cancelButtonText': 'Cancelar',
+                                        'showCancelButton': true
+                                    }).then(p => {
+                                        if (p.isConfirmed) {
+                                            Swal.fire({
+                                                'icon': 'warning',
+                                                'title': 'Servicio de RPBI',
+                                                'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el cambio de respuesta.',
+                                                'confirmButtonColor': '#3085d6',
+                                                'cancelButtonColor': '#d33',
+                                                'confirmButtonText': 'Si, eliminar todo',
+                                                'cancelButtonText': 'Cancelar',
+                                                'showCancelButton': true,
+                                                'input': 'text',
+                                                'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                            }).then(res => {
+                                                if (res.value == 'ELIMINAR') {
+                                                    axios.get("/residuos/eliminaIncidencias/" + model.id + "/Pregunta5").then(response => {
+                                                        if (response.status == 200) {
+                                                            Swal.fire({
+                                                                'icon': 'success',
+                                                                'title': 'Servicio de RPBI',
+                                                                'html': 'Las(s) incidencia(s) fue(fueron) eliminada(s) correctamente.',
+                                                            }).then(function () {
+                                                                $('input:radio[name="pregunta_' + pusuario + '"][value="true"]').prop('checked', true);
+                                                                $("#divIncidencias_" + pusuario).css("display", "block");
+                                                                guardaCedula();
+                                                            });
+                                                        }
+                                                    }).catch(error => {
+                                                        Swal.fire({
+                                                            'icon': 'error',
+                                                            'title': 'Servicio de RPBI',
+                                                            'html': 'No se pudieron eliminar las incidencias del servicio de RPBI. Contacta a tu Administrador.',
+                                                        });
+                                                    });
+                                                } else {
+                                                    $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                                    $("#divIncidencias_" + pusuario).css("display", "block");
+                                                }
+                                            });
+                                        } else {
+                                            $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                            $("#divIncidencias_" + pusuario).css("display", "block");
+                                        }
+                                    });
+                                }
+                            });
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        } else {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        }
+                        $("#divIncidencias_" + pusuario).css("display", "none");
+                    }
+                });
+            /********************************* Validaciones para las respuestas *******************************/
+
+                /******************************* Editar Cuestionario ******************************************/
+                if (respuestas != null && respuestas.length != 0) {
+                    for (var i = 0; i < respuestas.length; i++) {
+                        for (var j = 0; j < model.preguntas.length; j++) {
+                            if (respuestas[i].pregunta == model.preguntas[j].noPreguntaUsuario) {
+                                $('input:radio[name="pregunta_' + respuestas[i].pregunta + '"][value="' + respuestas[i].respuesta + '"]').prop('checked', true);
+                                if (model.preguntas[j].incidencias) {
+                                    $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "none" : "block"));
+                                }
+                                else if (model.preguntas[j].fechas) {
+                                    $('input:radio[name="pregunta_' + respuestas[i].pregunta + '"][value="' + respuestas[i].respuesta + '"]').prop('checked', true);
+                                    if (respuestas[i].respuesta == false) {
+                                        var fechas = respuestas[i].detalles;
+                                        $("#fechaProgramada_" + respuestas[i].pregunta).val(fechas.split("|")[0]);
+                                        $("#fechaEntrega_" + respuestas[i].pregunta).val(fechas.split("|")[1]);
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", "block");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            /***************************** FIN Editar Cuestionario ***************************************/
+
+            /************************************** CARGA/EDICION ARCHIVOS **************************************/
+                /*Modal para Adjuntar Archivos*/
+                    $('.btn_addFile').click(function () {
+                         $('#tipo_entregable').prop('disabled', false);
+                        var option = '<option value="">Seleccione un Entregable</option>';
+                        axios.get('/variables/getEntregablesCAR/' + model.servicioId + '/' + model.id).then(entre => {
+                            entre = entre.data;
+                            for (var i = 0; i < entre.length; i++) {
+                                option += "<option value='" + entre[i].abreviacion + "'>" + entre[i].valor + "</option>";
+                            }
+                            $('#tipo_entregable').html(option);
+                        });
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN del modal para adjuntar archivos*/
+
+                /*Adjunta Entregables*/
+                    function validaCamposArchivo() {
+
+                        if ($('#tipo_entregable').val() == "" && $('#customFile').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if ($('#tipo_entregable').val() == "" ) {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if (($('#customFile').val() == "" && $('.custom-file-label').text() == "")) {
+
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+
+                        return true;
+                }
+
+                    $("#customFile").on("change", function () {
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "pdf" || ext == "PDF") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Formato Incorrecto',
+                                'text': 'El archivo que intenta adjuntar no es válido. Favor de sólo seleccionar archivos "PDF"'
+                            });
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+                            if ($('#customFile').hasClass('is-valid')) {
+                                $('#customFile').removeClass('is-valid');
+                            }
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+                        }
+
+                    });
+
+                    $('#adjuntarArchivo').click(function () {
+                        var formData = new FormData();
+                        var folio = model.folio;
+                        var file = document.getElementById('customFile').files[0];
+                        var id = $('#file_id').val();
+                        var tipo = $('#tipo_entregable').val();
+                        var comentarios = $('#comentarios_entregable').val();
+
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("CedulaEvaluacionId", model.id);
+                        if(file != null)
+                            formData.append("Archivo", file);
+
+                        formData.append("Folio", folio);
+                        formData.append("Tipo", tipo);
+                        formData.append("Comentarios", comentarios);
+
+                        if (validaCamposArchivo()) {
+                            if (id != 0) {
+                                axios.post('/residuos/adjuntaEntregable', formData, {
+                                    headers: { 'Content-Type': 'multipart/form-data' }
+
+                                }).then(response => {
+                                    $('#cerrar_modal_sua').trigger('click');
+                                    /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                                    if (response.status == 200) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de RPBI',
+                                            'text': 'Se adjuntó el archivo correctamente.'
+                                        });
+                                        $('#customFile').removeClass('is-valid');
+                                        $('#comentarios_entregable').removeClass('is-valid');
+                                        $('#tipo_entregable').removeClass('is-valid');
+                                    }
+                                    axios.get("/residuos/getEntregables/" + model.id + "/" + model.servicioId).then(success => {
+                                        if (success.data == null || success.data == "") {
+                                            $('#tEntregables').html(success.data);
+                                        }
+                                        $('#tEntregables').html(success.data);
+                                    });
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de RPBI',
+                                        'text': 'Se presento un error al intentar adjuntar el archivo.'
+                                    });
+                                });
+
+                                document.getElementById('customFile').value = '';
+                                $('#file_id').val("");
+                                $(".custom-file-label").text("Seleccionar Archivo");
+                                $('#tipo_entregable').val('');
+                                $('#comentarios_entregable').val('');
+                            } else {
+                                axios.get('/residuos/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
+                                    if (exist.data == 0) {
+                                        axios.post('/residuos/adjuntaEntregable', formData, {
+                                            headers: { 'Content-Type': 'multipart/form-data' }
+
+                                        }).then(response => {
+                                            $('#cerrar_modal_sua').trigger('click');
+                                            /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': "success",
+                                                    'title': 'Servicio de RPBI',
+                                                    'text': 'Se adjuntó el archivo correctamente.'
+                                                });
+                                                $('#customFile').removeClass('is-valid');
+                                                $('#comentarios_entregable').removeClass('is-valid');
+                                                $('#tipo_entregable').removeClass('is-valid');
+                                            }
+                                            axios.get("/residuos/getEntregables/" + model.id + "/" + model.servicioId).then(success => {
+                                                if (success.data == null || success.data == "") {
+                                                    $('#tEntregables').html(success.data);
+                                                }
+                                                $('#tEntregables').html(success.data);
+                                            });
+                                        }).catch(error => {
+                                            Swal.fire({
+                                                'icon': "error",
+                                                'title': 'Servicio de RPBI',
+                                                'text': 'Se presento un error al intentar adjuntar el archivo.'
+                                            });
+                                        });
+
+                                        document.getElementById('customFile').value = '';
+                                        $('#file_id').val("");
+                                        $(".custom-file-label").text("Seleccionar Archivo");
+                                        $('#tipo_entregable').val('');
+                                        $('#comentarios_entregable').val('');
+                                    } else {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de RPBI',
+                                            'text': 'Ya fue enviado un entregable con el mismo tipo.'
+                                        });
+                                    }
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de RPBI',
+                                        'text': 'Ocurrío un error al válidar el entregable.'
+                                    });
+                                });
+                            }
+                        }
+                    });
+
+                /*FIN Adjunta Entregables*/
+
+                /* Listado de Entregables de la Cedula */
+                    axios.get("/residuos/getEntregables/"+model.id+"/"+model.servicioId).then(response => {
+                        if (response.data == null || response.data == "") {
+                            $('#tEntregables').html(response.data);
+                        }
+                        $('#tEntregables').html(response.data);
+                    });
+                /* Fin Listado de Entregables de la Cedula*/
+
+                /*Editar Entregables*/
+                    $(document).on("click", ".update_files", function () {
+                        $('#modal_evidencias').modal('show');
+                        var id = $(this).data('id');
+                        var tipo = $(this).data('tipo');
+                        var coments = $(this).data('coments');
+                        var file = $(this).data('file');
+                        $('#file_id').val(parseInt(id));
+                        $(".custom-file-label").text(file);
+                        $('#tipo_entregable').val(tipo);
+                        $('#comentarios_entregable').val(coments);
+                        $('#mes_correspondiente').prop('disabled', true);
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN de editar Entregables*/
+
+                /*Elimina entregables*/
+                   $(document).on("click", ".delete_files", function () {
+                        let id = $(this).data('id');
+                        let tipo = $(this).data('tipo');
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de RPBI',
+                            'text': '¿Está seguro de eliminar el archivo relacionado a "'+tipo+'"?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, Eliminar Archivo',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.post("/residuos/eliminaArchivo", { Id: id, Folio: model.folio }).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire({
+                                           'html':'El archivo se eliminó correctamente',
+                                           'title': 'Servicio de RPBI',
+                                           'icon': 'success'
+                                        });
+                                        axios.get("/residuos/getEntregables/" + model.id + "/" + model.servicioId).then(response => {
+                                            if (response.data == null || response.data == "") {
+                                                $('#tEntregables').html(response.data);
+                                            }
+                                            $('#tEntregables').html(response.data);
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire(
+                                        'Algo Falló',
+                                        'No se pudo procesar la solicitud. Contacta al Administrador.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+                    });
+                 /*FIN de elimina entregables*/
+
+                /*Ver archivo en modal*/
+                $(document).on('click', '.view_file', function () {
+                    let nombre = $(this).data('file');
+                    let tipo = $(this).data('tipo');
+                    let data = "<object width='100%' height='710px' data='/view/entregable/" + model.folio + "/" + nombre + "'></object>";
+                    $('#titlePDF').text("PDF - \"" + tipo + "\"");
+                    $('#objectPdf').html(data);
+                    $('#show_pdf').modal('show');
+                });
+                /*FIN de ver archivo en modal*/
+
+                /*Validaciones Entregables*/
+                    $('#tipo_entregable').change(function () {
+                        if ($('#tipo_entregable').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#tipo_entregable').removeClass('is-invalid');
+                            $('#tipo_entregable').addClass('is-valid');
+                            $('#error_tipoEntre').css('display', 'none');
+                        }
+                    });
+
+                    $('#customFile').change(function () {
+                         if ($('#customFile').val() == "") {
+                             $('#customFile').addClass('is-invalid');
+                             $('#error_customFile').css('display', 'block');
+
+                        } else {
+                             var fileName = $("#customFile").val().split("\\").pop();
+                             var ext = fileName.split('.').pop();
+                             if (ext != "pdf") {
+                                 $('#customFile').addClass('is-invalid');
+                                 $('#error_customFile').css('display', 'block');
+                             } else {
+                                 $('#customFile').removeClass('is-invalid');
+                                 $('#customFile').addClass('is-valid');
+                                 $('#error_customFile').css('display', 'none');
+                             }
+                        }
+                     });
+
+                    $('#comentarios_entregable').change(function () {
+                        if ($('#comentarios_entregable').val() == "") {
+                            $('#comentarios_entregable').addClass('is-invalid');
+                            $('#error_comentariosEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#comentarios_entregable').removeClass('is-invalid');
+                            $('#comentarios_entregable').addClass('is-valid');
+                            $('#error_comentariosEntre').css('display', 'none');
+                        }
+                    });
+                /*FIN de Validaciones Entregables*/
+
+            /************************************ FIN CARGA/EDICION ARCHIVOS ************************************/
+
+            /************************************ GUARDAR/ENVIAR Cédula ************************************/
+                /*Guardar la Cedula*/
+                    $('.btn_guardar').click(function () {
+                        var respuestas = new Array();
+                        let detalles = null;
+                        for (let i = 0; i < model.preguntas.length; i++) {
+                            let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                            detalles = null;
+                            if (respuesta != null && respuesta != undefined) {
+                                if (model.preguntas[i].fechas) {
+                                    if (respuesta == "false") {
+                                        detalles = $("#fechaProgramada_" + model.preguntas[i].noPreguntaUsuario).val() + "|" + $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                    } else if (respuesta == "Anticipada") {
+                                        detalles = respuesta+"|"+$("#fechaProgramada_" + model.preguntas[i].noPreguntaUsuario).val() + "|" + $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                    }
+                                }
+                                respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                            }
+                        }
+
+                        axios.post("/residuos/evaluation", respuestas).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Servicio de RPBI',
+                                    'html': "Se guardaron las respuesta de la cédula correctamente."
+                                });
+                            } else {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Servicio de RPBI',
+                                    'html': "Hubo un error al guardar las respuestas de la cédula. Contacte al Administrador del Sistema"
+                                });
+                            }
+                        });
+                    });
+                /*FIN de guardar la cedula*/
+
+                /*Guardar la Cedula sin mensaje*/
+                    function guardaCedula() {
+                        var respuestas = new Array();
+                        var detalles = "";
+                        for (let i = 0; i < model.preguntas.length; i++) {
+                            let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                            detalles = null;
+                            if (respuesta != null && respuesta != undefined) {
+                                if (model.preguntas[i].fechas) {
+                                    if (respuesta == "false") {
+                                        detalles = $("#fechaProgramada_" + model.preguntas[i].noPreguntaUsuario).val() + "|" + $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                    } else if (respuesta == "Anticipada") {
+                                        detalles = respuesta + "|" + $("#fechaProgramada_" + model.preguntas[i].noPreguntaUsuario).val() + "|" + $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                    }
+                                }
+                                respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                            }
+                        }
+
+                        axios.post("/residuos/evaluation", respuestas).then(response => {
+                            if (response.status == 200) {
+
+                            } else {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Servicio de RPBI',
+                                    'html': "Hubo un error al guardar las respuestas de la cédula. Contacte al Administrador del Sistema"
+                                });
+                            }
+                        });
+                    }
+                /*FIN de guardar la cedula*/
+
+                /*Validamos que ya fueron adjuntados todos los entregables*/
+                    function validaEntregables() {
+                        var msgEntregables = ["Factura", "Validación del SAT","Manifiesto"];
+                        var entregables = ["Factura", "SAT","Manifiesto"];
+                        var msg = "";
+                        var nota = false;
+                        var found = false;
+                        axios.get('/residuos/getListadoEntregables/' + model.id + "/" + model.servicioId).then(response => {
+                            for (var j = 0; j < entregables.length; j++) {
+                                for (var i = 0; i < response.data.length; i++) {
+                                    if (entregables[j] == response.data[i].tipo) {
+                                        found = true;
+                                        break;
+                                    } else {
+                                        found = false;
+                                    }
+                                }
+                                if (!found) {
+                                    msg += "<strong> - "+msgEntregables[j]+"<br/></strong>";
+                                }
+                            }
+
+
+                            if (msg != "") {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de RPBI',
+                                    'html': 'Para envíar la cédula a evaluación, es necesario adjuntar los siguientes entregables: <br/><br/>' + msg
+                                });
+                                return false;
+                            } else {
+                                axios.post('/residuos/historialResiduos', {
+                                    ServicioId: model.servicioId,
+                                    CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                                    Estatus: "Enviado a DAS", Comentarios: "Se envía la cédula a la DAS para su revisión."
+                                }).then(response => {
+                                    axios.post("/residuos/sendCedula/" + model.servicioId + "/" + model.id).then(response => {
+                                        if (response.status == 200) {
+                                            Swal.fire({
+                                                'icon': "success",
+                                                'title': 'Servicio de RPBI',
+                                                'html': "Se envíó la cédula para su revisión correctamente."
+                                            }).then(function () {
+                                                window.location.href = "/residuos/index";
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                'icon': "error",
+                                                'title': 'Servicio de RPBI',
+                                                'html': "Hubo un error al guardar las respuestas de la cédula. Contacte al Administrador del Sistema"
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
+
+                /*FIN Validamos que ya fueron adjuntados todos los entregables*/
+
+            /********************************** Funciones Adicionales *********************************/
+                    function cuentaIncidenciasRPBI(pregunta) {
+                        var isContinue = true;
+                        if (pregunta == 4) {
+                            $.ajax({
+                                url: '/residuos/getIncidenciasPregunta4/' + model.id + '/ManifiestoEntrega',
+                                type: 'GET',
+                                async: false,
+                                success: function (json) {
+                                    json == 0 ? isContinue = false : true;
+                                },
+                            });
+                        } else {
+                            $.ajax({
+                                url: '/residuos/getIncidenciasPregunta5/' + model.id,
+                                type: 'GET',
+                                async: false,
+                                success: function (json) {
+                                    json == 0 ? isContinue = false : true;
+                                },
+                            });
+                        }
+                        return isContinue;
+                    }
+            /********************************** FIN Funciones Asincronas*********************************/
+
+                /*Enviar la Cedula*/
+                $('.btn_enviar').click(function () {
+                    var next = true;
+                    let respuesta = true;
+                    let i = 0;
+                    if (model.facturas.length == 0) {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de RPBI',
+                            'html': 'No has registrado ninguna factura en la cédula'
+                        });
+                        return false;
+                    }
+                    guardaCedula();
+
+                    for (i = 0; i < model.preguntas.length; i++) {
+                        respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                        next = true;
+                        if (respuesta == null || respuesta == "") {
+                            next = false;
+                            break;
+                        }
+                        else if (i == 0 && respuesta == 'false' && ($("#fechaProgramada_1").val() == "" || $("#fechaEntrega_1").val() == "")) {
+                            next = false;
+                            break;
+                        }
+                        else if (i == 0 && respuesta == 'false' && $("#fechaProgramada_1").val() >= $("#fechaEntrega_1").val()) {
+                            next = false;
+                            break;
+                        }
+                        else if (i == 0 && respuesta == 'Anticipada' && ($("#fechaProgramada_1").val() == "" || $("#fechaEntrega_1").val() == "")) {
+                            next = false;
+                            break;
+                        }
+                        else if (i == 0 && respuesta == 'Anticipada' && $("#fechaEntrega_1").val() >= $("#fechaProgramada_1").val()) {
+                            next = false;
+                            break;
+                        }
+                        else if (i == 3 && respuesta == 'false') {
+                            next = cuentaIncidenciasRPBI((i+1));
+                            if (next == false) {
+                                break;
+                            }
+                        }
+                        else if (i == 4 && respuesta == 'false') {
+                            next = cuentaIncidenciasRPBI((i + 1));
+                            if (next == false) {
+                                break;
+                            }
+                        }
+                    }
+
+                    if(respuesta == null || respuesta ==""){
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de RPBI',
+                            'html': 'No ha respondido la <strong>Pregunta ' + (i + 1) + '</strong>'
+                        });
+                        return false;
+                    }
+                    else if (i == 0 && respuesta == 'false') {
+                        if ($("#fecha_programada").val() >= $("#fecha_realizada").val()) {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de RPBI',
+                                'html': 'La <b>Fecha Programada</b> no puede ser mayor o igual a la <b>Fecha Realizada</b> en la <b>Pregunta ' + (i + 1) + '</b>.'
+                            });
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de RPBI',
+                                'html': 'Por favor capture la <b>Fecha Programada</b> y/o la <b>Fecha Realizada</b> en la <b>Pregunta ' + (i + 1) + '</b>.'
+                            });
+                        }
+                        return false;
+                    }
+                    else if (i == 0 && respuesta == 'Anticipada') {
+                        if ($("#fecha_realizada").val() >= $("#fecha_programada").val()) {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de RPBI',
+                                'html': 'La <b>Fecha Programada</b> no puede ser menor o igual a la <b>Fecha Realizada</b> en la <b>Pregunta ' + (i + 1) + '</b>.'
+                            });
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de RPBI',
+                                'html': 'Por favor capture la <b>Fecha Programada</b> y/o la <b>Fecha Realizada</b> en la <b>Pregunta ' + (i + 1) + '</b>.'
+                            });
+                        }
+                        return false;
+                    }
+                    else if (i == 2 && respuesta == 'false') {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de RPBI',
+                            'html': 'Por favor capture los comentarios en la <b>Pregunta '+(i+1)+'</b>.'
+                        });
+                        return false;
+                    }
+                    else if (i == 3 && respuesta == 'false') {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de RPBI',
+                            'html': 'Ya se respondió la <strong>Pregunta ' + (i + 1) + ' </strong> pero no se han capturado <strong>incidencias</strong>'
+                        });
+                        return false;
+                    } else if (i == 4 && respuesta == 'false') {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de RPBI',
+                            'html': 'Ya se respondió la <strong>Pregunta ' + (i + 1) + '</strong> pero no se han capturado <strong>incidencias</strong>.'
+                        });
+                        return false;
+                    }
+                    
+                    validaEntregables();
+                });
+                /*Enviar de guardar la cedula*/
+
+            /********************************** FIN GUARDAR/ENVIAR CÉDULA **********************************/
+        }
+    </script>
+}

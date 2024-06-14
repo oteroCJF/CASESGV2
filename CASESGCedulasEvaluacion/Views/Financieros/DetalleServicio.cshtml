@@ -1,0 +1,983 @@
+﻿@model CedulasEvaluacion.Entities.MFinancieros.ModelsFinancieros;
+@{
+
+    ViewData["Title"] = "Detalle de Cédulas y Oficios en el Servicio de " + Model.Descripcion;
+    var estatus = new List<string>();
+    var meses = new List<string>();
+    var anio = 2023;
+    var totalOficios = 0.0;
+
+    @foreach (var dt in @Model.dashboard)
+    {
+        estatus.Add(dt.Estatus);
+        meses.Add(dt.Mes);
+    }
+
+    HashSet<string> quitaEstatus = new HashSet<string>(estatus);
+    List<string> lestatus = quitaEstatus.ToList();
+
+    HashSet<string> quitaMeses = new HashSet<string>(meses);
+    List<string> lmeses = quitaMeses.ToList();
+
+    var j = 0;
+}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="/financieros/index" type='button' class="btn btn-sm btn-warning ml-2 float-right" data-toggle="tooltip" title="Regresar a Cédulas Generadas por Servicio" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+        </div>
+    </div>
+    <form method="get" asp-route="/financieros/detalle/@Model.Servicio">
+        <div class="row col-lg-4">
+            <label for="cedulasAnio">Consultar Información del Año: </label>
+            <div class="input-group mb-3">
+                <select class="form-control" asp-for="@Model.Anio" id="anioActual">
+                    <option value="">Seleccione el Año</option>
+                    <option value="2021">2021</option>
+                    <option value="2022">2022</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                </select>
+                <div class="row">
+                    <button class="btn btn-primary ml-3" type="submit" id="consultar">Consultar Información</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    @if (@Model.Anio != 0)
+    {
+        <div class="row ">
+            <div class="col-lg-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#oficios" role="tab" aria-controls="home" aria-selected="true">Oficios de Pago</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="profile" aria-selected="false">Documentación de las Cédulas</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    @* Oficios de Financieros *@
+                    <div class="tab-pane fade mt-2 ml-3 show active" id="oficios" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="row mt-3">
+                            <div class="col-lg-12">
+                                @if (@Model.Anio != 0)
+                                {
+                                    <a href="#" class="btn btn-sm btn-primary float-right" id="newOficio" data-toggle="tooltip" title='Generar un nuevo "Oficio"'>
+                                        <i class="fas fa-plus"></i> Nuevo Oficio
+                                    </a>
+                                }
+                            </div>
+                            <div class="col-lg-12">
+                                <h4>Listado de Oficios </h4>
+                                <table class="table table-hover" id="tableOficios" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Servicio</th>
+                                            <th>Año</th>
+                                            <th>Número de Oficio</th>
+                                            <th>Estatus</th>
+                                            <th>Fecha de Pago</th>
+                                            <th>Importe Facturado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var of in Model.oficio)
+                                        {
+                                            j++;
+                                            totalOficios = totalOficios + Convert.ToDouble(of.ImporteFacturado);
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@of.Servicio</td>
+                                                <td>@of.Anio</td>
+                                                <td class="text-center">@of.NumeroOficio/@of.Anio</td>
+                                                <td>@of.Estatus</td>
+                                                @if (@of.FechaPagado.ToString("dd/MM/yyyy").Equals("01/01/0001") && !@of.Estatus.Equals("Cancelado"))
+                                                {
+                                                    <td class="text-center text-primary font-weight-bold">Pendiente</td>
+                                                }
+                                                else if (@of.Estatus.Equals("Cancelado"))
+                                                {
+                                                    <td class="text-center text-danger font-weight-bold">Oficio Cancelado</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center text-success font-weight-bold">@of.FechaPagado.ToString("dd/MM/yyyy")</td>
+                                                }
+                                                <td class="text-center">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @of.ImporteFacturado)</td>
+                                                <td>
+                                                    @if (@of.Estatus.Equals("En Proceso"))
+                                                    {
+                                                        <a href="/financieros/oficio/@Model.oficio[0].ServicioId/@of.Id" data-toggle="tooltip" title='Editar el Oficio "@of.Anio/@of.NumeroOficio"'>
+                                                            <i class="fas fa-pencil text-primary mr-2"></i>
+                                                        </a>
+                                                    }
+                                                    @if (@of.Estatus.Equals("Enviado a DGPPT"))
+                                                    {
+                                                        <a href="/financieros/revisar/@Model.oficio[0].ServicioId/@of.Id" data-toggle="tooltip" title='Ver detalles del Oficio "@of.Anio/@of.NumeroOficio"'>
+                                                            <i class="fas fa-eye text-primary mr-2"></i>
+                                                        </a>
+                                                        <a class="cancelarOficio" href="#" data-id="@of.Id" data-oficio="@of.NumeroOficio" data-anio="@of.Anio" data-toggle="tooltip" title='Cancelar el Oficio "@of.Anio/@of.NumeroOficio"'>
+                                                            <i class="fa-solid fa-ban text-danger mr-2"></i>
+                                                        </a>
+                                                        if (@of.NombreArchivo.Equals(""))
+                                                        {
+                                                            <a class="modalOficio" href="#" data-id="@of.Id" data-oficio="@of.NumeroOficio" data-anio="@of.Anio" data-toggle="tooltip"
+                                                               title='Adjuntar soporte documental de la solicitud de trámite de pago que acredite la prestación del servicio.'>
+                                                                <i class="fa-solid fa-file-exclamation text-warning mr-2"></i>
+                                                            </a>
+                                                        }
+                                                        else if (!@of.NombreArchivo.Equals(""))
+                                                        {
+                                                            <a class="updateAcuse" href="#" data-id="@of.Id" data-oficio="@of.NumeroOficio" data-anio="@of.Anio" data-file="@of.NombreArchivo" data-importe="@of.ImporteOficio"
+                                                               data-fechatramitado="@of.FechaTramitado.ToString("yyyy-MM-dd")" data-importepenas="@of.ImportePenas" data-toggle="tooltip" title='Modificar soporte documental que acredita la prestación del servicio con el oficio con número "@of.Anio/@of.NumeroOficio"'>
+                                                                <i class="fa-solid fa-file-exclamation text-primary mr-2"></i>
+                                                            </a>
+                                                            <a class="viewAcuse" href="#" data-id="@of.Id" data-oficio="@of.NumeroOficio" data-anio="@of.Anio" data-file="@of.NombreArchivo" data-importe="@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", of.ImporteOficio)"
+                                                               data-fechatramitado="@of.FechaTramitado.ToString("dd/MM/yyyy")" data-estatus="@of.Estatus" data-importenc="@of.ImporteNC" data-pagar="@of.TotalOficio"
+                                                               data-importefacturado="@of.ImporteFacturado" data-penas="@of.ImportePenas"
+                                                               data-toggle="tooltip" title='Ver el soporte documental que acredita la prestación del servicio con el oficio número "@of.Anio/@of.NumeroOficio"'>
+                                                                <i class="fa-solid fa-file-check mr-2 text-success"></i>
+                                                            </a>
+                                                        }
+                                                    }
+
+                                                    @if (@of.Estatus.Equals("Enviado a DGPPT"))
+                                                    {
+                                                        <a class="pagarOficio" href="#" data-id="@of.Id" data-anio="@of.Anio" data-oficio="@of.NumeroOficio" data-toggle="tooltip" title='Pagar el Oficio "@of.Anio/@of.NumeroOficio"'>
+                                                            <i class="fa-duotone fa-money-bill-1-wave text-success"></i>
+                                                        </a>
+                                                    }
+                                                    @if (@of.Estatus.Equals("Cancelado"))
+                                                    {
+                                                        <p class="font-weight-bold text-danger">Oficio Cancelado</p>
+                                                    }
+                                                    @if (@of.Estatus.Equals("Pagado"))
+                                                    {
+                                                        <a href="/financieros/revisar/@Model.oficio[0].ServicioId/@of.Id" data-toggle="tooltip" title='Ver detalles del Oficio "@of.Anio/@of.NumeroOficio"'>
+                                                            <i class="fas fa-eye text-success mr-2"></i>
+                                                        </a>
+
+                                                        @if (!@of.NombreArchivo.Equals(""))
+                                                        {
+                                                            <a class="viewAcuse" href="#" data-id="@of.Id" data-oficio="@of.NumeroOficio" data-anio="@of.Anio" data-file="@of.NombreArchivo" data-importe="@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", of.ImporteOficio)"
+                                                               data-fechatramitado="@of.FechaTramitado.ToString("dd/MM/yyyy")" data-estatus="@of.Estatus" data-importenc="@Convert.ToDouble(of.ImporteNC)" data-pagar="@Convert.ToDouble(of.TotalOficio)"
+                                                               data-importefacturado="@Convert.ToDouble(of.ImporteFacturado)" data-penas="@Convert.ToDouble(of.ImportePenas)"
+                                                               data-toggle="tooltip" title='Ver el soporte documental que acredita la prestación del servicio con el oficio número "@of.Anio/@of.NumeroOficio"'>
+                                                                <i class="fa-solid fa-file-check mr-2 text-success"></i>
+                                                            </a>
+                                                            <a class="updateAcuse" href="#" data-id="@of.Id" data-oficio="@of.NumeroOficio" data-anio="@of.Anio" data-file="@of.NombreArchivo" data-importe="@of.ImporteOficio"
+                                                               data-fechatramitado="@of.FechaTramitado.ToString("yyyy-MM-dd")" data-importepenas="@of.ImportePenas" data-toggle="tooltip" title='Modificar soporte documental que acredita la prestación del servicio con el oficio con número "@of.Anio/@of.NumeroOficio"'>
+                                                                <i class="fa-solid fa-file-exclamation text-primary mr-2"></i>
+                                                            </a>
+                                                        }
+                                                        @Html.Raw("<b class='text-success'>Oficio Pagado</b>");
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tr class="font-weight-bold">
+                                        <td colspan="6" class="text-right">Monto total de los oficios capturados: </td>
+                                        <td class="text-center">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @totalOficios)</td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row col-lg-12 mt-3">
+                            <div class="col-lg-12">
+                                <div class="card">
+                                    <div class="card-header bg-gray text-white">
+                                        <h4>Cédulas en Proceso de Operación</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row col-lg-12">
+                                            <table class="table table-striped table-bordered table-hover dataTables" id="tbl_detalles">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        @foreach (var est in lestatus)
+                                                        {
+                                                            if (est.Equals("En Proceso") || est.Equals("Enviado a DAS") || est.Equals("Autorizada") || est.Equals("Rechazada")
+                                                                || est.Equals("Trámite Rechazado"))
+                                                            {
+                                                                <th>@est</th>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl_op"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row col-lg-12">
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-header bg-gray text-white">
+                                        <h4>Cédulas en Proceso de CAE</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row col-lg-12">
+                                            <table class="table table-striped table-bordered table-hover dataTables" id="tbl_detalles">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        @foreach (var est in lestatus)
+                                                        {
+                                                            if (est.Equals("Revisión CAE") || est.Equals("Autorizado CAE"))
+                                                            {
+                                                                <th>@est</th>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl_cae"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="card">
+                                    <div class="card-header bg-gray text-white">
+                                        <h4>Cédulas en Proceso de Financieros</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row col-lg-12">
+                                            <table class="table table-striped table-bordered table-hover dataTables" id="tbl_detalles">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        @foreach (var est in lestatus)
+                                                        {
+                                                            if (est.Equals("En Trámite") || est.Equals("Trámite de Pago") || est.Equals("Enviada a DGPPT") || est.Equals("Pagada"))
+                                                            {
+                                                                <th>@est</th>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl_financieros"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin Oficios de Financieros *@
+                    @* Descarga de Entregables *@
+                    <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="profile-tab">
+                        <h4>Descarga de Entregables</h4>
+                        <div class="row col-lg-12 mt-2">
+                            <div class="form-group col-md-2" id="divMes">
+                                <label for="lblMes">Mes: </label>
+                                <select class="form-control" id="selectMes">
+                                </select>
+                                <div class="col-sm-12" id="error_mes">
+                                    <small id="dateHelp" class="text-danger">
+                                        Seleccione el "mes"
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2" id="divInmuebles">
+                                <label for="lblMes">Inmuebles: </label>
+                                <select class="form-control" id="selectInmuebles">
+                                    <option value="">Seleccione el Inmuebles</option>
+                                    @foreach (var inm in Model.inmuebles)
+                                    {
+                                        <option value="@inm.Id">@inm.Nombre</option>
+                                    }
+                                </select>
+                                <div class="col-sm-12" id="error_inmueble">
+                                    <small id="dateHelp" class="text-danger">
+                                        Seleccione el "Inmueble"
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2" id="divMes">
+                                <label for="lblMes">Estatus: </label>
+                                <select class="form-control" id="selectEstatus">
+                                    <option value="">Seleccione un estatus</option>
+                                    <option value="En Revisión">En Revisión</option>
+                                    <option value="Rechazado">Rechazado</option>
+                                    <option value="Autorizado">Autorizado</option>
+                                </select>
+                                <div class="col-sm-12" id="error_estatus">
+                                    <small id="dateHelp" class="text-danger">
+                                        Seleccione el "Estatus"
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="input-form mt-4">
+                                <button class="btn btn-primary ml-2 mt-2" type="submit" id="downloadFiles"><i class="fas fa-download mr-2"></i>Descargar Entregable(s)</button>
+                            </div>
+                            <div class="row col-lg-12">
+                                @foreach (var en in Model.listaEntregables)
+                                {
+                                    <div class="form-group mr-3 ml-1" id="divEntregables">
+                                        <div class="form-check-inline i-checks mt-3">
+                                            <strong class="text-black mr-2">@en.Valor</strong>
+                                            <input class="selectEntregable" name="listaEntregables[]" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                                   data-onstyle="success" data-offstyle="danger" data-abreviacion="@en.Abreviacion" data-style="ios" value="@en.Abreviacion">
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-sm-12" id="error_entregables">
+                                <small id="dateHelp" class="text-danger">
+                                    Seleccione los "Entregables a Descargar"
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    @* Fin de descarga de entregables*@
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@*Modal para Capturar Oficios*@
+<div class="modal fade" id="modal-oficio">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Nuevo Oficio</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-row col-md-3" id="divCategoria">
+                        <label for="">Servicios:</label>
+                        <select class="form-control" id="selectServicio"></select>
+                        <div class="col-sm-12" id="error_servicio">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el servicio para el oficio
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divCategoria">
+                        <label for="Anio">Año del Oficio: </label>
+                        <select id="selectAnio" class="form-control">
+                            <option value="">Seleccione una opción</option>
+                            <option value="@DateTime.Now.Year">@DateTime.Now.Year</option>
+                        </select>
+                        <div class="col-sm-12" id="error_anio">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el año del oficio
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divCategoria">
+                        <label for="">Número de Oficio:</label>
+                        <input class="form-control" id="numeroOficio" type="number" required />
+                        <div class="col-sm-12" id="error_numero">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el número del oficio
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="crearOficio">Crear Oficio</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin del Modal para Capturar Oficios*@
+
+@*Modal para Capturar Acuse del Oficio*@
+<div class="modal fade" id="modal-acuseOficio">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="tituloAcuse">Carga del Soporte Documental</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="idOficio" />
+                    <input type="hidden" id="carpetaOficio" />
+                    <div class="form-group col-lg-3">
+                        <label for="tipoIncidencia">Fecha de Trámite:</label>
+                        <input type="date" class="form-control" id="fechaOficio" />
+                        <div class="col-sm-12" id="error_fechaOficio">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la fecha de trámite del oficio
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione él archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="fechaCierre">Importe Oficio:</label><br>
+                        <input id="importeOficio" class="form-control" type="number" />
+                        <div class="col-sm-12" id="error_importe">
+                            <small id="comentariosHelp" class="text-danger">
+                                Por favor capture el importe del oficio
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="fechaCierre">Importe Penas y Deductivas:</label><br>
+                        <input id="importePenas" class="form-control" type="number" />
+                        <div class="col-sm-12" id="error_importePenas">
+                            <small id="comentariosHelp" class="text-danger">
+                                Por favor capture el importe de las penas y deductivas
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="cargarAcuse">Adjuntar Acuse</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin del Modal para Capturar Oficios*@
+
+@* Modal para la ver el Acuse de Financieros *@
+<div class="modal fade" id="modalVerAcuse">
+    <div class="modal-dialog modal-xl-view">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titleAcuseOficio"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-view">
+                <table class="table" id="tblAcuse"></table>
+                <div class="row" id="objectPdf">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la ver el Acuse de Financieros *@
+
+<style>
+    .dt-buttons > .btn-secondary {
+        border: none;
+    }
+    .btn-group > .btn-secondary{
+        border: none;
+    }
+</style>
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            var meses = @Html.Raw(Json.Serialize(lmeses));
+            var dashboard = @Html.Raw(Json.Serialize(@Model.dashboard));
+            var oficios = @Html.Raw(Json.Serialize(@Model.oficio));
+            var tbody = "";
+            var tbodyC = "";
+            var tbodyF = "";
+            var model = @Html.Raw(Json.Serialize(@Model));
+            
+            $("#error_fechaOficio").css('display','none');
+            $("#error_customFile").css('display','none');
+            $("#error_importe").css('display','none');
+            $("#error_importePenas").css('display','none');
+            $("#anioActual").val(model.anio);
+
+            $("#tableOficios").DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Servicio de ' + model.servicio + ' - Listado de Oficios Capturados',
+                        className: "bg-cjf mr-1",
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Servicio de ' + model.servicio + ' - Listado de Oficios Capturados',
+                        className: "bg-cjf mr-1"
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Servicio de ' + model.servicio + ' - Listado de Oficios Capturados',
+                        text: 'Imprimir',
+                        className: "bg-cjf mr-1"
+                    },
+                    /*{
+                        extend: 'colvis',
+                        text: 'Ocultar Columnas',
+                        className: "bg-cjf"
+                    }*/],
+                autoWidth: false,
+                paging: true,
+                bLengthChange: false,
+                responsive: true,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            var aMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+            let optionsMes = "<option value=''>Seleccione el mes</option>";
+            aMeses.forEach(function (mes) {
+                optionsMes += "<option value=" + mes + ">" + mes+ "</option>";
+            });
+            $("#selectMes").html(optionsMes);
+
+            $("#error_mes").css('display', 'none');
+            $("#error_inmueble").css('display', 'none');
+            $("#error_entregables").css('display', 'none');
+            $("#error_estatus").css('display', 'none');
+
+            /*Flujo de Oficio*/
+                $(".cancelarOficio").click(function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Trámite de Oficio',
+                        'html': '¿Está seguro que desea <b>cancelar el oficio con el número: ' + $(this).data('oficio') + '/' + $(this).data('anio') + '?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, cancelar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.get("/financieros/cancela/oficio/" + model.oficio[0].servicioId + '/' + $(this).data('id')).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': 'success',
+                                        'title': 'Oficios para Trámite de Pago',
+                                        'html': 'Se canceló el oficio correctamente.'
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(".pagarOficio").click(function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Trámite de Oficio',
+                        'html': '¿Está seguro que desea <b>pagar el oficio con el número: ' + $(this).data('oficio') + '/' + $(this).data('anio')+'?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, pagar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            Swal.fire({
+                                'icon': 'warning',
+                                'title': 'Trámite de Oficio',
+                                'html': 'Para concluir con el trámite del Oficio <b>' + $(this).data('oficio') + '/' + $(this).data('anio') + '</b> debe capturar la fecha ' +
+                                    'en que se realizó o realizará el pago. <br><input type="date" class="swal2-input" id="fechaPago">',
+                                'confirmButtonColor': '#3085d6',
+                                'cancelButtonColor': '#d33',
+                                'confirmButtonText': 'Si, pagar',
+                                'cancelButtonText': 'Cancelar',
+                                'showCancelButton': true,
+                                'stopKeydownPropagation': false,
+                            }).then(pagado => {
+                                var fechaPago = $("#fechaPago").val();
+                                if (fechaPago != "" || fechaPago != null){
+                                    axios.get("/financieros/pagar/oficio/" + model.oficio[0].servicioId + '/' + $(this).data('id') + '/' + fechaPago).then(response => {
+                                        if (response.status == 200) {
+                                            Swal.fire({
+                                                'icon': 'success',
+                                                'title': 'Oficios para Trámite de Pago',
+                                                'html': 'Se pagó el oficio correctamente.'
+                                            }).then(function () {
+                                                window.location.reload();
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            /*Fin Flujo de Oficio*/
+
+            /*Errores de Captura de Oficio*/
+            $('#error_servicio').css('display', 'none');
+            $('#error_anio').css('display', 'none');
+            $('#error_numero').css('display', 'none');
+            $("#error_mes").css('display', 'none');
+            /*Fin Errores de Captura de Oficio*/
+
+            if (model.dashboard.length != 0) {
+                /*Llenado de la Tabla de Porcentajes*/
+                axios.get('/financieros/generaTabla/' + dashboard[0].servicio + '/' + 'Operacion' + '/' + model.anio).then(table => {
+                    table = table.data;
+                    console.log(table);
+                    console.log(meses.length);
+                    for (let i = 0; i < meses.length; i++) {
+                        tbody += "<tr><td class='font-weight-bold'>" + meses[i] + "</td>";
+                        for (let c = 0; c < table[i].length; c++) {
+                            tbody += table[i][c];
+                        }
+                        tbody += "</tr>";
+                    }
+                    $("#tbl_op").html(tbody);
+                });
+                /*Llenado de la Tabla de Porcentajes*/
+
+                /*Llenado de la Tabla de Porcentajes*/
+                axios.get('/financieros/generaTabla/' + dashboard[0].servicio + '/' + 'CAE' + '/' + model.anio).then(table => {
+                    table = table.data;
+                    for (let i = 0; i < meses.length; i++) {
+                        tbodyC += "<tr><td class='font-weight-bold'>" + meses[i] + "</td>";
+                        for (let c = 0; c < table[i].length; c++) {
+                            tbodyC += table[i][c];
+                        }
+                        tbodyC += "</tr>";
+                    }
+                    $("#tbl_cae").html(tbodyC);
+                });
+                /*Llenado de la Tabla de Porcentajes*/
+
+                /*Llenado de la Tabla de Porcentajes*/
+                axios.get('/financieros/generaTabla/' + dashboard[0].servicio + '/' + 'Financieros' + '/' + model.anio).then(table => {
+                    table = table.data;
+                    for (let i = 0; i < meses.length; i++) {
+                        tbodyF += "<tr><td class='font-weight-bold'>" + meses[i] + "</td>";
+                        for (let c = 0; c < table[i].length; c++) {
+                            tbodyF += table[i][c];
+                        }
+                        tbodyF += "</tr>";
+                    }
+                    $("#tbl_financieros").html(tbodyF);
+                });
+            /*Llenado de la Tabla de Porcentajes*/
+            }
+
+            $("#newOficio").click(function () {
+                var servicios = '<option value="">Seleccione un Servicio</option>';
+                /*Llenado de la Lista de Servicios*/
+                axios.get('/catalogo/servicios').then(options => {
+                    options = options.data;
+                    for (let i = 0; i < options.length; i++) {
+                        servicios += '<option value="'+options[i].id+'">'+options[i].nombre+'</option>';
+                    }
+                    $("#selectServicio").html(servicios);
+                    $("#selectServicio").val(model.dashboard[0].servicioId).change();
+                    $("#selectServicio").prop('disabled',true);
+                });
+                /*Llenado de la Lista de Servicios*/
+                $("#modal-oficio").modal('show');
+            });
+
+            function validaCamposOficio() {
+                if ($("#selectServicio").val() != "" && $("#selectAnio").val() != "" && $("#numeroOficio").val() != "") {
+                    return true;
+                }
+
+                if ($('#selectServicio').val() == "") {
+                    $('#selectServicio').addClass('is-invalid');
+                    $('#error_servicio').css('display', 'block');
+                }
+
+                if ($('#selectAnio').val() == "") {
+                    $('#selectAnio').addClass('is-invalid');
+                    $('#error_anio').css('display', 'block');
+                }
+
+                if ($('#numeroOficio').val() == "") {
+                    $('#numeroOficio').addClass('is-invalid');
+                    $('#error_numero').css('display', 'block');
+                }
+                return false;
+            }
+
+            $('#selectServicio').change(function () {
+                if ($(this).val() != "") {
+                    $('#selectServicio').removeClass('is-invalid');
+                    $('#error_servicio').css('display', 'none');
+                }
+            });
+
+            $('#selectAnio').change(function () {
+                if ($(this).val() != "") {
+                    $('#selectAnio').removeClass('is-invalid');
+                    $('#selectAnio').addClass('is-valid');
+                    $('#error_anio').css('display', 'none');
+                }
+            });
+
+            $('#numeroOficio').change(function () {
+                if ($(this).val() != "") {
+                    $('#numeroOficio').removeClass('is-invalid');
+                    $('#numeroOficio').addClass('is-valid');
+                    $('#error_numero').css('display', 'none');
+                }
+            });
+
+            $("#crearOficio").click(function () {
+                var servicio = $("#selectServicio").val();
+                var anio = $("#selectAnio").val();
+                var oficio = $("#numeroOficio").val();
+
+                if (validaCamposOficio()) {
+                    axios.post('/financieros/inserta/oficio', { ServicioId: parseInt(servicio), Anio: parseInt(anio), NumeroOficio: parseInt(oficio)}).then(response => {
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': 'success',
+                                'title': 'Oficios para Trámite de Pago',
+                                'html': 'Se generó el oficio correctamente.'
+                            }).then(function () {
+                                window.location.href = '/financieros/oficio/' + dashboard[0].servicioId+'/'+response.data;
+                            });
+                        }
+                    });
+                }
+            });
+
+            $(".modalOficio").click(function () {
+                $("#idOficio").val($(this).data('id'));
+                $("#carpetaOficio").val($(this).data('oficio'));
+                $("#tituloAcuse").val("Carga del acuse del oficio con número - "+$(this).data('oficio'));
+                $("#modal-acuseOficio").modal('show');
+            });
+
+            /*Carga del Acuse*/
+            $("#customFile").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                var ext = fileName.split('.').pop();
+                if (ext == "pdf") {
+                    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                } else {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Formato Incorrecto',
+                        'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                    });
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    document.getElementById('customFile').value = '';
+                    if ($('#customFile').hasClass('is-valid')) {
+                        $('#customFile').removeClass('is-valid');
+                    }
+
+                    $('#customFile').addClass('is-invalid');
+                    $('#error_customFile').css('display', 'block');
+                }
+            });
+
+            function validaCamposArchivo() {
+                if ($('#importeOficio').val() == "" && $('#importePenas').val() == "" && ($('#customFile').val() == "" && $('.custom-file-label').text() == "") && $('#fechaOficio').val() == "") {
+                    $('#importeOficio').addClass('is-invalid');
+                    $("#error_importe").css('display', 'block');
+
+                    $('#customFile').addClass('is-invalid');
+                    $('#error_customFile').css('display', 'block');
+
+                    $('#fechaOficio').addClass('is-invalid');
+                    $("#error_fechaOficio").css('display', 'block');
+
+                    return false;
+                }
+
+                if ($('#importeOficio').val() == "") {
+                    $('#importeOficio').addClass('is-invalid');
+                    $('#error_importe').css('display', 'block');
+
+                    return false;
+                }
+
+                if ($('#importePenas').val() == "") {
+                    $('#importePenas').addClass('is-invalid');
+                    $('#error_importePenas').css('display', 'block');
+
+                    return false;
+                }
+
+                if ($('#fechaOficio').val() == "") {
+                    $('#fechaOficio').addClass('is-invalid');
+                    $('#error_fechaOficio').css('display', 'block');
+
+                    return false;
+                }
+
+                if (($('#customFile').val() == "" && $('.custom-file-label').text() == "")) {
+
+                    $('#customFile').addClass('is-invalid');
+                    $('#error_customFile').css('display', 'block');
+
+                    return false;
+                }
+
+                return true;
+            }
+
+            $('#cargarAcuse').click(function () {
+                var formData = new FormData();
+                var id = $("#idOficio").val();
+                var file = document.getElementById('customFile').files[0];
+                var fechaTramitado = $('#fechaOficio').val();
+                var importe = $('#importeOficio').val();
+                var importePenas = $('#importePenas').val();
+                var numeroOficio = $('#carpetaOficio').val();
+
+                formData.append("Id", parseInt(id));
+
+                formData.append("Archivo", file);
+                formData.append("FechaTramitado", fechaTramitado);
+                formData.append("ImporteOficio", importe);
+                formData.append("ImportePenas", importePenas);
+                formData.append("NumeroOficio", numeroOficio);
+
+                if (validaCamposArchivo()) {
+                    axios.post('/financieros/insertaAcuse', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    }).then(response => {
+                        $('#cerrar_modal_sua').trigger('click');
+                        /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Soporte Documental',
+                                'html': '<p style="text-align: justify">Se adjuntó el soporte documental que acredita la prestación del servicio con el oficio número <b>'+numeroOficio+'</b> correctamente.</p>'
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                            $('#customFile').removeClass('is-valid');
+                            $('#comentarios_entregable').removeClass('is-valid');
+                            $('#tipo_entregable').removeClass('is-valid');
+                        }
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Soporte Documental',
+                            'html': 'Se presentó un error al intentar adjuntar el soporte documental.'
+                        });
+                    });
+                    document.getElementById('customFile').value = '';
+                    $('#file_id').val("");
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    $('#tipo_entregable').val('');
+                    $('#comentarios_entregable').val('');
+                }
+            });
+
+            /*Ver archivo en modal*/
+            $(document).on('click', '.viewAcuse', function () {
+                let numero = $(this).data('oficio');
+                let acuse = $(this).data('file');
+                let tbl = "<tr>"+
+                        "<td><strong>Número de Oficio: </strong>" + $(this).data('oficio') + "</td>" +
+                        "<td><strong>Año: </strong>" + $(this).data('anio') + "</td>" +
+                        "<td><strong>Fecha de Trámite: </strong>"+$(this).data('fechatramitado')+"</td>"+
+                        "<td><strong>Estatus: </strong>"+$(this).data('estatus')+"</td>"+
+                    "</tr>"+
+                    "<tr>"+
+                        "<td><strong class='text-success'>Monto total de la(s) Factura(s): </strong>$" + ($(this).data('importefacturado') != 0 ? $(this).data('importefacturado').toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : 0)+"</td>" +
+                    "<td><strong class='text-danger'>Monto total de la(s) Nota(s) de Crédito: </strong>$" + ($(this).data('importenc') != 0 ? $(this).data('importenc').toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : 0)+"</td>" +
+                    "<td><strong class='text-danger'>Penas y Deductivas: </strong>$" + ($(this).data('penas') != 0 ? $(this).data('penas') : 0)+"</td>" +
+                    "<td><strong class='text-success'>Monto total a Pagar: </strong>$" + ($(this).data('pagar') != 0 ? $(this).data('pagar').toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') : 0)+"</td>" +
+                     "</tr>";
+                let data = "<object width='100%' height='700px' data='/view/acuseFinancieros/" + numero + "/"+acuse+"'></object>";
+                $('#titleAcuseOficio').text("Soporte documental que acredita la prestación del servicio con el oficio número - \"" + numero+ "\"");
+                $('#objectPdf').html(data);
+                $('#tblAcuse').html(tbl);
+                $('#modalVerAcuse').modal('show');
+            });
+            /*FIN de ver archivo en modal*/
+
+            /*Ver archivo en modal*/
+            $(document).on('click', '.updateAcuse', function () {
+                $("#idOficio").val($(this).data('id'));
+                let acuse = $(this).data('file');
+                let oficio = $(this).data('oficio');
+                let importe = $(this).data('importe');
+                let importePenas = $(this).data('importepenas');
+                let fechaTramitado = $(this).data('fechatramitado');
+                $(".custom-file-label").text(acuse);
+                $('#fechaOficio').val(fechaTramitado);
+                $('#importeOficio').val(importe);
+                $('#importePenas').val(importePenas);
+                $('#carpetaOficio').val(oficio);
+                $('#modal-acuseOficio').modal('show');
+            });
+            /*FIN de ver archivo en modal*/
+
+            /******************************* Descargar Entregables *****************************************/
+                $("#downloadFiles").click(function () {
+                    var tipos = new Array();
+                    var inmueble = $("#selectInmuebles").val() != "" ? $("#selectInmuebles").val() : 0;
+
+                    $(".selectEntregable").each(function () {
+                        if ($(this).prop("checked")) {
+                            tipos.push({
+                                Anio: model.anio, ServicioId: model.servicioId, Tipo: $(this).val(), Mes: $("#selectMes").val(), InmuebleId: parseInt(inmueble), Estatus: $("#selectEstatus").val()
+                            });
+                        }
+                    });
+                    Swal.fire({
+                        icon: "info",
+                        title: "Detalle de Cédulas",
+                        html: "Obteniendo Entregables, por favor espere."
+                    })
+                    Swal.showLoading();
+                    if (tipos.length != 0) {
+                        axios.post('/financieros/descargaentregables', tipos).then(down => {
+                            if (down.data != "") {
+                                Swal.hideLoading();
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Detalle de Cédulas",
+                                    html: "Archivo generado correctamente. Haga click en el botón descargar.",
+                                    confirmButtonText: 'Descargar'
+                                }).then(function () {
+                                    window.location.href = "/financieros/descargaEntregables/" + down.data;
+                                });
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Detalle de Cédulas',
+                            'html': 'Seleccione un tipo de entregable a descargar.'
+                        })
+                    }
+                });
+
+                
+            /***************************** Fin de Descargar Entregables ***********************************/
+
+        });
+    </script>
+}

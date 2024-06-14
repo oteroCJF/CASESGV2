@@ -1,0 +1,214 @@
+﻿@model IEnumerable<CedulasEvaluacion.Entities.MCargasMasivas.CargasMasivas>;
+@{
+    ViewData["Title"] = "Cargas Masivas de Archivos";
+    int i = 0;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <a href="#" type='button' class="btn btn-sm btn-primary ml-2 float-right addCarga" data-toggle="tooltip" title="Registrar nueva carga masiva" data-placement="top">
+                <i class="fal fa-plus"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row col-lg-12 mt-3">
+        <div class="col-lg-12 mt-3 ml-2 mb-3">
+            <table class="table tblCargasMasivas" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Año</th>
+                        <th>Nombre</th>
+                        <th>Elaboro</th>
+                        <th>Estatus</th>
+                        <th>Total de Facturas</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cm in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td>@cm.Anio</td>
+                            <td>@cm.Nombre</td>
+                            <td>@cm.Usuario</td>
+                            <td>@cm.Estatus</td>
+                            <td>@cm.TotalFacturas</td>
+                            <td class="text-center">
+                                @if (cm.TotalFacturas == 0)
+                                {
+                                    <a href="/cargasMasivas/nuevaCarga/@cm.Id" >
+                                        <i class="fas fa-plus text-primary mr-2"></i>
+                                    </a>
+                                }
+                                else if (cm.TotalFacturas != 0)
+                                {
+                                    <a href="/cargasMasivas/revisarCarga/@cm.Id">
+                                        <i class="fas fa-eye text-success"></i>
+                                    </a>
+                                }
+                                <a href="#"></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@*Modal para Capturar Oficios*@
+<div class="modal fade" id="modal-cargaMasiva">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Nueva Carga Masiva</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-row col-md-3" id="divAnio">
+                        <label for="">Año:</label>
+                        <select id="selectAnio" class="form-control">
+                            <option value="">Seleccione el año</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                        </select>
+                        <div class="col-sm-12" id="error_selectAnio">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el año de la carga masiva
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divNombre">
+                        <label for="">Nombre de la Carga:</label>
+                        <input class="form-control" id="nombreCarga" type="text" required />
+                        <div class="col-sm-12" id="error_nombreCarga">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el nombre de la carga masiva
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divTipo">
+                        <label for="Anio">Tipo de Archivo: </label>
+                        <select id="tipoCarga" class="form-control">
+                            <option value="">Seleccione una opción</option>
+                            <option value="XML">XML</option>
+                            <option value="PDF">PDF</option>
+                        </select>
+                        <div class="col-sm-12" id="error_tipoCarga">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el tipo de archivo a cargar masivamente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="crearCargaMasiva">Crear Carga Masiva</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin del Modal para Capturar Oficios*@
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            
+            $('.tblCargasMasivas').DataTable({
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            title: 'Listado de Cargas Masivas',
+                            className: "bg-cjf mr-1",
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            title: 'Listado de Cargas Masivas',
+                            className: "bg-cjf mr-1"
+                        },
+                        {
+                            extend: 'print',
+                            title: 'Listado de Cargas Masivas',
+                            text: 'Imprimir',
+                            className: "bg-cjf mr-1"
+                        },
+                    ],
+                    lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+                    autoWidth: false,
+                    responsive: true,
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                    },
+                });
+
+            $('#error_nombreCarga').css('display', 'none');
+            $('#error_tipoCarga').css('display', 'none');
+            $('#error_selectAnio').css('display', 'none');
+
+            $(".addCarga").click(function () {
+                $("#modal-cargaMasiva").modal('show');
+            });
+
+            function validaCamposCarga() {
+                if ($("#nombreCarga").val() != "" && $("#selectAnio").val() != "" && $("#tipoCarga").val() != "") {
+                    return true;
+                }
+
+                if ($('#nombreCarga').val() == "") {
+                    $('#nombreCarga').addClass('is-invalid');
+                    $('#error_nombreCarga').css('display', 'block');
+                }
+
+                if ($('#tipoCarga').val() == "") {
+                    $('#tipoCarga').addClass('is-invalid');
+                    $('#error_tipoCarga').css('display', 'block');
+                }
+
+                if ($('#selectAnio').val() == "") {
+                    $('#selectAnio').addClass('is-invalid');
+                    $('#error_selectAnio').css('display', 'block');
+                }
+
+                return false;
+            }
+
+            $("#crearCargaMasiva").click(function () {
+                var anio = $("#selectAnio").val();
+                var tipo= $("#tipoCarga").val();
+                var nombre = $("#nombreCarga").val();
+
+                if (validaCamposCarga()) {
+                    axios.post('/cargasMasivas/insertaCarga', {
+                        Anio: parseInt(anio), UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                        Nombre: nombre, TipoArchivo: tipo
+                    }).then(response => {
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': 'success',
+                                'title': 'Cargas Masivas',
+                                'html': 'Se generó el registro para la carga masiva.'
+                            }).then(function () {
+                                window.location.href = '/cargasMasivas/nuevaCarga/' + response.data;
+                            });
+                        }
+                    });
+                }
+            });
+        })
+    </script>
+}
+

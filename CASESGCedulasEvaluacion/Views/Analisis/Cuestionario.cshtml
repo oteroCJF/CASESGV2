@@ -1,0 +1,1767 @@
+﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@{
+    ViewData["Title"] = "Cédula del Servicio de Análisis Microbiológicos con Folio: " + Model.Folio;
+    var f = 0;
+    var cf = 0;
+    var i = 1;
+    decimal totalConceptos = 0;
+    decimal totalIVA = 0;
+}
+
+<div class="row col-lg-12 d-flex justify-content-end">
+    <a href="/analisis/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip"
+       title="Regresar al listado de cédulas de análisis microbiológicos" data-placement="top">
+        <i class="fal fa-arrow-left"></i>
+    </a>
+</div>
+<div class="row col-lg-12">
+    <div class="row col-lg-12">
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#evaluacion" role="tab" aria-controls="home" aria-selected="true">Evaluación del Servicio</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#facturacion" role="tab" aria-controls="profile" aria-selected="false">Facturación</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!-- Pestaña de Evaluación -->
+                <div class="tab-pane fade mt-3 ml-3 show active" id="evaluacion" role="tabpanel" aria-labelledby="home-tab">
+                    <h4>Evaluación del Servicio</h4>
+                    <div class="row col-lg-12 mt-4 mb-3">
+                        <table class="table">
+                            <tr>
+                                <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;"><strong>Folio: </strong> @Model.Folio</td>
+                                <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
+                                <td data-toggle="tooltip" title="Mes evaluado" data-placement="top"><strong>Mes: </strong>@Model.Mes</td>
+                                <td data-toggle="tooltip" title="Administración/Inmueble evaluado" data-placement="top"><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                                <td data-toggle="tooltip" title="Estatus de la cédula del servicio de suministrao de agua purificada para beber" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
+                            </tr>
+                            <tr>
+                                <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes" del inmueble "@Model.inmuebles.Nombre"' data-placement="top">
+                                    <strong>Facturas asignadas: </strong> @Model.facturas.Count
+                                </td>
+                                <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
+                                    <strong>Monto Total IVA Incluido: </strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-joke text-white">
+                            <h5 class="mt-2">Evaluación de la cédula</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        @foreach (var pr in Model.preguntas)
+                                        {
+                                            <li class="nav-item" role="presentation">
+                                                <a class="nav-link @(pr.Cierre ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
+                                            </li>
+                                        }
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        @foreach (var pr in Model.preguntas)
+                                        {
+                                            <div class="tab-pane fade mt-2 ml-3 @(pr.Cierre ? "show active":"")" id="pregunta_@pr.NoPreguntaUsuario" role="tabpanel" aria-labelledby="home-tab">
+                                                <p class="text-black h5">
+                                                    @pr.NoPreguntaUsuario.- @pr.Pregunta
+                                                    <a href="#" class="text-primary ml-2 btnAyuda" data-toggle="tooltip" title="Ayuda" data-placement="top" data-ayuda="@pr.Ayuda">
+                                                        <i class="fa-solid fa-circle-question"></i>
+                                                    </a>
+                                                </p>
+                                                @if (!pr.Cierre) //Si la pregunta no es cierre, aplicamos las opciones directamente
+                                                {
+                                                    <div class="icheck-success d-inline">
+                                                        <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="true" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                               data-pusuario="@pr.NoPreguntaUsuario">
+                                                        <label for="@String.Concat("radioSuccess", @i)">Si</label>
+                                                    </div>
+                                                    i++;
+                                                    <div class="icheck-success d-inline ml-3">
+                                                        <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="false" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                               data-pusuario="@pr.NoPreguntaUsuario">
+                                                        <label for="@String.Concat("radioSuccess", @i)">No</label>
+                                                    </div>
+                                                    i++;
+                                                    @if (pr.Incidencias)
+                                                    {
+                                                        <div class="row col-lg-12 mt-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                            <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="@pr.NoPregunta" data-pusuario="@pr.NoPreguntaUsuario">
+                                                                Capturar Incidencia
+                                                            </button>
+                                                            <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="@pr.NoPregunta" data-pusuario="@pr.NoPreguntaUsuario">
+                                                                Consultar Incidencias
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                    else if (pr.Numero)
+                                                    {
+                                                        <div class="form-row col-lg-12 mt-2">
+                                                            <div class="form-group mt-2 col-md-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                                <label for="fechaCierre">Muestras recolectadas: </label>
+                                                                <br />
+                                                                <input type="number" id="muestrasRecolectadas" class="form-control col-lg-6 float-left">
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else if (pr.Fecha)
+                                                    {
+                                                        <div class="form-row col-lg-12 mt-2">
+                                                            <div class="form-group mt-2 col-md-4 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                                <label for="fechaCierre">Fecha de Entrega: </label>
+                                                                <br />
+                                                                <input type="date" id="fechaEntrega_@pr.NoPreguntaUsuario" class="form-control col-lg-6">
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                    else if (pr.Fechas)
+                                                    {
+                                                        <div class="form-row col-lg-12 mt-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                            <div class="form-row">
+                                                                <div class="col col-lg-2">
+                                                                    <label for="fechaCierre">Fecha Programada</label>
+                                                                    <input type="date" id="fechaProgramada_@pr.NoPreguntaUsuario" class="form-control">
+                                                                </div>
+                                                                <div class="col-lg-2">
+                                                                    <label for="fechaCierre">Fecha Entrega</label>
+                                                                    <input type="date" id="fechaEntrega_@pr.NoPreguntaUsuario" class="form-control">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                else if (pr.Cierre)
+                                                {
+                                                    <div class="form-group">
+                                                        <label for="fechaCierre">Fecha de Cierre</label>
+                                                        <input type="date" name="pregunta_@pr.Id" id="fechaCierre" class="form-control col-lg-2 pregunta_@pr.Id">
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        @* Entregables *@
+                                        <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                                            <div class="col-lg-12 mt-3">
+                                                <h3>Adjuntar Entregables</h3>
+                                                Favor de Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
+                                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                            </div>
+                                            <div class="row col-lg-12 mt-3">
+                                                <table class="table" id="tblEntregables">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Entregable</th>
+                                                            <th>Archivo</th>
+                                                            <th>Fecha de Carga</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tEntregables"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        @* Fin de Entregables *@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class=" col-lg-12">
+                                <button type="button" class="btn btn-primary float-right ml-3 btn_enviar">Enviar a DAS</button>
+                                <button type="button" class="btn btn-success float-right btn_guardar">Guardar Cédula</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin de la Pestaña de Evaluación -->
+                <!-- Pestaña de Facturación -->
+                <div class="tab-pane fade mt-2 ml-3" id="facturacion" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="col-lg-12 h3 mt-4">
+                        Facturación del Servicio
+                    </div>
+                    <div class="row col-lg-12 d-flex justify-content-end">
+                        <button class='btn btn-sm btn-primary ml-2 mb-3' data-toggle="tooltip" title="Agregar Facturas" data-placement="top" id="add_facturas">
+                            <i class="fal fa-plus text-white"></i> Agregar Factura
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="row col-lg-12">
+                            <p class="text-justify ml-3">
+                                <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
+                                la información de la factura que fue agregada.
+                            </p>
+                            <div class="col-lg-12 mt-3 ml-2">
+                                <table class="table tblIncidencias tablaFacturas" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tipo</th>
+                                            <th>Empresa</th>
+                                            <th>Folio Fiscal</th>
+                                            <th>Número Factura</th>
+                                            <th>Subtotal Factura</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="AA">
+                                        @foreach (var fac in Model.facturas)
+                                        {
+                                            f++;
+                                            <tr>
+                                                <td>@f</td>
+                                                <td>@fac.Tipo</td>
+                                                <td>@fac.emisor.Nombre</td>
+                                                <td>@fac.timbreFiscal.UUID</td>
+                                                <td>@fac.comprobante.Folio</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.SubTotal)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.traslado.Importe)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.Total)</td>
+                                                <td class="text-center">
+                                                    <a href="#" class="viewConceptosF" id="viewConceptos_@fac.Id" data-factura="@fac.Id" data-toggle="tooltip" title="Ver conceptos de la factura" data-placement="top">
+                                                        <i class="fas fa-eye text-success"></i>
+                                                    </a>
+                                                    @if (fac.Tipo.Equals("Factura") && (Model.Estatus.Equals("En Proceso") || Model.Estatus.Equals("Rechazada")))
+                                                    {
+                                                        <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Factura" data-placement="top">
+                                                            <i class="fas fa-times text-danger"></i>
+                                                        </a>
+                                                    }
+
+                                                    @if (fac.Tipo.Equals("NC") && (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado")))
+                                                    {
+                                                        <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Nota de Crédito" data-placement="top">
+                                                            <i class="fas fa-times text-danger"></i>
+                                                        </a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12 mt-3 ml-2 mb-3">
+                                @foreach (var fac in Model.facturas)
+                                {
+                                    <div class="conceptosFactura" id="conceptoFactura_@fac.Id">
+                                        <h3>Conceptos de la Factura con Folio: @fac.comprobante.Folio</h3>
+                                        <table id="@fac.comprobante.Folio" style="width: 90%" class="table tableConceptos mt-3 float-right">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Unidad</th>
+                                                    <th>Descripción</th>
+                                                    <th>Precio Unitario</th>
+                                                    <th>SubTotal</th>
+                                                    <th>IVA</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var con in fac.concepto)
+                                                {
+                                                    if (@fac.Id == con.FacturaId)
+                                                    {
+                                                        cf++;
+                                                        <tr>
+                                                            <td>@cf</td>
+                                                            <td>@con.Cantidad</td>
+                                                            <td>@con.Unidad</td>
+                                                            <td>@con.Descripcion</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.ValorUnitario)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.IVA)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe + con.IVA)</td>
+                                                        </tr>
+                                                        totalConceptos = totalConceptos + con.Importe;
+                                                        totalIVA = totalIVA + Convert.ToDecimal(con.IVA.ToString("N2"));
+                                                    }
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="5">Total:</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalIVA)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos + totalIVA)</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin de la Pestaña de Facturación-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* Modal para agregar facturas la cedula *@
+<div class="modal fade" id="modal-facturas">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Agregar Factura</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" id="idFactura" type="hidden" />
+                <div class="row col-lg-12 mt-2">
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar factura en XML: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input file_factura" id="fileFactura" accept=".xml">
+                            <label class="custom-file-label" for="customFile">Subir factura en formato "XML"</label>
+                        </div>
+                        <div class="col-sm-12 error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="agregarFactura">Guardar Factura</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@* FIN del Modal para agregar facturas la cedula *@
+
+@* Modal para la captura de Incidencias *@
+<div class="modal fade" id="modal-incidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar Incidencia</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="idIncidencia" />
+                            <input type="hidden" id="pregunta" />
+                            <div class="form-group col-md-4">
+                                <label for="tipoIncidencia">Tipo: </label>
+                                <select id="tipo_incidencia" class="form-control">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="Muestras">Muestras</option>
+                                    <option value="Vehículos">Vehículos</option>
+                                    <option value="Hojas Técnicas">Hojas Técnicas</option>
+                                    <option value="Fichas de Seguridad">Fichas de Seguridad</option>
+                                </select>
+                                <div class="col-sm-12" id="error_tipoIncidencia">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture el Tipo de Incidencia
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="fechaCierre">Fecha de la Incidencia:</label>
+                                <input type="date" id="fechaIncidencia" class="form-control">
+                                <div class="col-sm-12" id="error_fechaInci">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture la Fecha de la incidencia
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-lg-12">
+                        <label for="areaIncidencia">Comentarios:</label>
+                        <textarea type="textarea" id="inciComentarios" class="form-control" style="resize: none;" maxlength="256"></textarea>
+                    </div>
+                    <div class="col-sm-12" id="error_comentariosInci">
+                        <small id="dateHelp" class="text-danger">
+                            Por favor capture los comentarios correspondientes
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="guardaIncidencia">Guardar Incidencia</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para mostrar las Incidencias *@
+<div class="modal fade" id="modal-consultaIncidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Lista de Incidencias del Programa de Operación</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-responsive-xl">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha de la Incidencia</th>
+                                    <th>Comentarios</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl_incidencias"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para mostrar las Incidencias *@
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_evidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar Entregables</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="file_id" />
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Tipo de Entregable:</label>
+                        <select class="form-control" id="tipo_entregable"></select>
+                        <div class="col-sm-12" id="error_tipoEntre">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de entregable
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-lg-12 mt-2" id="comentariosEntregable">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Comentarios:</label><br>
+                            <textarea id="comentarios_entregable" class="form-control float-left"></textarea>
+                            <div class="col-sm-12" id="error_comentariosEntre">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor capture los comentarios correspondientes
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="show_pdf">
+    <div class="modal-dialog modal-xl-view">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-view">
+                <table class="table">
+                    <tr>
+                        <td><strong>Folio: </strong> @Model.Folio</td>
+                        <td><strong>Año: </strong>@Model.Anio</td>
+                        <td><strong>Mes: </strong>@Model.Mes</td>
+                        <td><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                        <td><strong>Estatus: </strong>@Model.Estatus </td>
+                    </tr>
+                </table>
+                <div class="row" id="objectPdf">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+@section Scripts{
+    <script>
+        $(function () {
+            var totalPreguntas = '@Model.RespuestasEncuesta.Count';
+            var respuestas = @Html.Raw(Json.Serialize(@Model.RespuestasEncuesta));
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var perfil = @Html.Raw(Json.Serialize((@User.Claims.ElementAt(2).Value).Contains("Evaluador")));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".tablaFacturas").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".tableConceptos").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".error_customFile").css("display", "none");
+            $(".cIncidencias").css("display", "none");
+            $(".conceptosFactura").css("display", "none");
+
+            /*Errores*/
+            /*Adjuntar Archivos*/
+                    $('.error_tipoFactura').css('display', 'none');
+                    $('#error_tipoEntre').css('display', 'none');
+                    $('#error_customFile').css('display', 'none');
+                    $('#error_comentariosEntre').css('display', 'none');
+                    $('.error_customFile').css('display', 'none');
+                /*Fin de Errores*/
+
+            /*Componentes de Incidencias*/
+                $('#divCategoria').css('display', 'none');
+                $('#divInciComentarios').css('display', 'none');
+                $('#divInciFecha').css('display', 'none');
+                $('#error_tipoIncidencia').css('display', 'none');
+                $('#error_comentariosInci').css('display', 'none');
+                $('#error_fechaInci').css('display', 'none');
+            /*Fin Componentes de Incidencias*/
+
+            /******************************** Ayuda del Cuestionario de Comedor ****************************************/
+                $(".btnAyuda").click(function(){
+                    var msg = $(this).data("ayuda");
+                    Swal.fire({
+                        'icon': "info",
+                        'title': 'Servicio de Análisis Microbiológicos',
+                        'html': '<p style="text-align: justify">'+msg+'.</p>'
+                    });
+                });
+            /******************************* Fin de Ayuda del Cuestionario de Comedor **********************************/
+
+            /********************************** Agregar/Cambiar Facturas *************************************/
+                /*Proceso para editar la cedula*/
+                    $(document).on('click', '.eliminarFactura', function () {
+                        var id = $(this).data('factura');
+                        var folio = $(this).data('folio');
+
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Análisis Microbiológicos',
+                            'html': '<strong>Advertencia:</strong><p>¿Desea eliminar la factura con Folio <strong>' + folio + '</strong>?</p>',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, continuar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(yes => {
+                            if (yes.isConfirmed) {
+                                Swal.fire({
+                                    'icon': 'warning',
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el borrado de la factura con folio: '+folio,
+                                    'confirmButtonColor': '#3085d6',
+                                    'cancelButtonColor': '#d33',
+                                    'confirmButtonText': 'Si, eliminar',
+                                    'cancelButtonText': 'Cancelar',
+                                    'showCancelButton': true,
+                                    'input': 'text',
+                                    'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                }).then(del => {
+                                    if (del.value == 'ELIMINAR' || del.value == 'eliminar') {
+                                        axios.delete('/facturas/deleteFactura/' + id).then(del => {
+                                            Swal.fire({
+                                                'icon': 'success',
+                                                'title': 'Servicio de Análisis Microbiológicos',
+                                                'html': 'La factura fue eliminada exitósamente.',
+                                            }).then(function () {
+                                                window.location.reload();
+                                            });
+                                        })
+                                    } else {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'html': 'La factura no fue eliminada exitósamente, favor de escribir correctamente la palabra <b>ELIMINAR</b>',
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    $(".file_factura").change(function (e) {
+                        var archivo = e.target.files[0];
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "xml" || ext == "XML") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            if ($('.file_factura').hasClass('is-invalid')) {
+                                $('.file_factura').removeClass('is-invalid');
+                                $('.file_factura').addClass('is-valid');
+                                $('.error_customFile').css('display', 'none')
+                            } else {
+                                $('.file_factura').addClass('is-valid');
+                            }
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Análisis Microbiológicos',
+                                'text': 'El archivo que intenta adjuntar no es válido. Favor de solo seleccionar archivos "Xml"'
+                            });
+
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+
+                            if ($('.file_factura').hasClass('is-valid')) {
+                                $('.file_factura').removeClass('is-valid');
+                                $('.file_factura').addClass('is-invalid');
+                            }
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+                        }
+                    });
+
+                    function validaCamposArchivoXml() {
+                        if ($('.file_factura').val() == "") {
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+                        return true;
+                    }
+
+                    $('#agregarFactura').click(function () {
+                        var id = $("#idFactura").val();
+                        var tipo = "Factura";
+
+                        var formData = new FormData();
+                        var file = document.getElementById('fileFactura').files[0];
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("ServicioId", model.servicioId);
+                        formData.append("Tipo", tipo);
+                        formData.append("CedulaId", model.id);
+                        formData.append("Xml", file);
+                        formData.append("FechaInicial",@Html.Raw(Json.Serialize(@Model.FechaInicial)));
+                        formData.append("FechaFinal",@Html.Raw(Json.Serialize(@Model.FechaFinal)));
+
+                        if (validaCamposArchivoXml() == true) {
+                            if (id == "") {
+                                axios.post('/facturas/insertaFactura', formData).then(fact => {
+                                    if (fact.data == 1) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'html': 'La factura fue agregada correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    } else if (fact.data != 1 && fact.data != -1) {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'html': '<p style="text-align: justify">La factura que intenta adjuntar ya fue agregada previamente en la cédula con los siguientes datos: <br />' +
+                                                '<li> <b>Folio: </b>' + fact.data.folio + '</li>' +
+                                                '<li> <b>Inmueble: </b>' + fact.data.inmuebles.nombre + '</li></p>'
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Análisis Microbiológicos',
+                                        'html': '<p style="text-align: justitfy;">CASESG no puede adjuntar la factura, Contacte al administrador del Sistema.'
+                                    });
+                                });
+                            }
+                        }
+
+                        document.getElementById('customFile').value = '';
+                        $('#idFactura').val("");
+                        $(".custom-file .custom-file-label").text("Subir archivo \"XML\"");
+                        $('.file_factura').removeClass('is-valid');
+                        $("#tipoFactura").val('');
+                    });
+                /*FIN del proceso para editar la cedula*/
+
+                /*Agregar Facturas*/
+                    $('#add_facturas').click(function () {
+                        var id = $("#idFactura").val();
+                        $('#modal-ver-facturas').modal('hide');
+                        $('#modal-facturas').modal('show');
+                    });
+                /*Fin Agregar Facturas*/
+
+                /*Ver/Ocultar Conceptos de Factura*/
+                    $('.viewConceptosF').click(function () {
+                        let factura = $(this).data('factura');
+                        if ($("#conceptoFactura_" + factura).css('display') == 'none')
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "block");
+                        }
+                        else
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "none");
+                        }
+                    });
+                /*Fin Ver/Ocultar Conceptos de Factura*/
+
+                /*Ver/Ocultar Conceptos*/
+                     $(".viewConceptosF").click(function () {
+                         if ($("#viewConceptos_"+$(this).data('factura')+" > i").hasClass("text-success")) {
+                             $("#viewConceptos_" + $(this).data('factura') + " > i").removeClass("text-success");
+                             $("#viewConceptos_" + $(this).data('factura') + "> i").addClass("text-danger");
+                         } else {
+                             $("#viewConceptos_" + $(this).data('factura') +" > i").removeClass("text-danger");
+                             $("#viewConceptos_"+$(this).data('factura')+" > i").addClass("text-success");
+                        }
+                    });
+                /*Fin de Ver/Ocultar Conceptos*/
+
+
+            /******************************* FIN Agregar/Cambiar Facturas **********************************/
+
+            /******************************* Editar Cuestionario (Revisar para Depurar) ******************************************/
+                if (respuestas != null && respuestas.length != 0) {
+                    for (var i = 0; i < respuestas.length; i++) {
+                        for (var j = 0; j < model.preguntas.length; j++) {
+                            if (respuestas[i].pregunta == model.preguntas[j].noPreguntaUsuario) {
+                                if (model.preguntas[j].cierre) {
+                                    $("#fechaCierre").val(respuestas[i].detalles);
+                                }
+                                else
+                                {
+                                    $('input:radio[name="pregunta_' + respuestas[i].pregunta + '"][value="' + respuestas[i].respuesta + '"]').prop('checked', true);
+                                    if (model.preguntas[j].incidencias) {
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "none" : "block"));
+                                    }
+                                    else if (model.preguntas[j].fecha) {
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "block" : "none"));
+                                        $("#fechaEntrega_" + model.preguntas[j].noPreguntaUsuario).val(respuestas[i].detalles);
+                                    }
+                                    else if (model.preguntas[j].numero) {
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "none" : "block"));
+                                        $("#muestrasRecolectadas").val(respuestas[i].detalles);
+                                    }
+                                    else if (model.preguntas[j].fechas) {
+                                        $('input:radio[name="pregunta_' + respuestas[i].pregunta + '"][value="' + respuestas[i].respuesta + '"]').prop('checked', true);
+                                        if (respuestas[i].respuesta == false) {
+                                            var fechas = respuestas[i].detalles;
+                                            $("#fechaProgramada_" + respuestas[i].pregunta).val(fechas.split("|")[0]);
+                                            $("#fechaEntrega_" + respuestas[i].pregunta).val(fechas.split("|")[1]);
+                                            $("#divIncidencias_" + respuestas[i].pregunta).css("display", "block");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            /***************************** FIN Editar Cuestionario ***************************************/
+
+            /********************************* Validaciones para las respuestas *******************************/
+                $('.pregunta').change(function () {
+                    let pregunta = $(this).data('pregunta');
+                    let pusuario = $(this).data('pusuario');
+                    let respuesta = $('input:radio[name="pregunta_' + pusuario + '"]:checked').val();
+
+                    if (respuesta == "false") {
+                        if (pregunta == 7) {
+                            $("#fechaEntrega_" + pusuario).val('');
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        }
+                        else
+                        {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        }
+                    }
+                    else
+                    {
+                        if (pregunta == 3) {
+                            axios.get('/analisis/incidencias/' + model.id + '/' + pregunta).then(response => {
+                                if (response.data != "") {
+                                    Swal.fire({
+                                        'icon': 'warning',
+                                        'title': 'Servicio de Análisis Microbiológicos',
+                                        'html': '<strong>Advertencia:</strong><p>Tiene incidencias capturadas en esta pregunta, al cambiar la respuesta de "NO" a "SI" ' +
+                                            '<strong>se borrarán todas las incidencias. ¿Deseas continuar? </strong></p>',
+                                        'confirmButtonColor': '#3085d6',
+                                        'cancelButtonColor': '#d33',
+                                        'confirmButtonText': 'Si, eliminar',
+                                        'cancelButtonText': 'Cancelar',
+                                        'showCancelButton': true
+                                    }).then(p => {
+                                        if (p.isConfirmed) {
+                                            Swal.fire({
+                                                'icon': 'warning',
+                                                'title': 'Servicio de Análisis Microbiológicos',
+                                                'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el cambio de respuesta.',
+                                                'confirmButtonColor': '#3085d6',
+                                                'cancelButtonColor': '#d33',
+                                                'confirmButtonText': 'Si, eliminar todo',
+                                                'cancelButtonText': 'Cancelar',
+                                                'showCancelButton': true,
+                                                'input': 'text',
+                                                'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                            }).then(res => {
+                                                if (res.value == 'ELIMINAR') {
+                                                    axios.get("/analisis/eliminaIncidencias/" + model.id + "/" + pr).then(response => {
+                                                        if (response.status == 200) {
+                                                            Swal.fire({
+                                                                'icon': 'success',
+                                                                'title': 'Servicio de Análisis Microbiológicos',
+                                                                'html': 'Las incidencias fueron eliminadas correctamente.',
+                                                            }).then(function () {
+                                                                $('#diviPregunta3').css('display', 'none');
+                                                                $('input:radio[name="pregunta_' + pusuario + '"][value="true"]').prop('checked', true);
+                                                                guardaCedula();
+                                                            });
+                                                        }
+                                                    }).catch(error => {
+                                                        Swal.fire({
+                                                            'icon': 'error',
+                                                            'title': 'Servicio de Análisis Microbiológicos',
+                                                            'html': 'No se eliminaron las incidencias del servicio de Análisis Microbiológicos. Contacte al Administrador.',
+                                                        });
+                                                        $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                                        $("#divIncidencias_" + pusuario).css("display", "block");
+                                                    });
+                                                } else {
+                                                    $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                                    $("#divIncidencias_" + pusuario).css("display", "block");
+                                                }
+                                            });
+                                        } else {
+                                            $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                            $("#divIncidencias_" + pusuario).css("display", "block");
+                                        }
+                                    });
+                                }
+                                else {
+                                    $("#divIncidencias_" + pusuario).css("display", "none");
+                                }
+                            });
+                        } else if (pregunta == 5) {
+                            $("#muestrasRecolectadas").val('');
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        } else if (pregunta == 7) {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        }else {
+                            $("#fechaProgramada_" + pregunta).val('');
+                            $("#fechaEntrega_" + pregunta).val('');
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        }
+                    }
+                });
+            /********************************* Validaciones para las respuestas *******************************/
+
+            /******************************* Incidencias Fumigación ***************************************/
+                function muestraInputs(pregunta) {
+                    $('#divCategoria').css('display', 'none');
+                    $('#divFechaIncidencia').css('display', 'none');
+                    $('#divHoraIncidencia').css('display', 'none');
+                    $('#divInciComentarios').css('display', 'none');
+                    $('#error_fechaIncidencia').css('display', 'none');
+                    $('#error_horaIncidencia').css('display', 'none');
+                    $('#error_inciComentarios').css('display', 'none');
+
+                    if (pregunta == 2) {
+                        $("#categoria").val('Horario y Ruta Estipulado');
+                        $('#divFechaIncidencia').css('display', 'block');
+                        $('#divHoraIncidencia').css('display', 'block');
+                        $('#divInciComentarios').css('display', 'block');
+                    } else if (pregunta == 5) {
+                        $("#categoria").val('Comunicación en la Unidad');
+                        $('#divFechaIncidencia').css('display', 'block');
+                        $('#divInciComentarios').css('display', 'block');
+                    } else if (pregunta == 6) {
+                        $("#categoria").val('Personal de Servicio');
+                        $('#divFechaIncidencia').css('display', 'block');
+                        $('#divInciComentarios').css('display', 'block');
+                    }
+                }
+
+                $(".addIncidencias").click(function () {
+                    $('#idIncidencia').val('');
+                    $('#pregunta').val('');
+                    $('#fechaIncidencia').val('');
+                    $('#inciComentarios').val('');
+                    $("#pregunta").val($(this).data('pregunta')+"");
+                    $("#id_incidencia").val("");
+                    $("#modal-incidencias").modal('show');
+                });
+
+                $(".viewIncidencias").click(function () {
+                    let pregunta = $(this).data('pregunta');
+
+                    axios.get('/analisis/tablaIncidencias/' + model.id + '/' + pregunta).then(table => {
+                        $("#tbl_incidencias").html(table.data);
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Análisis Microbiológicos',
+                            'html': 'Hubo un error al obtener el listado de incidencias. Contacte al administrador del sistema.'
+                        });
+                    });
+                    $("#modal-consultaIncidencias").modal('show');
+                });
+
+                $('#fechaIncidencia').change(function () {
+                    if ($(this).val() == '') {
+                        $('#fechaIncidencia').removeClass('is-valid');
+                        $('#fechaIncidencia').addClass('is-invalid');
+                        $('#error_fechaIncidencia').css('display', 'block');
+                    }else{
+                        $('#fechaIncidencia').removeClass('is-invalid');
+                        $('#fechaIncidencia').addClass('is-valid');
+                        $('#error_fechaIncidencia').css('display', 'none');
+                    }
+                });
+
+                $('#inciComentarios').change(function () {
+                    if ($(this).val() == '') {
+                        $('#inciComentarios').removeClass('is-valid');
+                        $('#inciComentarios').addClass('is-invalid');
+                        $('#error_inciComentarios').css('display', 'block');
+                    }else{
+                        $('#inciComentarios').removeClass('is-invalid');
+                        $('#inciComentarios').addClass('is-valid');
+                        $('#error_inciComentarios').css('display', 'none');
+                    }
+                });
+
+                function validaIncidencias() {
+                    let tipo = $('#categoria').val();
+                    let fechaIncidencia = $('#fechaIncidencia').val();
+                    let comentarios = $('#inciComentarios').val();
+
+                    if (fechaIncidencia == '') {
+                        $('#fechaIncidencia').addClass('is-invalid');
+                        $('#error_fechaIncidencia').css('display', 'block');
+                    }
+
+                    if (comentarios == '') {
+                        $('#inciComentarios').addClass('is-invalid');
+                        $('#error_inciComentarios').css('display', 'block');
+                    }
+
+                    if (fechaIncidencia != '' && comentarios != '') {
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                $('#guardaIncidencia').click(function () {
+                    let html = "";
+                    let id = $('#idIncidencia').val();
+                    let tipo = $('#tipo_incidencia').val();
+                    let pregunta = $('#pregunta').val() != "" ? $('#pregunta').val(): 0;
+                    let fechaIncidencia= $('#fechaIncidencia').val();
+                    let comentarios = $('#inciComentarios').val();
+
+                    if (id == "" || id == null) {
+                        id = 0;
+                    }
+
+                    if (validaIncidencias()) {
+                        if (id == 0) {
+                            axios.post("/analisis/inserta/incidencia", {
+                                Id: parseInt(id), CedulaAnalisisId: parseInt(model.id), Tipo: tipo, Pregunta: parseInt(pregunta),
+                                FechaIncidencia: fechaIncidencia, Comentarios: comentarios
+                            }).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': 'Servicio de Análisis Microbiológicos',
+                                        'html': "La incidencia fue registrada de correctamente."
+                                    });
+                                    guardaCedula();
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': "Hubo un error al registrar la incidencia. Contacte al administrador del sistema."
+                                });
+                            });
+                        } else {
+                            axios.post("/analisis/actualiza/incidencia", { Id: parseInt(id), Tipo: tipo, FechaIncidencia: fechaIncidencia, Comentarios: comentarios
+                            }).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': 'Servicio de Análisis Microbiológicos',
+                                        'html': "La incidencia fue actualizada correctamente."
+                                    });
+                                    guardaCedula();
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': "Hubo un error al actualizar la incidencia. Contacte al administrador del sistema."
+                                });
+                            });
+                        }
+                        $('#id_incidencia').val('');
+                        $('#tipo_incidencia').val('');
+                        $('#pregunta').val('');
+                        $('#fechaIncidencia').val('');
+                        $('#inciComentarios').val('');
+                        $('#inciComentarios').removeClass('is-valid');
+                        $('#inciComentarios').removeClass('is-invalid');
+                        $('#fechaIncidencia').removeClass('is-invalid');
+                        $('#fechaIncidencia').removeClass('is-valid');
+                    }
+                });
+
+                $(document).on("click", ".update_incidencia", function () {
+                    $('#idIncidencia').val('');
+                    $('#tipo_incidencia').val('');
+                    $('#pregunta').val('');
+                    $('#fechaIncidencia').val('');
+                    $('#inciComentarios').val('');
+
+                    $('#divFechaIncidencia').css('display', 'none');
+                    $('#divInciComentarios').css('display', 'none');
+                    $('#error_fechaIncidencia').css('display', 'none');
+                    $('#error_inciComentarios').css('display', 'none');
+                    $("#modal-consultaIncidencias").modal('hide');
+                    let tipo = $(this).data('tipo');
+                    let fecha = $(this).data('fechainci');
+                    let coments = $(this).data('coment');
+                    $("#idIncidencia").val($(this).data('id'));
+                    $("#tipo_incidencia").val(tipo);
+                    $('#fechaIncidencia').val(fecha);
+                    $('#inciComentarios').val(coments);
+
+
+                    $("#modal-incidencias").modal('show');
+                });
+
+                $(document).on("click", ".delete_incidencia", function(){
+                    var id = $(this).data("id");
+
+                    Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Análisis Microbiológicos',
+                            'html': '¿Está seguro de eliminar la incidencia?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, eliminar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.get("/analisis/incidencia/eliminar/"+id).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire(
+                                            'Servicio de Analisis de Personal',
+                                            'La incidencia fue eliminada correctamente.',
+                                            'success'
+                                        ).then(function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire(
+                                        'Servicio de Analisis de Personal',
+                                        'No se pudo eliminar la incidencia del servicio de análisis microbiológicos. Contacta a tu Administrador.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+
+                });
+            /******************************* FIN Incidencias Fumigación **********************************/
+
+            /************************************ Adjuntar Entregables ************************************/
+                  /*Modal para Adjuntar Archivos*/
+                     $('.btn_addFile').click(function () {
+                        var option = '<option value="">Seleccione un Entregable</option>';
+                        axios.get('/variables/getEntregables/' + model.servicioId+"/"+model.id).then(entre => {
+                            entre = entre.data;
+                            for (var i = 0; i < entre.length;i++) {
+                                option += "<option value='"+entre[i].abreviacion+"'>"+entre[i].valor+"</option>";
+                            }
+                            $('#tipo_entregable').html(option);
+                        });
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN del modal para adjuntar archivos*/
+
+                /*Adjunta Entregables*/
+                    function validaCamposArchivo() {
+
+                        if ($('#tipo_entregable').val() == "" && $('#customFile').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if ($('#tipo_entregable').val() == "" ) {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if (($('#customFile').val() == "" && $('.custom-file-label').text() == "")) {
+
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+
+                        return true;
+                }
+
+                    $("#customFile").on("change", function () {
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "pdf" || ext == "PDF") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Análisis Microbiológicos',
+                                'text': 'El archivo que intenta adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                            });
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+                            if ($('#customFile').hasClass('is-valid')) {
+                                $('#customFile').removeClass('is-valid');
+                            }
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+                        }
+
+                    });
+
+                    $('#adjuntarArchivo').click(function () {
+                        var formData = new FormData();
+                        var folio = model.folio;
+                        var file = document.getElementById('customFile').files[0];
+                        var id = $('#file_id').val();
+                        var tipo = $('#tipo_entregable').val();
+                        var comentarios = $('#comentarios_entregable').val();
+
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("CedulaEvaluacionId", model.id);
+                        if (file != null)
+                            formData.append("Archivo", file);
+                        formData.append("Folio", folio);
+                        formData.append("Tipo", tipo);
+                        formData.append("Comentarios", comentarios);
+
+                        if (validaCamposArchivo()) {
+                            if (id != 0) {
+                                axios.post('/analisis/adjuntaEntregable', formData, {
+                                    headers: { 'Content-Type': 'multipart/form-data' }
+
+                                }).then(response => {
+                                    $('#cerrar_modal_sua').trigger('click');
+                                    /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                                    if (response.status == 200) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'text': 'Se adjuntó el archivo de correctamente.'
+                                        });
+                                        $('#customFile').removeClass('is-valid');
+                                        $('#comentarios_entregable').removeClass('is-valid');
+                                        $('#tipo_entregable').removeClass('is-valid');
+                                    }
+                                    axios.get("/analisis/getEntregables/" + model.id + "/" + model.servicioId).then(success => {
+                                        if (success.data == null || success.data == "") {
+                                            $('#tEntregables').html(success.data);
+                                        }
+                                        $('#tEntregables').html(success.data);
+                                    });
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Análisis Microbiológicos',
+                                        'text': 'Se presento un error al adjuntar el archivo.'
+                                    });
+                                });
+
+                                document.getElementById('customFile').value = '';
+                                $('#file_id').val("");
+                                $(".custom-file-label").text("Seleccionar Archivo");
+                                $('#tipo_entregable').val('');
+                                $('#comentarios_entregable').val('');
+                            } else {
+                                axios.get('/analisis/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
+                                    if (exist.data == 0) {
+                                        axios.post('/analisis/adjuntaEntregable', formData, {
+                                            headers: { 'Content-Type': 'multipart/form-data' }
+
+                                        }).then(response => {
+                                            $('#cerrar_modal_sua').trigger('click');
+                                            /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': "success",
+                                                    'title': 'Servicio de Análisis Microbiológicos',
+                                                    'text': 'Se adjuntó el archivo correctamente.'
+                                                });
+                                                $('#customFile').removeClass('is-valid');
+                                                $('#comentarios_entregable').removeClass('is-valid');
+                                                $('#tipo_entregable').removeClass('is-valid');
+                                            }
+                                            axios.get("/analisis/getEntregables/" + model.id + "/" + model.servicioId).then(success => {
+                                                if (success.data == null || success.data == "") {
+                                                    $('#tEntregables').html(success.data);
+                                                }
+                                                $('#tEntregables').html(success.data);
+                                            });
+                                        }).catch(error => {
+                                            Swal.fire({
+                                                'icon': "error",
+                                                'title': 'Servicio de Análisis Microbiológicos',
+                                                'text': 'Se presento un error al adjuntar el archivo.'
+                                            });
+                                        });
+
+                                        document.getElementById('customFile').value = '';
+                                        $('#file_id').val("");
+                                        $(".custom-file-label").text("Seleccionar Archivo");
+                                        $('#tipo_entregable').val('');
+                                        $('#comentarios_entregable').val('');
+                                    } else {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'text': 'Ya existe un entregable con el tipo ' + tipo
+                                        });
+                                    }
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Análisis Microbiológicos',
+                                        'text': 'Ocurrío un error al válidar el entregable.'
+                                    });
+                                });
+                            }
+                        }
+                    });
+
+                /*FIN Adjunta Entregables*/
+
+                /* Listado de Entregables de la Cedula */
+                    axios.get("/analisis/getEntregables/"+model.id+ "/" + model.servicioId).then(response => {
+                        if (response.data == null || response.data == "") {
+                            $('#tEntregables').html(response.data);
+                        }
+                        $('#tEntregables').html(response.data);
+                    });
+                /* Fin Listado de Entregables de la Cedula*/
+
+                /*Editar Entregables*/
+                    $(document).on("click", ".update_files", function () {
+                        $('#modal_evidencias').modal('show');
+                        var id = $(this).data('id');
+                        var tipo = $(this).data('tipo');
+                        var coments = $(this).data('coments');
+                        var file = $(this).data('file');
+                        $('#file_id').val(parseInt(id));
+                        $(".custom-file-label").text(file);
+                        $('#tipo_entregable').val(tipo);
+                        $('#comentarios_entregable').val(coments);
+                        $('#mes_correspondiente').prop('disabled', true);
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN de editar Entregables*/
+
+                /*Elimina entregables*/
+                   $(document).on("click", ".delete_files", function () {
+                        let id = $(this).data('id');
+                        let tipo = $(this).data('tipo');
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Análisis Microbiológicos',
+                            'text': '¿Está seguro de eliminar el archivo relacionado a "'+tipo+'"?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, Eliminar Archivo',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.post("/analisis/eliminaArchivo", { Id: id, Folio: model.folio }).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire(
+                                            'Servicio de Analisis de Personal',
+                                            'Tu archivo fue eliminado correctamente.',
+                                            'success'
+                                        );
+                                        axios.get("/analisis/getEntregables/" + model.id + "/" + model.servicioId).then(response => {
+                                            if (response.data == null || response.data == "") {
+                                                $('#tEntregables').html(response.data);
+                                            }
+                                            $('#tEntregables').html(response.data);
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire(
+                                        'Servicio de Analisis de Personal',
+                                        'No se pudo procesar tu solicitud. Contacta al Administrador.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+                    });
+                 /*FIN de elimina entregables*/
+
+                /*Ver archivo en modal*/
+                    $(document).on('click', '.view_file', function () {
+                        let nombre = $(this).data('file');
+                        let tipo = $(this).data('tipo');
+                        let data = "<object width='100%' height='710px' data='/view/entregable/" + model.folio + "/" + nombre + "'></object>";
+                        $('#titlePDF').text("PDF - \"" + tipo + "\"");
+                        $('#objectPdf').html(data);
+                        $('#show_pdf').modal('show');
+                    });
+                /*FIN de ver archivo en modal*/
+
+                /*Validaciones Entregables*/
+                    $('#tipo_entregable').change(function () {
+                        if ($('#tipo_entregable').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#tipo_entregable').removeClass('is-invalid');
+                            $('#tipo_entregable').addClass('is-valid');
+                            $('#error_tipoEntre').css('display', 'none');
+                        }
+                    });
+
+                    $('#customFile').change(function () {
+                         if ($('#customFile').val() == "") {
+                             $('#customFile').addClass('is-invalid');
+                             $('#error_customFile').css('display', 'block');
+
+                        } else {
+                             var fileName = $("#customFile").val().split("\\").pop();
+                             var ext = fileName.split('.').pop();
+                             if (ext != "pdf") {
+                                 $('#customFile').addClass('is-invalid');
+                                 $('#error_customFile').css('display', 'block');
+                             } else {
+                                 $('#customFile').removeClass('is-invalid');
+                                 $('#customFile').addClass('is-valid');
+                                 $('#error_customFile').css('display', 'none');
+                             }
+                        }
+                     });
+
+                    $('#comentarios_entregable').change(function () {
+                        if ($('#comentarios_entregable').val() == "") {
+                            $('#comentarios_entregable').addClass('is-invalid');
+                            $('#error_comentariosEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#comentarios_entregable').removeClass('is-invalid');
+                            $('#comentarios_entregable').addClass('is-valid');
+                            $('#error_comentariosEntre').css('display', 'none');
+                        }
+                    });
+                /*FIN de Validaciones Entregables*/
+            /********************************** FIN Adjuntar Entregables *********************************/
+
+            /********************************** Funciones Adicionales *********************************/
+            function cuentaincidenciasAnalisis(pregunta) {
+                    var isContinue = true;
+                    $.ajax({
+                        url: '/analisis/totalIncidencia/' + model.id + '/' + pregunta,
+                        type: 'GET',
+                        async: false,
+                        success: function (json) {
+                            json == 0 ? isContinue = false : true;
+                        },
+                    });
+                    return isContinue;
+                }
+            /********************************** FIN Funciones Asincronas*********************************/
+
+            /************************************ GUARDAR/ENVIAR Cédula ************************************/
+                /*Guardar la Cedula*/
+                    $('.btn_guardar').click(function () {
+                        var respuestas = new Array();
+                        for (let i = 0; i < model.preguntas.length; i++) {
+                            let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                            detalles = null;
+                            if (model.preguntas[i].cierre) {
+                                respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: "false", Detalles: $("#fechaCierre").val() });
+                            } else if (respuesta != null && respuesta != undefined) {
+                                if (model.preguntas[i].fecha) {
+                                    if (respuesta == "true") {
+                                        detalles = $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                    }
+                                } else if (model.preguntas[i].fechas) {
+                                    if (respuesta == "false") {
+                                        detalles = $("#fechaProgramada_" + model.preguntas[i].noPreguntaUsuario).val() + "|" + $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                    }
+                                }
+                                else if (model.preguntas[i].numero) {
+                                    if (respuesta == "false") {
+                                        detalles = $("#muestrasRecolectadas").val();
+                                    }
+                                }
+
+                                respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                            }
+                        }
+
+                        axios.post("/analisis/evaluation", respuestas).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': "Se guardaron las respuestas de la cédula correctamente."
+                                }).then(function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': "Hubo un error al guardar la(s) respuesta(s) de la cédula. Contacte al Administrador del Sistema"
+                                 });
+                            }
+                        });
+                    });
+                /*FIN de guardar la cedula*/
+
+                /*Guardar la Cedula sin mensaje*/
+                function guardaCedula() {
+                    var respuestas = new Array();
+                    for (let i = 0; i < model.preguntas.length; i++) {
+                        let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                        detalles = null;
+                        if (model.preguntas[i].cierre) {
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: "false", Detalles: $("#fechaCierre").val() });
+                        } else if (respuesta != null && respuesta != undefined) {
+                            if (model.preguntas[i].fecha) {
+                                if (respuesta == "true") {
+                                    detalles = $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                }
+                            } else if (model.preguntas[i].fechas) {
+                                if (respuesta == "false") {
+                                    detalles = $("#fechaProgramada_" + model.preguntas[i].noPreguntaUsuario).val() + "|" + $("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val();
+                                }
+                            }
+                            else if (model.preguntas[i].numero) {
+                                if (respuesta == "false") {
+                                    detalles = $("#muestrasRecolectadas").val();
+                                }
+                            }
+
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                        }
+                    }
+
+                    axios.post("/analisis/evaluation", respuestas).then(response => {
+                        if (response.status == 200) {
+
+                        } else {
+                            Swal.fire({
+                                'icon': "error",
+                                'title': 'Servicio de Análisis Microbiológicos',
+                                'html': "Hubo un error al guardar las respuestas de la cédula. Contacte al Administrador del Sistema"
+                            });
+                        }
+                    });
+                }
+                /*FIN de guardar la cedula*/
+
+                /*Validamos que ya fueron adjuntados todos los entregables*/
+                function validaEntregables() {
+                    var msgEntregables = ["Factura", "Validación del SAT"];
+                    var entregables = ["Factura", "SAT"];
+                    var msg = "";
+                    var nota = false;
+                    var found = false;
+                    axios.get('/analisis/getListadoEntregables/' + model.id + "/" + model.servicioId).then(response => {
+                        for (var j = 0; j < entregables.length; j++) {
+                            for (var i = 0; i < response.data.length; i++) {
+                                if (entregables[j] == response.data[i].tipo) {
+                                    found = true;
+                                    break;
+                                } else {
+                                    found = false;
+                                }
+                            }
+                            if (!found) {
+                                msg += "<strong> - "+msgEntregables[j]+"<br/></strong>";
+                            }
+                        }
+
+                        if (msg != "") {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Análisis Microbiológicos',
+                                'html': 'Para enviar la cédula a la DAS, es necesario adjuntar los siguientes entregables: <br/><br/>' + msg
+                            });
+                            return false;
+                        } else {
+                            axios.post('/analisis/historialAnalisis', {
+                                ServicioId: model.servicioId,
+                                CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                                Estatus: "Enviado a DAS", Comentarios: "Se envía la cédula a la DAS para su revisión."
+                            }).then(response => {
+                                axios.post("/analisis/sendCedula/" + model.servicioId + "/" + model.id).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'html': "Se envió la cédula para su revisión correctamente."
+                                        }).then(function () {
+                                            window.location.href = "/analisis/index/" + model.servicioId;
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Análisis Microbiológicos',
+                                            'html': "Hubo un error al guardar las respuestas de la cédula. Contacte al Administrador del Sistema"
+                                        });
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+
+             /*FIN Validamos que ya fueron adjuntados todos los entregables*/
+
+                /********************************** Funciones Adicionales *********************************/
+                    function cuentaincidenciasAnalisis(pregunta) {
+                        var isContinue = true;
+                        $.ajax({
+                            url: '/analisis/totalIncidencia/' + model.id + '/' + pregunta,
+                            type: 'GET',
+                            async: false,
+                            success: function (json) {
+                                json == 0 ? isContinue = false : true;
+                            },
+                        });
+                        return isContinue;
+                    }
+
+            /********************************** FIN Funciones Asincronas*********************************/
+
+                function buscaPregunta(pregunta) {
+                    let respuesta = $("input[name=pregunta_" + pregunta + "]:checked").val();
+                    let exists = -1;
+
+                    if (pregunta == 1 && model.preguntas[pregunta - 1].cierre)
+                    {
+                        return pregunta;
+                    }
+                    else
+                    {
+                        for (let i = 0; i < model.respuestasEncuesta.length; i++) {
+                            if (pregunta == model.respuestasEncuesta[i].pregunta) {
+                                exists = 1;
+                            }
+                        }
+
+                        if (exists == 1 && respuesta != null && respuesta != undefined && respuesta != "") {
+                            return model.preguntas[pregunta - 1].noPregunta;
+                        }
+                    }
+
+                    return exists;
+                }
+
+                function muestraMensaje(pregunta){
+                    for (var i = 0; i < model.preguntas.length; i++) {
+                        if (model.preguntas[i].noPregunta == pregunta) {
+                            if (model.preguntas[i].cierre) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': 'No ha capturado la fecha de cierre en la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong>'
+                                });
+                            }
+                            else if (model.preguntas[i].fecha) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': 'No ha capturado la <strong>Fecha de Entrega</strong> en la pregunta'+
+                                        model.preguntas[i].noPreguntaUsuario+'.'
+                                });
+                            } else if (model.preguntas[i].fechas) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': 'No ha capturado la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong> o falta capturar la <strong>Fecha de Programada y/o Fecha de Entrega</strong>.'
+                                });
+                            }else if (model.preguntas[i].incidencias) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Análisis Microbiológicos',
+                                    'html': 'No ha capturado la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong> o aún falta capturar las <strong>incidencias</strong>.'
+                                });
+                            } else if (model.preguntas[i].numero) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Transportación de Bienes Muebles',
+                                    'html': 'No ha capturado la <strong>Cantidad de Muestras Recolectadas</strong> en la pregunta ' + model.preguntas[i].noPreguntaUsuario + '.'
+                                });
+                            }
+                            else
+                            {
+                                 Swal.fire({
+                                     'icon': 'error',
+                                     'title': 'Servicio de Análisis Microbiológicos',
+                                     'html': 'No ha capturado la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong>.'
+                                 });
+                            }
+                        }
+                    }
+            }
+
+                $('.btn_enviar').click(function () {
+                    guardaCedula();
+                    let pregunta = 0;
+                    let i = 0;
+                    let respuesta = "";
+                    let isContinue = true;
+                    let totalP = (perfil == false ? model.preguntas.length : (model.preguntas.length - 1));
+
+                    if (model.facturas.length == 0) {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Análisis Microbiológicos',
+                            'html': 'No ha registrado ninguna factura en la cédula'
+                        });
+                        return false;
+                    }
+
+                    for (i = 0; i < totalP; i++) {
+                        respuesta = $('input:radio[name="pregunta_' + (i + 1) + '"]:checked').val();
+                        if (buscaPregunta(model.preguntas[i].noPreguntaUsuario) != -1) {
+                            pregunta = buscaPregunta(model.preguntas[i].noPreguntaUsuario);
+                            if (pregunta == 1 && $("#fechaCierre").val() == "") {
+                                break;
+                            } else if (respuesta == "false") {
+                                if (model.preguntas[i].incidencias) {
+                                    isContinue = cuentaincidenciasAnalisis(model.preguntas[i].noPregunta);
+                                    if (isContinue == false) {
+                                        break;
+                                    }
+                                } else if (model.preguntas[i].fechas) {
+                                    if ($("#fechaEntrega_" + model.preguntas[i].noPregunta).val() == "" ||
+                                        $("#fechaProgramada_" + model.preguntas[i].noPregunta).val() == "") {
+                                        break;
+                                    }
+                                } else if (model.preguntas[i].numero) {
+                                    if ($("#muestrasRecolectadas").val() == "") {
+                                        break;
+                                    }
+                                }
+                            } else if (respuesta == "true") {
+                                if (model.preguntas[i].fecha) {
+                                    if ($("#fechaEntrega_" + model.preguntas[i].noPreguntaUsuario).val() == "") {
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            pregunta = model.preguntas[i].noPregunta;
+                            break;
+                        }
+                    }
+
+                    if (i < totalP) {
+                        muestraMensaje(pregunta)
+                        return false;
+                    } else {
+                        validaEntregables();
+                    }
+                });
+            /********************************** FIN GUARDAR/ENVIAR CÉDULA **********************************/
+        });
+    </script>
+}

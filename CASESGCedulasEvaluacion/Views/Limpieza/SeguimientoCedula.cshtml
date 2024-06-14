@@ -1,0 +1,2138 @@
+﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@inject CedulasEvaluacion.Services.ServicePermisos  sPermisos;
+@{
+    int user = Convert.ToInt32(@User.Claims.ElementAt(0).Value + "");
+
+    ViewData["Title"] = "Seguimiento a la Cédula del Servicio de Limpieza en Áreas Comunes y Oficinas con Folio: " + Model.Folio;
+    int f = 0, cf = 0;
+    int totalServicios = 0, totalServiciosNC = 0;
+    decimal totalConceptos = 0, totalIVA = 0;
+    decimal totalConceptosNC = 0, totalIVANC = 0;
+}
+
+<div class="row col-lg-12">
+    <div class="col-lg-12">
+        <a href="/limpieza/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3'><i class="fal fa-arrow-left"></i></a>
+        @if (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
+        {
+            <a href="#" class='btn-sm btn-primary float-right mr-2 mb-3 btnActaER' data-toggle="tooltip" title="Generar Acta ER" data-placement="top">
+                <i class="fal fa-calendar-alt"></i>
+            </a>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+            @foreach (var pr in Model.pestanas)
+            {
+                if (pr.NoPregunta == 0)
+                {
+                    @if (!pr.Abreviacion.Equals("Alcances"))
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link @(pr.Abreviacion.Equals("InformacionGeneral") ? "active":"")" id="@(pr.Abreviacion.Equals("InformacionGeneral") ? "home-tab":"profile-tab")" data-toggle="tab" href="#@pr.Abreviacion" role="tab" aria-controls="home" aria-selected="true">
+                                @pr.Valor
+                            </a>
+                        </li>
+                    }
+                    else if (pr.Abreviacion.Equals("Alcances") && Model.Alcance == true)
+                    {
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#@pr.Abreviacion" role="tab" aria-controls="home" aria-selected="true">
+                                @pr.Valor
+                            </a>
+                        </li>
+                    }
+                }
+            }
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="InformacionGeneral" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row justify-content-center align-items-center mt-4">
+                    <div class="col-lg-12 h3 ml-4">
+                        Información General
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 mt-3">
+                        <div class="card bg-light d-flex flex-fill">
+                            <div class="card-header border-bottom-0">
+                                <h2 class="lead"><b>Inmueble Evaluado: </b> @Model.inmuebles.Nombre</h2>
+                            </div>
+                            <div class="card-body pt-0">
+                                <div class="row">
+                                    <div class="col-lg-7 mr-2">
+                                        <p class="text-medium">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
+                                        <ul class="ml-4 mb-0 fa-ul">
+                                            <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
+                                            <li class="medium mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
+                                            <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
+                                            <li class="medium mt-3">
+                                                <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
+                                                <strong>Correo:</strong>
+                                                @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
+                                                {
+                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                }
+                                                else
+                                                {
+                                                    @Model.usuarios.correo_electronico
+                                                }
+                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
+                                                    <i class="fal fa-edit"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <h5 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
+                                            @Html.Raw(Model.Icono)
+                                            <strong class="ml-2">Estatus: </strong> @Model.Estatus
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade mt-2 ml-3" id="facturacion" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Facturación del Servicio
+                </div>
+                @if (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
+                {
+                    <div class="row col-lg-12 d-flex justify-content-end">
+                        <button class='btn btn-sm btn-primary ml-2 mb-3' data-toggle="tooltip" title="Agregar Facturas" data-placement="top" id="add_facturas">
+                            <i class="fal fa-plus text-white"></i> Agregar Nota de Crédito
+                        </button>
+                    </div>
+                }
+                <div class="row">
+                    <div class="row col-lg-12">
+                        <p class="text-justify ml-3">
+                            <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
+                            la información de la factura que fue agregada.
+                        </p>
+                        <div class="col-lg-12 mt-3 ml-2">
+                            <table class="table tblIncidencias tablaFacturas" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Tipo</th>
+                                        <th>Empresa</th>
+                                        <th>Folio Fiscal</th>
+                                        <th>Número Factura</th>
+                                        <th>Subtotal Factura</th>
+                                        <th>IVA</th>
+                                        <th>Total</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="AA">
+                                    @foreach (var fac in Model.facturas)
+                                    {
+                                        f++;
+                                        <tr>
+                                            <td>@f</td>
+                                            <td>@(fac.Tipo.Equals("NC") ? "Nota de Crédito":fac.Tipo)</td>
+                                            <td>@fac.emisor.Nombre</td>
+                                            <td>
+                                                @fac.timbreFiscal.UUID
+                                                @if (!fac.cfdiRelacionado.UUID.Equals(""))
+                                                {
+                                                    <p>Relacionado al Folio Fiscal: @fac.cfdiRelacionado.UUID</p>
+                                                }
+                                            </td>
+                                            <td>@fac.comprobante.Folio</td>
+                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.SubTotal)</td>
+                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.traslado.Importe)</td>
+                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.Total)</td>
+                                            <td class="text-center">
+                                                <a href="#" class="viewConceptosF" id="viewConceptos_@fac.Id" data-factura="@fac.Id">
+                                                    <i class="fas fa-eye text-success"></i>
+                                                </a>
+                                                <a target="_blank" href="/facturas/download/@fac.Id/@fac.Tipo" class="ml-2" data-id="@fac.Id">
+                                                    <i class='fa-solid fa-download text-danger'></i>
+                                                </a>
+                                                @if (fac.Tipo.Equals("NC") && (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado")))
+                                                {
+                                                    <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Nota de Crédito" data-placement="top">
+                                                        <i class="fas fa-times text-danger"></i>
+                                                    </a>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-12 mt-3 ml-2 mb-3">
+                            @foreach (var fac in Model.facturas)
+                            {
+                                <div class="conceptosFactura" id="conceptoFactura_@fac.Id">
+                                    <h3>Conceptos de la Factura con Folio: @fac.comprobante.Folio</h3>
+                                    <table id="@fac.comprobante.Folio" style="width: 90%" class="table tableConceptos mt-3 float-right">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Cantidad</th>
+                                                <th>Unidad</th>
+                                                <th>Descripción</th>
+                                                <th>Precio Unitario</th>
+                                                <th>SubTotal</th>
+                                                <th>IVA</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var con in fac.concepto)
+                                            {
+                                                if (@fac.Id == con.FacturaId)
+                                                {
+                                                    cf++;
+                                                    <tr>
+                                                        <td>@cf</td>
+                                                        <td>@con.Cantidad</td>
+                                                        <td>@con.Unidad</td>
+                                                        <td>@con.Descripcion</td>
+                                                        <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.ValorUnitario)</td>
+                                                        <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe)</td>
+                                                        <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.IVA)</td>
+                                                        <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe + con.IVA)</td>
+                                                    </tr>
+                                                    @if (fac.Tipo.Equals("NC"))
+                                                    {
+                                                        totalServiciosNC = totalServiciosNC + Convert.ToInt32(con.Cantidad);
+                                                        totalConceptosNC = totalConceptosNC + con.Importe;
+                                                        totalIVANC = totalIVANC + Convert.ToDecimal(con.IVA.ToString("N2"));
+                                                    }
+                                                    else
+                                                    {
+                                                        totalServicios = totalServicios + Convert.ToInt32(con.Cantidad);
+                                                        totalConceptos = totalConceptos + con.Importe;
+                                                        totalIVA = totalIVA + Convert.ToDecimal(con.IVA.ToString("N2"));
+                                                    }
+                                                }
+                                            }
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                @if (fac.Tipo.Equals("NC"))
+                                                {
+                                                    <th>Total:</th>
+                                                    <th>@totalServiciosNC - Servicios</th>
+                                                    <th colspan="3"></th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptosNC)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalIVANC)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (totalConceptosNC + totalIVANC))</th>
+                                                }
+                                                else
+                                                {
+                                                    <th>Total:</th>
+                                                    <th>@totalServicios - Servicios</th>
+                                                    <th colspan="3"></th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalIVA)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (totalConceptos + totalIVA))</th>
+                                                }
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="Entregables" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="col-lg-12 h3 mt-4">
+                    Entregables Periódicos
+                </div>
+                <div class="row col-lg-12">
+                    <div class="col-lg-8">
+                        <p class="h6">El usuario adjuntó los siguientes entregables.</p>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-1 h6">
+                    <div class="col-lg-12">
+                        <div class="col-lg-12 mb-3">
+                            @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Autorizado CAE") || @Model.Estatus.Equals("Trámite Rechazado")) &&
+                                ((@User.Claims.ElementAt(2).Value).Contains("Evaluador") ||
+                                (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
+                            {
+                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                            }
+                        </div>
+                        <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
+                        <table class="table" id="tableEntregables">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Nombre</th>
+                                    <th>Fecha de Creación</th>
+                                    <th class="text-center">Estatus</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var entre in @Model.iEntregables)
+                                {
+                                    <tr>
+                                        <td>@entre.TipoEntregable</td>
+                                        <td>@entre.NombreArchivo</td>
+                                        <td>@entre.FechaCreacion.ToString("dd-MM-yyyy")</td>
+                                        <td class="text-center @entre.Color font-weight-bold">
+                                            @if (await sPermisos.GetPermisosByModulo("autorizar entregables", @Model.ServicioId, @user) != 0)
+                                            {
+                                                @if (@entre.Estatus.Equals("Rechazado"))
+                                                {
+                                                    @Html.Raw(@entre.Icono) @entre.Estatus
+                                                    <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                       data-toggle="tooltip" title="Autorizar @entre.TipoEntregable" data-placement="top">
+                                                        <i class="fas fa-check ml-1"></i>
+                                                    </a>
+                                                }
+                                                else if (@entre.Estatus.Equals("Autorizado"))
+                                                {
+                                                    @Html.Raw(@entre.Icono) @entre.Estatus
+                                                    <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                       data-toggle="tooltip" title="Rechazar @entre.TipoEntregable" data-placement="top">
+                                                        <i class="far fa-times"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                       data-toggle="tooltip" title="Autorizar @entre.TipoEntregable" data-placement="top">
+                                                        <i class="fas fa-check ml-1"></i>
+                                                    </a>
+                                                    <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                       data-toggle="tooltip" title="Rechazar @entre.TipoEntregable" data-placement="top">
+                                                        <i class="far fa-times"></i>
+                                                    </a>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw(@entre.Icono) @entre.Estatus
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
+                                               data-toggle="tooltip" title="Vista Previa de(la) @entre.TipoEntregable" data-placement="top">
+                                                <i class='fas fa-eye text-success'></i>
+                                            </a>
+                                            @if (await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
+                                            {
+                                                @if (await sPermisos.GetAccionesEntregables(entre.Tipo, Model.Estatus, Model.ServicioId) && !entre.Estatus.Equals("Autorizado"))
+                                                {
+                                                    <a href='#' class="text-center mr-2 update_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
+                                                       data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo" data-toggle="tooltip" title="Actualizar @entre.TipoEntregable"
+                                                       data-placement="top">
+                                                        <i class='fas fa-pencil text-primary'></i>
+                                                    </a>
+                                                }
+                                            }
+                                            @if (await sPermisos.GetPermisosByModulo("eliminar entregables", @Model.ServicioId, @user) != 0)
+                                            {
+                                                @if (await sPermisos.GetAccionesEntregables(entre.Tipo, Model.Estatus, Model.ServicioId) && !entre.Estatus.Equals("Autorizado"))
+                                                {
+                                                    <a href='#' class="text-center mr-2 delete_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
+                                                       data-file="@entre.NombreArchivo" data-tipo="@entre.TipoEntregable" data-toggle="tooltip" title="Eliminar @entre.TipoEntregable"
+                                                       data-placement="top">
+                                                        <i class='fas fa-times text-danger'></i>
+                                                    </a>
+                                                }
+                                            }
+                                            @if (@Model.Estatus.Equals("En Trámite") && (@entre.Tipo.Equals("Cedula_Firmada") || @entre.Tipo.Equals("Memorandum") || @entre.Tipo.Equals("ActaER"))
+                                                  && @entre.ValidadoDas == false)
+                                            {
+                                                @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
+                                                {
+                                                    <a href='#' class="text-center mr-2 valida_cedula" data-id="@entre.Id" data-tipo="@entre.TipoEntregable" data-toggle="tooltip" title="Validar Cédula de Evaluación"
+                                                       data-placement="top">
+                                                        <i class='fas fa-check text-cjf'></i>
+                                                    </a>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row col-lg-12 justify-content-end mb-3">
+                    @if (await sPermisos.GetPermisosByModulo("revisar CAE", @Model.ServicioId, @user) != 0)
+                    {
+                        <button href="" class="btn btn-primary float-right mr-3 revisar_cae"><i class="fas fa-check mr-2"></i>Enviar a Revisión CAE</button>
+                    }
+                    @if (await sPermisos.GetPermisosByModulo("autorizar CAE", @Model.ServicioId, @user) != 0)
+                    {
+                        <button href="" class="btn btn-success float-right mr-3 autorizar_cae"><i class="fas fa-check mr-2"></i>Autorizar Documentación</button>
+                    }
+                    @if (await sPermisos.GetPermisosByModulo("rechazar trámite", @Model.ServicioId, @user) != 0)
+                    {
+                        <button href="" class="btn btn-danger float-right mr-3 rechazar_tramite"><i class="fas fa-check mr-2"></i>Rechazar Trámite</button>
+                    }
+                    @if (await sPermisos.GetPermisosByModulo("trámitar", @Model.ServicioId, @user) != 0)
+                    {
+                        <button href="" class="btn btn-info float-right mr-3 tramitar_cedula"><i class="fas fa-check mr-2"></i>Enviar a Trámite</button>
+                    }
+                    @if (await sPermisos.GetPermisosByModulo("trámitar a pago", @Model.ServicioId, @user) != 0)
+                    {
+                        <button href="" class="btn btn-success float-right mr-3 tramitar_pago"><i class="fas fa-check mr-2"></i>Tramitar Pago</button>
+                    }
+                </div>
+            </div>
+            @if (Model.Alcance)
+            {
+                <div class="tab-pane fade" id="Alcances" role="tabpanel" aria-labelledby="contact-tab">
+                    <div class="col-lg-12 h3 mt-4">
+                        Entregables Complementarios
+                    </div>
+                    <div class="row col-lg-12">
+                        <div class="col-lg-8">
+                            <p class="h6">El usuario adjuntó los siguientes entregables.</p>
+                        </div>
+                    </div>
+                    <div class="row col-lg-12 mt-1 h6">
+                        <div class="col-lg-12">
+                            <div class="col-lg-12 mb-3">
+                                @if (((@User.Claims.ElementAt(2).Value).Contains("Evaluador") || (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
+                                {
+                                    <a href="#" type='button' class='btn-sm btn-success mr-2 float-right addAlcance' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                                }
+                            </div>
+                            <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
+                            <table class="table" id="tableEntregables">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Nombre</th>
+                                        <th>Fecha de Creación</th>
+                                        <th class="text-center">Estatus</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{ string tipo = ""; }
+                                    @foreach (var entre in @Model.iEntregables)
+                                    {
+                                        @if (entre.Tipo.Contains("Alcance"))
+                                        {
+                                            <tr>
+                                                <td>@entre.TipoEntregable</td>
+                                                <td>@entre.NombreArchivo</td>
+                                                <td>@entre.FechaCreacion.ToString("dd-MM-yyyy")</td>
+                                                <td class="text-center @entre.Color font-weight-bold">
+                                                    @if (await sPermisos.GetPermisosByModulo("autorizar entregables", @Model.ServicioId, @user) != 0)
+                                                    {
+                                                        @if (@entre.Estatus.Equals("Rechazado"))
+                                                        {
+                                                            @Html.Raw(@entre.Icono) @entre.Estatus
+                                                            <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                               data-toggle="tooltip" title="Autorizar @entre.TipoEntregable" data-placement="top">
+                                                                <i class="fas fa-check ml-1"></i>
+                                                            </a>
+                                                        }
+                                                        else if (@entre.Estatus.Equals("Autorizado"))
+                                                        {
+                                                            @Html.Raw(@entre.Icono) @entre.Estatus
+                                                            <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                               data-toggle="tooltip" title="Rechazar @entre.TipoEntregable" data-placement="top">
+                                                                <i class="far fa-times"></i>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                               data-toggle="tooltip" title="Autorizar @entre.TipoEntregable" data-placement="top">
+                                                                <i class="fas fa-check ml-1"></i>
+                                                            </a>
+                                                            <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@entre.TipoEntregable"
+                                                               data-toggle="tooltip" title="Rechazar @entre.TipoEntregable" data-placement="top">
+                                                                <i class="far fa-times"></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(@entre.Icono) @entre.Estatus
+                                                    }
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
+                                                       data-toggle="tooltip" title="Vista Previa de(la) @entre.TipoEntregable" data-placement="top">
+                                                        <i class='fas fa-eye text-success'></i>
+                                                    </a>
+                                                    @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado") ||
+                                            @Model.Estatus.Equals("Autorizado CAE")) ||
+                                         (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
+                                                    {
+                                                        @if (!entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
+                                                        {
+                                                            <a href='#' class="text-center mr-2 update_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
+                                                               data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo" data-toggle="tooltip" title="Actualizar @entre.Tipo"
+                                                               data-placement="top">
+                                                                <i class='fas fa-pencil text-primary'></i>
+                                                            </a>
+                                                        }
+                                                    }
+
+                                                    @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
+                                                    {
+                                                        <a href='#' class="text-center mr-2 valida_cedula" data-id="@entre.Id" data-tipo="@entre.TipoEntregable" data-toggle="tooltip" title="Validar Cédula de Evaluación"
+                                                           data-placement="top">
+                                                            <i class='fas fa-check text-cjf'></i>
+                                                        </a>
+                                                    }
+                                                    <a href='#' class='text-center mr-2 view_alcances' data-id="@entre.Id" data-toggle="tooltip" title="Visualizar Alcances" data-placement="top">
+                                                        <i class="fa-solid fa-paperclip text-primary"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row col-lg-12 justify-content-end mb-3">
+                        @if (await sPermisos.GetPermisosByModulo("revisar CAE", @Model.ServicioId, @user) != 0)
+                        {
+                            <button href="" class="btn btn-primary float-right mr-3 revisar_cae"><i class="fas fa-check mr-2"></i>Enviar a Revisión CAE</button>
+                        }
+                        @if (await sPermisos.GetPermisosByModulo("autorizar CAE", @Model.ServicioId, @user) != 0)
+                        {
+                            <button href="" class="btn btn-success float-right mr-3 autorizar_cae"><i class="fas fa-check mr-2"></i>Autorizar Documentación</button>
+                        }
+                        @if (await sPermisos.GetPermisosByModulo("rechazar trámite", @Model.ServicioId, @user) != 0)
+                        {
+                            <button href="" class="btn btn-danger float-right mr-3 rechazar_tramite"><i class="fas fa-check mr-2"></i>Rechazar Trámite</button>
+                        }
+                        @if (await sPermisos.GetPermisosByModulo("trámitar", @Model.ServicioId, @user) != 0)
+                        {
+                            <button href="" class="btn btn-info float-right mr-3 tramitar_cedula"><i class="fas fa-check mr-2"></i>Enviar a Trámite</button>
+                        }
+                        @if (await sPermisos.GetPermisosByModulo("trámitar a pago", @Model.ServicioId, @user) != 0)
+                        {
+                            <button href="" class="btn btn-success float-right mr-3 tramitar_pago"><i class="fas fa-check mr-2"></i>Tramitar Pago</button>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="tab-pane fade" id="DecutivasPenalizacion" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="col-lg-12 h3 mt-4 mb-4">
+                            Penalizaciones y Deductivas
+                        </div>
+                        <div class="row col-lg-12 mt-2 h6">
+                            @if (Model.TotalDeductivas != 0 || Model.TotalPenalizaciones != 0)
+                            {
+                                <div class="card-header border-bottom-0">
+                                    <h2 class="lead"><b>Inmueble Evaluado: </b> @Model.inmuebles.Nombre</h2>
+                                    <p class="text-medium">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
+                                    <p class="text-justify text-primary font-weight-bold h5">Solicitar al prestador de servicios la nota de crédito por el(los) siguiente(s) concepto(s):</p>
+                                </div>
+                                <div class="row col-lg-12 @(Model.TotalDeductivas != 0?"text-danger":"text-success") ml-2 font-weight-bold h4">
+                                    <p>Deductivas del Servicio</p>
+                                </div>
+                                @if (Model.TotalDeductivas != 0)
+                                {
+                                    <div class="row col-lg-12 ml-2">
+                                        @foreach (var pd in Model.penalizaciones)
+                                        {
+                                            @if (pd.TipoDeduccion.Equals("Deductiva") && pd.MontoPenalizacion != 0)
+                                            {
+                                                <div class="col-lg-3 mb-3">
+                                                    @Html.Raw(pd.Icono)
+                                                    <b>@pd.Valor: </b>
+                                                    <b class="@(@pd.MontoPenalizacion == 0 ? "text-pagado" : "text-danger")">
+                                                        @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @pd.MontoPenalizacion)
+                                                    </b>
+                                                </div>
+                                            }
+                                        }
+                                        @if (Model.PenaCalificacion != 0)
+                                        {
+                                            <div class="col-lg-4">
+                                                <i class="fas fa-star"></i>
+                                                <b>Calidad, Oportunidad y Eficiencia del Servicio:</b> <b class="text-danger">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.PenaCalificacion)</b>
+                                            </div>
+                                        }
+                                        <div class="row col-lg-12 mt-3">
+                                            <div class="col-lg-12">
+                                                <h6 class="text-success">
+                                                    <b>Total de Deductivas: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalDeductivas)</b>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row col-lg-12">
+                                        <div class="text-center col-lg-12 h5">
+                                            <b class="text-success">No se presentaron deductivas en el mes de evaluación.</b>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="row col-lg-12 @(Model.TotalPenalizaciones != 0?"text-danger":"text-success") ml-2 mt-4 font-weight-bold h4">
+                                    <p>Penalizaciones del Servicio</p>
+                                </div>
+                                @if (Model.TotalPenalizaciones != 0)
+                                {
+                                    <div class="row col-lg-12 ml-2">
+                                        @foreach (var pd in Model.penalizaciones)
+                                        {
+                                            @if (pd.TipoDeduccion.Equals("Penalizacion") && pd.MontoPenalizacion != 0)
+                                            {
+                                                <div class="col-lg-3 mb-3">
+                                                    @Html.Raw(pd.Icono)
+                                                    <b>@pd.Valor: </b>
+                                                    <b class="@(@pd.MontoPenalizacion == 0 ? "text-pagado" : "text-danger")">
+                                                        @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @pd.MontoPenalizacion)
+                                                    </b>
+                                                </div>
+                                            }
+                                        }
+                                        <div class="row col-lg-12 mt-2">
+                                            <div class="col-lg-12">
+                                                <h6 class="text-success">
+                                                    <b>Total de Penalizaciones: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalPenalizaciones)</b>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="row col-lg-12">
+                                        <div class="text-center col-lg-12 h5">
+                                            <b class="text-success">No se presentaron penalizaciones en el mes de evaluación.</b>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="row col-lg-12 mt-4 ml-1">
+                                    <div class="col-lg-12">
+                                        <h5 class="text-danger">
+                                            <b>Total de deductivas y penalizaciones del mes: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalDeductivas + Model.TotalPenalizaciones)</b>
+                                        </h5>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row col-lg-12">
+                                    <div class="text-center col-lg-12 h5">
+                                        <b class="text-success">No se presentaron deductivas y penalizaciones en el mes de evaluación.</b>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+            <div class="tab-pane fade" id="HistorialCedula" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row justify-content-center align-items-center mt-4">
+                    <div class="col-lg-12 h3 ml-4">
+                        Seguimiento de la Cédula
+                    </div>
+                    <div class="row col-lg-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Servicio</th>
+                                    <th>Usuario</th>
+                                    <th>Comentarios</th>
+                                    <th>Estatus</th>
+                                    <th>Fecha de Actualización</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var hist in @Model.historialCedulas)
+                                {
+                                    <tr>
+                                        <td>@hist.Servicio</td>
+                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                        <td>@hist.Comentarios</td>
+                                        <td>@hist.Estatus</td>
+                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="HistorialEntregables" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row justify-content-center align-items-center mt-4">
+                    <div class="col-lg-12 h3 ml-4">
+                        Seguimiento de Entregables
+                    </div>
+                    <div class="row col-lg-12">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Servicio</th>
+                                    <th>Usuario</th>
+                                    <th>Comentarios</th>
+                                    <th>Estatus</th>
+                                    <th>Fecha de Actualización</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var hist in @Model.historialEntregables)
+                                {
+                                    <tr>
+                                        <td>@hist.Servicio</td>
+                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                        <td>@hist.Comentarios</td>
+                                        <td>@hist.Estatus</td>
+                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!----------------------------------------- Agregar/Modificar una Factura ------------------------------------------------------------->
+<div class="modal fade" id="modal-facturas">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Agregar/Modificar Nota de Crédito</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" id="idFactura" type="hidden" />
+                <div class="row col-lg-12 mt-2">
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo XML: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input file_factura" id="fileFactura" accept=".xml">
+                            <label class="custom-file-label" for="customFile">Subir archivo "XML"</label>
+                        </div>
+                        <div class="col-sm-12 error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="agregarFactura">Guardar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--------------------------------------- Fin Agregar/Modificar una Factura ----------------------------------------------------------->
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_evidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar/Modificar Entregables</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="file_id" />
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Tipo de Entregable:</label>
+                        <select class="form-control" id="tipo_entregable"></select>
+                        <div class="col-sm-12" id="error_tipoEntre">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de entregable
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione él archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-lg-12 mt-2" id="comentariosEntregable">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Comentarios:</label><br>
+                            <textarea id="comentarios_entregable" class="form-control float-left"></textarea>
+                            <div class="col-sm-12" id="error_comentariosEntre">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor capture los comentarios correspondientes
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="show_pdf">
+    <div class="modal-dialog modal-xl-view">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-view">
+                <table class="table">
+                    <tr>
+                        <td><strong>Folio: </strong> @Model.Folio</td>
+                        <td><strong>Año: </strong>@Model.Anio</td>
+                        <td><strong>Mes: </strong>@Model.Mes</td>
+                        <td><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                        <td><strong>Estatus: </strong>@Model.Estatus </td>
+                    </tr>
+                </table>
+                <div class="row" id="objectPdf">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+<style>
+    #view_pdf {
+        width: 100%;
+        height: 500px;
+    }
+</style>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var totalDeductivas = @Html.Raw(Json.Serialize(@Model.TotalDeductivas));
+
+            $('.error_customFile').css('display', 'none');
+            $('.error_tipoFactura').css('display', 'none');
+            $(".conceptosFactura").css("display", "none");
+
+            $("#cancelarAlcance").click(function () {
+                $("#modal_new_alcances").modal('hide');
+                $("#modal_alcances").modal('show');
+            });
+
+            $("#error_tipoAlca").css('display', 'none');
+            $("#error_comentariosAlcan").css('display', 'none');
+            $("#error_customFileAl").css('display', 'none');
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var target = $(e.target).attr("href") // activated tab
+                localStorage.setItem('activeTab', target);
+            });
+
+            if (localStorage.getItem('activeTab')) {
+                var idTab = localStorage.getItem('activeTab').replace("#", "");
+                $('a[href="#InformacionGeneral"]').removeClass('active');
+                $('a[href="' + localStorage.getItem('activeTab') + '"]').addClass('active');
+                $("#InformacionGeneral").removeClass("show active");
+                $("#" + idTab).addClass("show active");
+            }
+            else {
+                $('#myTab li:first').addClass('active');
+            }
+
+
+            $("#tipo_entregable").change(function () {
+                if ($(this).val() == 'Memorandum') {
+                    Swal.fire({
+                        'icon': 'info',
+                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                        'html': '<p style="text-align: justify">Tenga en cuenta que para adjuntar el <b>Acuse Memorándum (FIREL)</b> al sistema <b>CASESG</b> firmado electrónicamente' +
+                            ' por el <b>Jefe de Departamento y/o Subdirector</b> de área, <b>Administrador de Edificios</b>, y por la ' +
+                            '<b>Coordinación de Operación de Control Operativo de Administraciones de Edificios (CAE) </b> de lo contrario el trámite estará inconcluso por lo cual será rechazado ' +
+                            ' y tendrá que volver a generar un nuevo <b>Memorándum</b>.</p>'
+                    });
+                }
+            });
+
+            $("#historialCedula").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".view_alcances").click(function () {
+                axios.get("/limpieza/getAlcances/" + $(this).data('id')).then(response => {
+                    if (response.data == null || response.data == "") {
+                        $('#body_alcances').html(response.data);
+                    }
+                    $('#body_alcances').html(response.data);
+                });
+                $("#entregable_id").val($(this).data('id'));
+                $("#modal_alcances").modal('show');
+            });
+
+            /*Adjuntar Archivos*/
+                $('#error_tipoEntre').css('display', 'none');
+                $('#error_customFile').css('display', 'none');
+                $('#error_comentariosEntre').css('display', 'none');
+            /*Adjuntar Archivos*/
+
+            /*Ocultar Botones de Acción*/
+                $('.tramitar_cedula').css('display','none');
+                $('.tramitar_pago').css('display','none');
+                $('.rechazar_tramite').css('display','none');
+                $('.autorizar_cae').css('display','none');
+                $('.revisar_cae').css('display','none');
+            /*Fin de Ocultar Botones de Acción*/
+
+            /*Condicionales para Liberar los Botones*/
+                if (model.estatus == 'Autorizada') {
+                    axios.get('/entregables/flujo/cae/' + model.id + '/' + model.estatus).then(btn => {
+                        if (btn.data != -1) {
+                            $('.revisar_cae').css('display', 'block');
+                        }
+                    });
+                }
+                else if (model.estatus == 'Revisión CAE') {
+                    axios.get('/entregables/flujo/cae/' + model.id + '/' + model.estatus).then(btn => {
+                        if (btn.data == 0) {
+                            $('.rechazar_tramite').css('display', 'block');
+                        } else if(btn.data == 1){
+                            $('.autorizar_cae').css('display', 'block');
+                        }
+                    });
+                }
+                else if (model.estatus == 'Autorizado CAE') {
+                    axios.get('/entregables/flujo/cae/' + model.id + '/' + model.estatus).then(btn => {
+                        if (btn.data == 1) {
+                            $('.tramitar_cedula').css('display', 'block');
+                        }
+                        else
+                        {
+                            $('.rechazar_tramite').css('display', 'block');
+                        }
+                    });
+                }
+                else if (model.estatus == 'Trámite Rechazado') {
+                    axios.get('/entregables/flujo/cae/' + model.id + '/' + model.estatus).then(btn => {
+                        if (btn.data == 1)
+                        {
+                            $('.revisar_cae').css('display', 'block');
+                        }
+                        else if (btn.data == 0)
+                        {
+                            $('.tramitar_cedula').css('display', 'block');
+                        }
+                        else if (btn.data == 2) {
+                            $('.autorizar_cae').css('display', 'block');
+                        }
+                    });
+                }
+                else if (model.estatus == 'En Trámite') {
+                    axios.get('/entregables/flujo/cae/' + model.id + '/' + model.estatus).then(btn => {
+                        if (btn.data == -1) {
+                            $('.rechazar_tramite').css('display', 'block');
+                        }
+                        else if (btn.data == -2) {
+                            $('.revisar_cae').css('display', 'block');
+                        }
+                        else if (btn.data == 1) {
+                            $('.tramitar_pago').css('display', 'block');
+                        } else if (btn.data == 0) {
+                            $("#divAvisoFinancieros").css('display', 'block');
+                        }
+                    }).catch(error => {
+                    });
+                }
+                else if (model.estatus == 'Trámite de Pago')
+                {
+                    if (!model.alcance) {
+                        $('.tramitar_cedula').css('display', 'none');
+                        $('.tramitar_pago').css('display', 'none');
+                        $('.rechazar_tramite').css('display', 'none');
+                        $('.autorizar_cae').css('display', 'none');
+                        $('.revisar_cae').css('display', 'none');
+                        $('.success_entregable').css('display', 'none');
+                        $('.failed_entregable').css('display', 'none');
+                    }
+                }
+                else if(model.estatus == 'Enviada a DGPPT' || model.estatus == 'Pagada')
+                {
+                    $('.tramitar_cedula').css('display', 'none');
+                    $('.tramitar_pago').css('display', 'none');
+                    $('.rechazar_tramite').css('display', 'none');
+                    $('.autorizar_cae').css('display', 'none');
+                    $('.revisar_cae').css('display', 'none');
+                    $('.success_entregable').css('display', 'none');
+                    $('.failed_entregable').css('display', 'none');
+                }
+            /*Fin Condicionales para Liberar los Botones*/
+
+            /*Tramitar Cedula*/
+                $(document).on('click', '.valida_cedula', function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': '¿Está seguro que desea <b>validar el(la) ' + $(this).data('tipo') + ' de la evaluación con folio: ' + model.folio + '?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, enviar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.post('/limpieza/historialLimpieza', {
+                                ServicioId: model.servicioId,
+                                CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),
+                                Estatus: "En Trámite", Comentarios: "Se validó la " + $(this).data('tipo') + " por operación."
+                            }).then(hist => {
+                                axios.get('/entregables/validaCedula/'+$(this).data('id')).then(valid => {
+                                    if (valid.status == 200) {
+                                        Swal.fire({
+                                            'icon': 'success',
+                                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                            'text': 'Se validó el(la) ' + $(this).data('tipo')+' correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                                });
+                            }).catch(er => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Ocurrio un error al validar la cédula. Por favor comunicate a la ext. 2574.'
+                                });
+                            });
+                         }
+                    });
+                });
+
+                $(document).on('click', '.tramitar_cedula', function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': '¿Está seguro que desea <b>tramitar la cédula con el folio: ' + model.folio + '?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, enviar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.post('/limpieza/historialLimpieza', { ServicioId: model.servicioId, CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Estatus: "En Trámite", Comentarios: "Se envió a trámite por parte de la administración."}).then(hist => {
+                                if (hist.status == 200) {
+                                    axios.post('/limpieza/aprovRechCed', { Id: model.id, Estatus: "En Trámite" }).then(response => {
+                                        if (response.status == 200) {
+                                            Swal.fire({
+                                                icon: "info",
+                                                allowOutsideClick: false,
+                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                html: "Tramitando la cédula, por favor espere."
+                                            });
+                                            Swal.showLoading();
+                                            axios.get('/cedula/notificacionCedula/' + model.id).then(notificacion => {
+                                                if (notificacion.status == 200) {
+                                                    Swal.hideLoading();
+                                                    Swal.fire({
+                                                        icon: "success",
+                                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                        html: "La cédula de evaluación se tramitó correctamente.",
+                                                    }).then(function () {
+                                                        window.location.reload();
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }).catch(er => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Ocurrio un error al tramitar la cédula. Por favor comunicate a la ext. 2574.'
+                                });
+                            });
+                        }
+                    });
+                 });
+
+                $(document).on('click', '.tramitar_pago', function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': '¿Está seguro que desea enviar a <b>trámite de pago la cédula con el folio: ' + model.folio + '</b>?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, tramitar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.post('/limpieza/historialLimpieza', { ServicioId: model.servicioId, CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Estatus: "Trámite de Pago", Comentarios: "Se envió para trámite de pago." }).then(hist => {
+                                if (hist.status == 200) {
+                                    axios.post('/limpieza/aprovRechCed', { Id: model.id, Estatus: "Trámite de Pago" }).then(response => {
+                                        if (response.status == 200) {
+                                            Swal.fire({
+                                                'icon': 'success',
+                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                'text': 'Se envió a trámite de pago la cédula de forma correcta.'
+                                            }).then(function () {
+                                                window.location.reload();
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(document).on('click', '.rechazar_tramite', function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': '¿Está seguro que desea <b>rechazar el trámite de la cédula con el folio: ' + model.folio + ' ?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, rechazar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            Swal.fire({
+                                icon: 'info',
+                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                text: 'Por favor capture los comentarios por el cual se rechaza el trámite de la cédula.',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                cancelButtonText: 'Cancelar',
+                                confirmButtonText: 'Rechazar',
+                                input: 'textarea',
+                                inputPlaceholder: 'Escriba los comentarios correspondientes'
+                            }).then(send => {
+                                if (send.value.length > 0) {
+                                    axios.post('/limpieza/historialLimpieza', {
+                                        ServicioId: model.servicioId, CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Estatus: "Trámite Rechazado", Comentarios: send.value
+                                    }).then(hist => {
+                                        if (hist.status == 200) {
+                                            axios.post('/limpieza/aprovRechCed', { Id: model.id, Estatus: "Trámite Rechazado" }).then(response => {
+                                                if (response.status == 200) {
+                                                    Swal.fire({
+                                                        icon: "info",
+                                                        allowOutsideClick: false,
+                                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                        html: "Rechazando el trámite de la cédula, por favor espere."
+                                                    });
+                                                    Swal.showLoading();
+                                                    axios.get('/cedula/notificacionCedula/' + model.id).then(notificacion => {
+                                                        if (notificacion.status == 200) {
+                                                            Swal.hideLoading();
+                                                            Swal.fire({
+                                                                icon: "success",
+                                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                                html: "Se rechazó el trámite de la cédula de evaluación correctamente.",
+                                                            }).then(function () {
+                                                                window.location.reload();
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }).catch(er => {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                            'text': 'Ocurrió un error al rechazar el trámite de la cédula. Por favor contactar a Soporte técnico a la ext. #318 2574.'
+                                        });
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Es necesario capturar los comentarios indicando el motivo por el cual se envía a trámite la cédula.'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+
+                $(document).on('click', '.autorizar_cae', function () {
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': '¿Está seguro que desea <b>autorizar la documentación de la cédula con el folio: ' + model.folio + ' ?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, autorizar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.post('/limpieza/historialLimpieza', {
+                                ServicioId: model.servicioId, CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value),Estatus: "Autorizado CAE",
+                                                                           Comentarios: "Se autorizó la documentación por la CAE"}).then(hist => {
+                                if (hist.status == 200) {
+                                    axios.post('/limpieza/aprovRechCed', { Id: model.id, Estatus: "Autorizado CAE" }).then(response => {
+                                        if (response.status == 200) {
+                                            Swal.fire({
+                                                icon: "info",
+                                                allowOutsideClick: false,
+                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                html: "Autorizando la cédula por parte de la CAE, por favor espere."
+                                            });
+                                            Swal.showLoading();
+                                            axios.get('/cedula/notificacionCedula/' + model.id).then(notificacion => {
+                                                if (notificacion.status == 200) {
+                                                    Swal.hideLoading();
+                                                    Swal.fire({
+                                                        icon: "success",
+                                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                        html: "La cédula de evaluación fue autorizada correctamente por parte de la CAE.",
+                                                    }).then(function () {
+                                                        window.location.reload();
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }).catch(er => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Ocurrió un error al autorizar la cédula. Por favor contactar a Soporte técnico a la ext. #318 2574.'
+                                });
+                            });
+                        }
+                    });
+                });
+
+                $(document).on('click', '.revisar_cae', function () {
+                    var nc = false;
+                    for (let i = 0; i < model.facturas.length; i++) {
+                        if (model.facturas[i].tipo == "NC") {
+                            nc = true;
+                         }
+                    }
+
+                    if (nc == false && totalDeductivas != 0) {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                            'html': '<p style="text-align: justify">Debe adjuntar los archivos <b>XML</b> de la(s) <strong>Nota(s) de Crédito </strong> que contienen las Penalizaciones y/o Deductivas</strong> aplicadas en su evaluación mensual ' +
+                                ' antes de enviar su cédula a <strong>Revisión CAE</strong>, así mismo debe adjuntar el <b>Acta Entrega - Recepción y la Cédula Eléctronica</b> firmada electrónicamente.</p>'
+                        });
+
+                        return false;
+                    }
+
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': '¿Está seguro que desea enviar <b> a revisión de la CAE la documentación de la cédula con el folio: ' + model.folio + '?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, enviar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            axios.post('/limpieza/historialLimpieza', { ServicioId: model.servicioId, CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Estatus: "Revisión CAE", Comentarios: "Se envía a revisión por la CAE" }).then(hist => {
+                                if (hist.status == 200) {
+                                    axios.post('/limpieza/aprovRechCed', { Id: model.id, Estatus: "Revisión CAE" }).then(response => {
+                                        if (response.status == 200) {
+                                            Swal.fire({
+                                                icon: "info",
+                                                allowOutsideClick: false,
+                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                html: "Enviado a revisión de la CAE la cédula, por favor espere."
+                                            });
+                                            Swal.showLoading();
+                                            axios.get('/cedula/notificacionCedula/' + model.id).then(notificacion => {
+                                                if (notificacion.status == 200) {
+                                                    Swal.hideLoading();
+                                                    Swal.fire({
+                                                        icon: "success",
+                                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                        html: "Se envió la cédula de evaluación a revisión de la CAE correctamente.",
+                                                    }).then(function () {
+                                                        window.location.reload();
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }).catch(er => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Ocurrio un error al enviar la cédula a revisión por la CAE. Por favor comunicate a la ext. 2574.'
+                                });
+                            });
+                        }
+                    });
+                });
+            /*Fin de Tramitar Cedula*/
+
+            /*Ver archivo en modal*/
+            $(document).on('click', '.view_file', function () {
+                let nombre = $(this).data('file');
+                let tipo = $(this).data('tipo');
+                let data = "<object width='100%' height='710px' data='/view/entregable/" + model.folio + "/" + nombre + "'></object>";
+                $('#titlePDF').text("PDF - \"" + tipo + "\"");
+                $('#objectPdf').html(data);
+                $('#show_pdf').modal('show');
+            });
+
+            $(document).on('click', '.view_alcance', function () {
+                let nombre = $(this).data('file');
+                let tipo = $(this).data('tipo');
+                let data = "<object width='100%' height='450px' data='/view/entregable/" + model.folio + "/" + nombre + "'></object>";
+                $('#titlePDF').text("PDF - \"" + tipo + "\"");
+                $('#viewAlcance').html(data);
+            });
+            /*FIN de ver archivo en modal*/
+
+            /*Autorizar Entregable*/
+            $(document).on('click', '.success_entregable', function () {
+                var tipo = $(this).data('tipo');
+                var id = $(this).data('id');
+
+                if (model.estatus == "Autorizada" || model.estatus == "Rechazada" || model.estatus == "Autorizado CAE" || model.estatus == "Enviado a DAS" ||
+                    model.estatus == "Trámite Rechazado") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                        'html': 'No puedes autorizar o rechazar ningún entregable hasta que la cédula esté en el estatus "Revisado CAE" o "En Trámite".'
+                    });
+
+                    return false;
+                }
+
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                    'html': '¿Está seguro que desea autorizar el entregable <b>' + tipo + '</b>?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, autorizar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(confirm => {
+                    if (confirm.isConfirmed) {
+                         axios.post('/limpieza/entregables/historialEntregable', {
+                             CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Tipo: tipo, ServicioId: parseInt(model.servicioId),
+                                    Estatus: "Autorizado"
+                                }).then(hist => {
+                                    if (hist.status == 200) {
+                                        axios.post('/limpieza/entregables/autoRecha', { Id: id, Estatus: "Autorizado", CedulaEvaluacionId: parseInt(model.id) }).then(response => {
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': 'success',
+                                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                    'text': 'Se autorizó el entregable de forma correcta.'
+                                                }).then(function () {
+                                                    window.location.reload();
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).catch(er => {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Ocurrió un error al autorizar la cédula. Por favor contactar a Soporte técnico a la ext. #318 2574.'
+                                    });
+                                });
+                    }
+                });
+            });
+            /*Fin de Autorizar Cedula*/
+
+            /*Rechazar Entregable*/
+                $(document).on('click', '.failed_entregable', function () {
+                var tipo = $(this).data('tipo');
+                var id = $(this).data('id');
+
+                    if (model.estatus == "Autorizada" || model.estatus == "Rechazada" || model.estatus == "Autorizado CAE" || model.estatus == "Enviado a DAS" ||
+                        model.estatus == "Trámite Rechazado") {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                            'html': 'No puedes autorizar o rechazar ningún entregable hasta que la cédula esté en el estatus "Revisado CAE" o "En Trámite".'
+                        });
+
+                        return false;
+                    }
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                    'html': '¿Está seguro que desea rechazar el entregable <b>' + tipo+ '</b>?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, Rechazar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(confirm => {
+                    if (confirm.isConfirmed) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Servicio de Limpieza',
+                            html: 'Por favor capture el motivo por el cual se rechaza el entregable <b>"'+tipo+'"</b>.',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Rechazar',
+                            input: 'textarea',
+                            inputPlaceholder: 'Escriba los comentarios correspondientes'
+                        }).then(send => {
+                            if (send.value.length > 0) {
+                                axios.post('/limpieza/entregables/historialEntregable', {
+                                    CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Tipo: tipo, ServicioId: parseInt(model.servicioId),
+                                    Estatus: "Rechazado", Comentarios: send.value
+                                }).then(hist => {
+                                    if (hist.status == 200) {
+                                        axios.post('/limpieza/entregables/autoRecha', { Id: id, Estatus: "Rechazado", CedulaEvaluacionId: model.id }).then(response => {
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': 'success',
+                                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                    'text': 'Se rechazó el entregable correctamente.'
+                                                }).then(function () {
+                                                    window.location.reload();
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).catch(er => {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Ocurrio un error al rechazar el entregable. Por favor comunicate a la ext. 2574.'
+                                    });
+                                });
+                            } else {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Es necesario capturar los comentarios indicando el motivo por el cual se rechaza la cédula.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            /*Fin de Rechazar Entregable*/
+
+             /*Autorizar Alcance*/
+            $(document).on('click', '.autorizar_alcance', function () {
+                var id = $(this).data('id');
+                var tipo = $(this).data('tipo');
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                    'html': '¿Está seguro que desea autorizar el alcance?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, autorizar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(confirm => {
+                    if (confirm.isConfirmed) {
+                         axios.post('/limpieza/entregables/historialEntregable', {
+                             CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Tipo: tipo, ServicioId: parseInt(model.servicioId),
+                                    Estatus: "Autorizado"
+                                }).then(hist => {
+                                    if (hist.status == 200) {
+                                        axios.post('/limpieza/alcances/autoRecha', { Id: id, Estatus: "Autorizado", CedulaEvaluacionId: parseInt(model.id) }).then(response => {
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': 'success',
+                                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                    'text': 'Se autorizó el alcance de forma correcta.'
+                                                }).then(function () {
+                                                    window.location.reload();
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).catch(er => {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Ocurrió un error al autorizar la cédula. Por favor contactar a Soporte técnico a la ext. #318 2574.'
+                                    });
+                                });
+                    }
+                });
+            });
+            /*Fin de Autorizar Alcance*/
+
+            /*Rechazar Alcance*/
+            $(document).on('click', '.rechazar_alcance', function () {
+                var id = $(this).data('id');
+                var tipo = $(this).data('tipo');
+
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                    'html': '¿Está seguro que desea rechazar el alcance ?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, Rechazar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(confirm => {
+                    if (confirm.isConfirmed) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Servicio de Limpieza',
+                            html: 'Por favor capture el motivo por el cual se rechaza el alcance.',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            cancelButtonText: 'Cancelar',
+                            confirmButtonText: 'Rechazar',
+                            input: 'textarea',
+                            inputPlaceholder: 'Escriba los comentarios correspondientes'
+                        }).then(send => {
+                            if (send.value.length > 0) {
+                                axios.post('/limpieza/entregables/historialEntregable', {
+                                    CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Tipo: tipo, ServicioId: parseInt(model.servicioId),
+                                    Estatus: "Rechazado", Comentarios: send.value
+                                }).then(hist => {
+                                    if (hist.status == 200) {
+                                        axios.post('/limpieza/alcances/autoRecha', { Id: id, Estatus: "Rechazado", CedulaEvaluacionId: model.id }).then(response => {
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': 'success',
+                                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                    'text': 'Se rechazó el alcance correctamente.'
+                                                }).then(function () {
+                                                    window.location.reload();
+                                                });
+                                            }
+                                        });
+                                    }
+                                }).catch(er => {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Ocurrio un error al rechazar el alcance. Por favor comunicate a la ext. 2574.'
+                                    });
+                                });
+                            } else {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Es necesario capturar los comentarios indicando el motivo por el cual se rechaza el alcance.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            /*Fin de Rechazar Alcance*/
+
+            /****************************************** Facturación Cedula *********************************************/
+                    $(document).on('click','.update_factura',function () {
+                        var id = $(this).data('factura');
+                        $("#idFactura").val(id);
+                        $('#modal-ver-facturas').modal('hide');
+                        $("#modal-facturas").modal('show');
+                    });
+
+                    $(document).on('click', '.eliminarFactura', function () {
+                        var id = $(this).data('factura');
+                        var folio = $(this).data('folio');
+
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                            'html': '<strong>Advertencia:</strong><p>¿Desea eliminar la factura con Folio <strong>' + folio + '</strong>?</p>',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, continuar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(yes => {
+                            if (yes.isConfirmed) {
+                                Swal.fire({
+                                    'icon': 'warning',
+                                    'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                    'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el borrado de la factura con folio: '+folio,
+                                    'confirmButtonColor': '#3085d6',
+                                    'cancelButtonColor': '#d33',
+                                    'confirmButtonText': 'Si, eliminar',
+                                    'cancelButtonText': 'Cancelar',
+                                    'showCancelButton': true,
+                                    'input': 'text',
+                                    'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                }).then(del => {
+                                    if (del.value == 'ELIMINAR' || del.value == 'eliminar') {
+                                        axios.delete('/facturas/deleteFactura/' + id).then(del => {
+                                            Swal.fire({
+                                                'icon': 'success',
+                                                'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                                'html': 'La factura fue eliminada exitósamente.',
+                                            }).then(function () {
+                                                window.location.reload();
+                                            });
+                                        })
+                                    } else {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                            'html': 'La factura no fue eliminada exitósamente, favor de escribir correctamente la palabra <b>ELIMINAR</b>',
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    $(".file_factura").change(function (e) {
+                        var archivo = e.target.files[0];
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "xml" || ext == "XML") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            if ($('.file_factura').hasClass('is-invalid')) {
+                                $('.file_factura').removeClass('is-invalid');
+                                $('.file_factura').addClass('is-valid');
+                                $('.error_customFile').css('display', 'none')
+                            } else {
+                                $('.file_factura').addClass('is-valid');
+                            }
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                'text': 'El archivo que intenta adjuntar no es válido. Favor de solo seleccionar archivos "Xml"'
+                            });
+
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+
+                            if ($('.file_factura').hasClass('is-valid')) {
+                                $('.file_factura').removeClass('is-valid');
+                                $('.file_factura').addClass('is-invalid');
+                            }
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+                        }
+                    });
+
+                    function validaCamposArchivoXml() {
+                        if ($('#tipoFactura').val() == "" && $("#idFactura").val() == "") {
+                            $('#tipoFactura').addClass('is-invalid');
+                            $('.error_tipoFactura').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if ($('.file_factura').val() == "") {
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+                        return true;
+                    }
+
+                    $('#agregarFactura').click(function () {
+                        var id = $("#idFactura").val();
+                        var tipo = "NC";
+
+                        var formData = new FormData();
+                        var file = document.getElementById('fileFactura').files[0];
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("ServicioId", model.servicioId);
+                        formData.append("Tipo", tipo);
+                        formData.append("CedulaId", model.id);
+                        formData.append("Xml", file);
+                        formData.append("FechaInicial",@Html.Raw(Json.Serialize(@Model.FechaInicial)));
+                        formData.append("FechaFinal",@Html.Raw(Json.Serialize(@Model.FechaFinal)));
+
+
+                        if (validaCamposArchivoXml() == true) {
+                            if (id == "") {
+                                axios.post('/facturas/insertaFactura', formData).then(fact => {
+                                    if (fact.data == 1) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                            'html': 'La factura fue agreagada correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    } else if (fact.data != 1 && fact.data != -1) {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                            'html': '<p style="text-align: justify">La factura que intenta adjuntar ya fue agregada previamente en la cédula con los siguientes datos: <br />' +
+                                                '<li> <b>Folio: </b>' + fact.data.folio + '</li>' +
+                                                '<li> <b>Inmueble: </b>' + fact.data.inmuebles.nombre + '</li></p>'
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                        'html': '<p style="text-align: justitfy;">CASESG no puede adjuntar la factura, Contacte al administrador del Sistema.'
+                                    });
+                                });
+                            } else {
+                                axios.post('/facturas/updateFactura', formData).then(fact => {
+                                    if (fact.data == 1) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                            'html': 'La factura fue actualizada correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    } else if (fact.data != 1 && fact.data != -1) {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                            'html': '<p style="text-align: justify">La factura que intenta adjuntar ya fue agregada previamente en la cédula con los siguientes datos: <br />' +
+                                                '<li> <b>Folio: </b>' + fact.data.folio + '</li>' +
+                                                '<li> <b>Inmueble: </b>' + fact.data.inmuebles.nombre + '</li></p>'
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Fumigación y Control de Fauna Nociva',
+                                        'html': '<p style="text-align: justitfy;">CASESG no puede adjuntar la factura, Contacte al administrador del Sistema.'
+                                    });
+                                });
+                            }
+                        }
+
+                        document.getElementById('customFile').value = '';
+                        $('#idFactura').val("");
+                        $(".custom-file .custom-file-label").text("Subir archivo \"XML\"");
+                        $('.file_factura').removeClass('is-valid');
+                        $("#tipoFactura").val('');
+                    });
+
+                    $('#add_facturas').click(function () {
+                        $("#idFactura").val('');
+                        $('#modal-ver-facturas').modal('hide');
+                        $('#modal-facturas').modal('show');
+                    });
+
+                 /*Ver/Ocultar Conceptos de Factura*/
+                    $('.viewConceptosF').click(function () {
+                        let factura = $(this).data('factura');
+                        if ($("#conceptoFactura_" + factura).css('display') == 'none')
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "block");
+                        }
+                        else
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "none");
+                        }
+                    });
+                /*Fin Ver/Ocultar Conceptos de Factura*/
+
+                /*Ver/Ocultar Conceptos*/
+                     $(".viewConceptosF").click(function () {
+                         if ($("#viewConceptos_"+$(this).data('factura')+" > i").hasClass("text-success")) {
+                             $("#viewConceptos_" + $(this).data('factura') + " > i").removeClass("text-success");
+                             $("#viewConceptos_" + $(this).data('factura') + "> i").addClass("text-danger");
+                         } else {
+                             $("#viewConceptos_" + $(this).data('factura') +" > i").removeClass("text-danger");
+                             $("#viewConceptos_"+$(this).data('factura')+" > i").addClass("text-success");
+                        }
+                    });
+                /*Fin de Ver/Ocultar Conceptos*/
+            /****************************************** Fin Facturación Cedula *****************************************/
+
+            /************************************ CARGA/EDICION ARCHIVOS ************************************/
+                /*Modal para Adjuntar Archivos*/
+                    $('.btn_addFile').click(function () {
+                        $('#tipo_entregable').prop('disabled', false);
+                        var option = '<option value="">Seleccione un Entregable</option>';
+                        axios.get('/variables/getEntregables/' + model.servicioId + '/' + model.id).then(entre => {
+                            entre = entre.data;
+                            for (var i = 0; i < entre.length; i++) {
+                                option += "<option value='" + entre[i].abreviacion + "'>" + entre[i].valor + "</option>";
+                            }
+                            $('#tipo_entregable').html(option);
+                        });
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN del modal para adjuntar archivos*/
+
+                /*Modal para Adjuntar Archivos*/
+                    $('.addAlcance').click(function () {
+                        $('#tipo_entregable').prop('disabled', false);
+                        var option = '<option value="">Seleccione un Entregable</option>';
+                        axios.get('/variables/getAlcances/' + model.servicioId + '/' + model.id).then(entre => {
+                            entre = entre.data;
+                            for (var i = 0; i < entre.length; i++) {
+                                option += "<option value='" + entre[i].abreviacion + "'>" + entre[i].valor + "</option>";
+                            }
+                            $('#tipo_entregable').html(option);
+                        });
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN del modal para adjuntar archivos*/
+
+                /*Adjunta Entregables*/
+                    function validaCamposArchivo() {
+
+                        if ($('#tipo_entregable').val() == "" && $('#customFile').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if ($('#tipo_entregable').val() == "" ) {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        }
+
+                        if (($('#customFile').val() == "" && $('.custom-file-label').text() == "")) {
+
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+
+                        return true;
+                    }
+
+                    $("#customFile").on("change", function () {
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "pdf") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Formato Incorrecto',
+                                'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                            });
+                            $(".custom-file-label").text("Seleccione el Archivo");
+                            document.getElementById('customFile').value = '';
+                            if ($('#customFile').hasClass('is-valid')) {
+                                $('#customFile').removeClass('is-valid');
+                            }
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+                        }
+
+                    });
+
+                    $('#adjuntarArchivo').click(function () {
+                        var formData = new FormData();
+                        var folio = model.folio;
+                        var file = document.getElementById('customFile').files[0];
+                        var id = $('#file_id').val();
+                        var tipo = $('#tipo_entregable').val();
+                        var comentarios = $('#comentarios_entregable').val();
+
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("CedulaEvaluacionId", model.id);
+                        if(file != null)
+                            formData.append("Archivo", file);
+                        formData.append("Folio", folio);
+                        formData.append("Tipo", tipo);
+                        formData.append("Comentarios", comentarios);
+
+                        if (validaCamposArchivo()) {
+                            if (id != 0) {
+                                axios.post('/limpieza/adjuntaEntregable', formData, {
+                                    headers: { 'Content-Type': 'multipart/form-data' }
+
+                                }).then(response => {
+                                    $('#cerrar_modal_sua').trigger('click');
+                                    /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                                    if (response.status == 200) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                            'text': 'Se adjuntó el entregable de forma correcta.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                        $('#customFile').removeClass('is-valid');
+                                        $('#comentarios_entregable').removeClass('is-valid');
+                                        $('#tipo_entregable').removeClass('is-valid');
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Se presento un error al intentar adjuntar el archivo.'
+                                    });
+                                });
+                                document.getElementById('customFile').value = '';
+                                $('#file_id').val("");
+                                $(".custom-file-label").text("Seleccionar Archivo");
+                                $('#tipo_entregable').val('');
+                                $('#comentarios_entregable').val('');
+                            } else {
+                                axios.get('/limpieza/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
+                                    if (exist.data == 0) {
+                                        axios.post('/limpieza/adjuntaEntregable', formData, {
+                                            headers: { 'Content-Type': 'multipart/form-data' }
+
+                                        }).then(response => {
+                                            $('#cerrar_modal_sua').trigger('click');
+                                            /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                                            if (response.status == 200) {
+                                                Swal.fire({
+                                                    'icon': "success",
+                                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                    'text': 'Se adjuntó el entregable de forma correcta.'
+                                                }).then(function () {
+                                                    window.location.reload();
+                                                });
+                                                $('#customFile').removeClass('is-valid');
+                                                $('#comentarios_entregable').removeClass('is-valid');
+                                                $('#tipo_entregable').removeClass('is-valid');
+                                            }
+                                        }).catch(error => {
+                                            Swal.fire({
+                                                'icon': "error",
+                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                'text': 'Se presento un error al intentar adjuntar el entregable.'
+                                            });
+                                        });
+
+                                        document.getElementById('customFile').value = '';
+                                        $('#file_id').val("");
+                                        $(".custom-file-label").text("Seleccionar Archivo");
+                                        $('#tipo_entregable').val('');
+                                        $('#comentarios_entregable').val('');
+                                    } else {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                            'text': 'Ya fue adjuntado un entregable con el tipo ' + tipo
+                                        });
+                                    }
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'text': 'Ocurrío un error al válidar el entregable.'
+                                    });
+                                });
+                            }
+                        }
+                    });
+
+                /*FIN Adjunta Entregables*/
+
+                /* Listado de Entregables de la Cedula */
+                    axios.get("/limpieza/getEntregables/"+model.id+"/"+model.servicioId).then(response => {
+                        if (response.data == null || response.data == "") {
+                            $('#tEntregables').html(response.data);
+                        }
+                        $('#tEntregables').html(response.data);
+                    });
+                /* Fin Listado de Entregables de la Cedula*/
+
+                /*Editar Entregables*/
+                    $(document).on("click", ".update_files", function () {
+                        var option = '<option value="">Seleccione un Entregable</option>';
+                        var id = $(this).data('id');
+                        var tipo = $(this).data('tipo');
+                        var coments = $(this).data('coments');
+                        var file = $(this).data('file');
+                        axios.get('/variables/getEntregablesUpdate/' + model.servicioId + "/" + tipo).then(entre => {
+                            entre = entre.data;
+                            for (var i = 0; i < entre.length; i++) {
+                                option += "<option value='" + entre[i].abreviacion + "'>" + entre[i].valor + "</option>";
+                            }
+                            $('#tipo_entregable').html(option);
+                            if (tipo == "ActaER" || tipo == "Cedula_Firmada" || tipo == "Memorandum") {
+                                $('#tipo_entregable').prop("disabled", true);
+                            }
+                            $('#tipo_entregable').val(tipo);
+                            $('#file_id').val(parseInt(id));
+                            $(".custom-file-label").text(file);
+                            $('#comentarios_entregable').val(coments);
+                        });
+                        $('#modal_evidencias').modal('show');
+                    });
+                /*FIN de editar Entregables*/
+
+                /*Elimina entregables*/
+                    $(document).on("click", ".delete_files", function () {
+                        let id = $(this).data('id');
+                        let tipo = $(this).data('tipo');
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                            'html': '¿Está seguro de eliminar el archivo relacionado a <b>"'+tipo+'"</b>?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, eliminar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.post("/limpieza/eliminaArchivo", { Id: id, Folio: model.folio }).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire(
+                                            'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                            'El archivo fue eliminado con éxito.',
+                                            'success'
+                                        ).then(function () {
+                                            window.location.reload();
+                                        });
+                                        axios.get("/limpieza/getEntregables/" + model.id).then(response => {
+                                            if (response.data == null || response.data == "") {
+                                                $('#tEntregables').html(response.data);
+                                            }
+                                            $('#tEntregables').html(response.data);
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire(
+                                        'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                        'No se pudo procesar tu solicitud. Contacta a tu Administrador.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+                    });
+                /*FIN de elimina entregables*/
+
+                /*Validaciones Entregables*/
+                    $('#tipo_entregable').change(function () {
+                        if ($('#tipo_entregable').val() == "") {
+                            $('#tipo_entregable').addClass('is-invalid');
+                            $('#error_tipoEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#tipo_entregable').removeClass('is-invalid');
+                            $('#tipo_entregable').addClass('is-valid');
+                            $('#error_tipoEntre').css('display', 'none');
+                        }
+                    });
+
+                    $('#customFile').change(function () {
+                         if ($('#customFile').val() == "") {
+                             $('#customFile').addClass('is-invalid');
+                             $('#error_customFile').css('display', 'block');
+
+                        } else {
+                             var fileName = $("#customFile").val().split("\\").pop();
+                             var ext = fileName.split('.').pop();
+                             if (ext != "pdf") {
+                                 $('#customFile').addClass('is-invalid');
+                                 $('#error_customFile').css('display', 'block');
+                             } else {
+                                 $('#customFile').removeClass('is-invalid');
+                                 $('#customFile').addClass('is-valid');
+                                 $('#error_customFile').css('display', 'none');
+                             }
+                        }
+                     });
+
+                    $('#comentarios_entregable').change(function () {
+                        if ($('#comentarios_entregable').val() == "") {
+                            $('#comentarios_entregable').addClass('is-invalid');
+                            $('#error_comentariosEntre').css('display', 'block');
+
+                            return false;
+                        } else {
+                            $('#comentarios_entregable').removeClass('is-invalid');
+                            $('#comentarios_entregable').addClass('is-valid');
+                            $('#error_comentariosEntre').css('display', 'none');
+                        }
+                    });
+                /*FIN de Validaciones Entregables*/
+
+            /************************************ FIN CARGA/EDICION ARCHIVOS ************************************/
+
+            /******************************** Cuenta las Notas de Crédito a Subir *********************************/
+                $(".btnActaER").click(function () {
+                     var nc = false;
+                    for (let i = 0; i < model.facturas.length; i++) {
+                        if (model.facturas[i].tipo == "NC") {
+                            nc = true;
+                         }
+                    }
+                    if (nc || totalDeductivas == 0) {
+                        window.location.href = "/documents/actaLimpieza/" + model.id + "/" + model.servicioId;
+                    } else {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                            'html': '<p style="text-align: justify">El <b>Acta Entrega - Recepción </b> no puede ser descargada hasta que no se adjunte(n) el(los) <b>XML</b> correspondiente(s) a la(s) <b>Nota(s) de Crédito</b>' +
+                                ' por concepto de <b>Deductivas</b> aplicadas en la evaluación mensual.</p>',
+                        });
+                    }
+                });
+            /**************************** Fin de Contar las Notas de Crédito a Subir ******************************/
+        });
+    </script>
+}
+
+

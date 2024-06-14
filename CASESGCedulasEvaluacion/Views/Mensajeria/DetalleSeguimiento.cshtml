@@ -1,0 +1,828 @@
+﻿@model CedulasEvaluacion.Entities.Vistas.VSeguimiento
+@{
+    var i = 0;
+    var e = 0;
+    var s = 0;
+    var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
+    ViewData["Title"] = "Seguimientos Estafeta";
+    var titulos = new List<string>();
+    var tipos = new List<string>();
+    bool btnPago = true;
+
+    @foreach (var dt in @Model.incidencias)
+    {
+        if (!dt.Tipo.Equals("Recoleccion") && !dt.Tipo.Equals("Entrega") && !dt.Tipo.Equals("Acuses"))
+        {
+            tipos.Add(dt.Tipo);
+        }
+    }
+    HashSet<string> qTipos = new HashSet<string>(tipos);
+    List<string> etipos = qTipos.ToList();
+
+    @foreach (var dt in @Model.incidencias.GroupBy(x => x.Tipo))
+    {
+        if (!dt.Key.Equals("Recoleccion") && !dt.Key.Equals("Entrega") && !dt.Key.Equals("Acuses"))
+        {
+            titulos.Add(dt.Key + " (" + dt.Count() + ")");
+        }
+    }
+
+    foreach (var of in Model.incidencias)
+    {
+        if (of.referencias.Count >0)
+        {
+            @foreach (var vr in of.referencias)
+            {
+                if (vr.FechaVencimiento<DateTime.Now && vr.ReportePago.Equals(""))
+                {
+                    btnPago = false;
+                }
+            }
+        }
+    }
+
+
+}
+<div class="row col-lg-12">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-3 text-center mt-4">
+                        <img src="~/img/servicios/@String.Concat(3, ".png")" alt="" class="img-fluid" width="100" height="100">
+                    </div>
+                    <div class="col-7 ml-3">
+                        <h2 class="lead"><b>Servicio de Mensajería Acelerada</b></h2>
+                        <p class="text-muted text-sm"><b>Total de Incidencias Capturadas: @Model.TotalIncidencias</b> </p>
+                        <p class="text-muted text-sm">
+                        <p>Datos de la Cédula de Evaluación: </p>
+                        <b>Folio: </b> @Model.Folio <br />
+                        <b>Estatus de la Cédula: </b> @Model.EstatusCedula<br />
+                        <b>Inmueble: </b> @Model.Inmueble <br />
+                        <b>Elaboró: </b> @System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToLower(Model.Usuario))<br />
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <b>Estatus del Seguimiento: </b>@Model.EstatusSeguimiento <br />
+    </div>
+    <div class="col-lg-4">
+        <a href="#" type='button' class="btn btn-sm btn-success float-right mr-2"
+           data-toggle="tooltip" title="Formato de oficio de validación de pago" data-placement="top">
+            <i class="fal fa-file mr-2"></i> Oficio de validación
+        </a>
+        @if (btnPago) { 
+            <a href="#" type='button' class="btn btn-sm btn-danger float-right mr-2"
+               data-toggle="tooltip" title="Formato de Oficio para Pago" data-placement="top">
+                <i class="fal fa-file mr-2"></i> Oficio para pago
+            </a>    
+        }
+    </div>
+</div>
+
+
+<div class="row col-lg-12">
+    <div class="col-md-12">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-times mr-2"></i>
+                    Incidencias Reportadas
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="col-lg-12">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        @for (var j = 0; j < titulos.Count(); j++)
+                        {
+                            <label class="btn bg-primary lblTipos" data-tipo="@etipos[j]">
+                                <input type="radio" name="options" id="input_@etipos[j]" autocomplete="off" @(i == 0 ? "checked" : "")> @titulos[j]
+                            </label>
+                        }
+                    </div>
+                </div>
+                @foreach (var inc in etipos)
+                {
+                    <div class="row col-lg-12" id="div_@inc.Replace(" ", "")">
+                        <div class="col-lg-12 mt-3">
+                            <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+                                @foreach (var im in Model.incidencias)
+                                {
+                                    @if (im.Tipo.Equals(@inc))
+                                    {
+                                        <li class="nav-item" role="presentation" border="1">
+                                            <a class="nav-link" data-toggle="tab" href="#@inc.Replace(" ","")@im.NumeroGuia" role="tab" aria-controls="home" aria-selected="true">
+                                                @im.NumeroGuia
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                            <div class="tab-content" id="myTabContent">
+                                @foreach (var im in Model.incidencias)
+                                {
+                                    @if (im.Tipo.Equals(@inc))
+                                    {
+                                        <div class="tab-pane fade" id="@inc.Replace(" ", "")@im.NumeroGuia" role="tabpanel" aria-labelledby="home-tab">
+                                            <div class="col-lg-12">
+                                                <h5 class="mt-3 ml-2">Detalles de la guía "@im.NumeroGuia"</h5>
+                                            </div>
+                                            <div class="row col-lg-12 mt-3">
+                                                <b class="ml-3">Tipo: </b> &nbsp; @im.Tipo
+                                                <b class="ml-3">Numero de Guía: </b>&nbsp; @im.NumeroGuia
+                                                <b class="ml-4">Codigo de Rastreo: </b>&nbsp; @(im.CodigoRastreo != 0 ? im.CodigoRastreo + "" : "N/A")
+                                                <b class="ml-4">Fecha de la Incidencia: </b>&nbsp; @im.FechaProgramada.ToString("dd/MM/yyyy")
+                                                <b class="ml-4">Sobrepeso: </b>&nbsp; @(im.Sobrepeso != 0 ? im.Sobrepeso : 0)
+                                                <b class="ml-4">Tipo de Servicio: </b>&nbsp; @im.TipoServicio
+                                                <b class="ml-4">Acta del MP: </b>&nbsp;
+                                                @if (!im.NombreActa.Equals(""))
+                                                {
+                                                    <a href="#" class="view_file" data-toggle="tooltip" title='Ver el Acta de Robo' data-placement="top" data-tipo="@im.TipoServicio"
+                                                       data-guia="@im.NumeroGuia" data-codigo="@im.CodigoRastreo" data-file="@im.NombreActa"
+                                                       data-tipoe="Acta del MP">
+                                                        <i class="fad fa-eye text-success mr-2"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    @("No se adjuntó / No aplica")
+                                                }
+                                            </div>
+                                            <div class="row col-lg-12 mt-5 ml-2">
+                                                <div class="col-lg-12">
+                                                    <h5>Referencias de Pago Registradas</h5>
+                                                    <a href="#" type='button' class='btn-sm btn-success float-right addReference mb-3' data-toggle="tooltip" title="Adjuntar Entregable"
+                                                       data-incidencia="@im.Id" data-guia="@im.NumeroGuia">
+                                                        <i class="fas fa-plus"></i>
+                                                    </a>
+                                                </div>
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th>Referencia</th>
+                                                            <th>Contrato</th>
+                                                            <th>Cantidad de UMAS</th>
+                                                            <th>Precio Unitario</th>
+                                                            <th>Total</th>
+                                                            <th>Referencia de Depósito</th>
+                                                            <th>Reporte de Pago</th>
+                                                            <th>Fecha de Emisión</th>
+                                                            <th>Fecha de Vencimiento</th>
+                                                            <th>Estatus</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (im.referencias.Count > 0)
+                                                        {
+                                                            @foreach (var seg in im.referencias)
+                                                            {
+                                                                @if (seg.IncidenciaId == im.Id)
+                                                                {
+                                                                    s++;
+                                                                    <tr>
+                                                                        <td>@s</td>
+                                                                        <td>@seg.NumeroReferencia</td>
+                                                                        <td>@seg.Contrato</td>
+                                                                        <td class="text-center">@seg.Cantidad</td>
+                                                                        <td class="text-center">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @seg.PrecioUnitario)</td>
+                                                                        <td class="text-center">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", seg.Cantidad * @seg.PrecioUnitario)</td>
+                                                                        <td class="text-center">
+                                                                            <a href="#" class="view_file" data-toggle="tooltip" title='Ver el Acta de Robo' data-placement="top"
+                                                                               data-guia="@im.NumeroGuia" data-file="@seg.ArchivoReferencia"
+                                                                               data-tipo="Referencia para depósito bancario">
+                                                                                <i class="fad fa-eye text-success mr-2"></i>
+                                                                            </a>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            @if (seg.ReportePago.Equals(""))
+                                                                            {
+                                                                                <a href="#" class="addReporte" data-toggle="tooltip" title='Insertar reporte de pago' data-placement="top"
+                                                                                   data-guia="@im.NumeroGuia" data-file="@seg.ReportePago" data-id="@seg.Id"
+                                                                                   data-tipo="Reporte de pago de servicios">
+                                                                                    <i class="fad fa-plus text-primary mr-2"></i>
+                                                                                </a>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <a href="#" class="view_file" data-toggle="tooltip" title='Ver el reporte de pago' data-placement="top"
+                                                                                   data-guia="@im.NumeroGuia"
+                                                                                   data-incidencia="@seg.IncidenciaId"
+                                                                                   data-referencia="@seg.NumeroReferencia"
+                                                                                   data-contrato="@seg.Contrato"
+                                                                                   data-cantidad="@seg.Cantidad"
+                                                                                   data-precio="@seg.PrecioUnitario"
+                                                                                   data-fechav="@seg.FechaVencimiento.ToString("yyyy-MM-dd")"
+                                                                                   data-file="@seg.ReportePago"
+                                                                                   data-tipo="Reporte de pago">
+                                                                                    <i class="fad fa-eye text-success mr-2"></i>
+                                                                                </a>
+                                                                                @if (seg.Estatus.Equals("En Proceso"))
+                                                                                {
+                                                                                    <a href="#" class="editPago"
+                                                                                       data-id="@seg.Id"
+                                                                                       data-guia="@im.NumeroGuia"
+                                                                                       data-areferencia="@seg.ReportePago"
+                                                                                       data-tipo="Referencia de Pago">
+                                                                                        <i class="fad fa-pencil text-primary"></i>
+                                                                                    </a>
+                                                                                }
+                                                                            }
+                                                                        </td>
+                                                                        <td>@seg.FechaEmision.ToString("dd/MM/yyyy")</td>
+                                                                        <td>@seg.FechaVencimiento.ToString("dd/MM/yyyy")</td>
+                                                                        <td>@seg.Estatus</td>
+                                                                        <td class="text-center">
+                                                                            @if (seg.FechaVencimiento > DateTime.Now && seg.Estatus.Equals("En Proceso"))
+                                                                            {
+                                                                                <a href="#" class="editReference"
+                                                                                   data-id="@seg.Id"
+                                                                                   data-guia="@im.NumeroGuia"
+                                                                                   data-incidencia="@seg.IncidenciaId"
+                                                                                   data-referencia="@seg.NumeroReferencia"
+                                                                                   data-contrato="@seg.Contrato"
+                                                                                   data-cantidad="@seg.Cantidad"
+                                                                                   data-fechav="@seg.FechaVencimiento.ToString("yyyy-MM-dd")"
+                                                                                   data-precio="@seg.PrecioUnitario"
+                                                                                   data-areferencia="@seg.ArchivoReferencia"
+                                                                                   data-tipo="Referencia de Pago"
+                                                                                   data-toggle="tooltip" title="Editar Referencia" data-placement="top">
+                                                                                    <i class="fad fa-pencil text-primary"></i>
+                                                                                </a>
+                                                                                <a href="#" class="concluirSeguimiento" data-id="@seg.Id" data-toggle="tooltip" title="Concluir Seguimiento" data-placement="top">
+                                                                                    <i class="fad fa-check text-success ml-2"></i>
+                                                                                </a>
+
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <b class="@(seg.Estatus.Contains("Caducada") ? "text-danger":"text-success")">
+                                                                                    @seg.Estatus
+                                                                                </b>    
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <tr>
+                                                                <td colspan="11" class="text-center"><b>No existen registros de pago</b></td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        s = 0;
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row col-lg-12">
+    <div class="col-md-12">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-files mr-2"></i>
+                    Entregables
+                </h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table" id="tableEntregables">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tipo</th>
+                            <th>Nombre</th>
+                            <th class="text-center">Estatus</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var en in Model.entregables)
+                        {
+                            @if (en.Tipo.Equals("Escritos"))
+                            {
+                                e++;
+                                <tr>
+                                    <td>@e</td>
+                                    <td>@en.TipoEntregable</td>
+                                    <td>@en.NombreArchivo</td>
+                                    <td>@en.Estatus</td>
+                                    <td class="text-center">
+                                        <a href='#' class='text-center mr-2 view_file' data-id="@en.Id" data-file="@en.NombreArchivo" data-tipo="@en.Tipo" data-tipoe="@en.TipoEntregable"
+                                           data-toggle="tooltip" title="Vista Previa de(la) @en.TipoEntregable" data-placement="top">
+                                            <i class='fad fa-eye text-success'></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modalReferencias">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar/Actualizar Referencia de Pago</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="text" id="referenciaId" />
+                    <input type="hidden" id="incidenciaId" />
+                    <input type="hidden" id="referenciaNG" />
+                    <div class="form-group col-lg-12">
+                        <label for="tipoIncidencia">Referencia Bancaria:</label>
+                        <input class="form-control" id="referenciaBancaria" />
+                        <div class="col-sm-12" id="error_referenciaBancaria">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la referencia bancaria
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Contrato:</label>
+                        <input class="form-control" id="referenciaContrato" />
+                        <div class="col-sm-12" id="error_referenciaContrato">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el contrato
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-2">
+                        <label for="tipoIncidencia">Cantidad de UMAS:</label>
+                        <input type="number" class="form-control" id="referenciaUMAS" />
+                        <div class="col-sm-12" id="error_referenciaUMAS">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la cantidad de UMAS
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-2">
+                        <label for="tipoIncidencia">Precio Unitario:</label>
+                        <input type="number" class="form-control" id="referenciaPrecio" />
+                        <div class="col-sm-12" id="error_referenciaPrecio">
+                            <small id="dateHelp" class="text-danger">
+                                Capture el precio unitario
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-3">
+                        <label for="tipoIncidencia">Fecha de Vencimiento:</label>
+                        <input type="date" class="form-control" id="referenciaFechaVencimiento" />
+                        <div class="col-sm-12" id="error_referenciaFechaVencimiento">
+                            <small id="dateHelp" class="text-danger">
+                                Capture la fecha de vencimiento
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Adjuntar Referencia: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile" id="customFileReferencia">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Seleccione el archivo de referencia para el pago.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="guardarReferencia">Guardar Referencia</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la captura de Reporte de Pago *@
+<div class="modal fade" id="modalReporte">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar/Actualizar Reporte de Pago</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="referenciaId" />
+                    <div class="form-group col-lg-8">
+                        <label for="elegirArchivo">Adjuntar Reporte de Pago: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFileR" accept=".pdf">
+                            <label class="custom-file-label" for="customFile" id="customFileReporte">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFileReporte">
+                            <small id="dateHelp" class="text-danger">
+                                Seleccione el archivo de reporte de pago.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarPago">Guardar Reporte</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Reporte de Pago*@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="modal_pdf">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="actaRoboPDF"></div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+<style>
+    .nav-tabs .nav-link {
+        color: #495057;
+        background-color: #fff;
+        border-color: #a1a4a7 #a1a4a7 #a1a4a7 #a1a4a7;
+        margin-right: 2px;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: #1021ad;
+            font-weight: bold;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+            border-bottom: 2px solid #1021ad;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-bottom: 2px solid #1021ad;
+            padding-bottom: 3px;
+        }
+</style>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var etipos = @Html.Raw(Json.Serialize(@etipos));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            ocultaDivs();
+
+            $("#error_referenciaBancaria").css("display","none");
+            $("#error_referenciaContrato").css("display","none");
+            $("#error_referenciaUMAS").css("display","none");
+            $("#error_referenciaPrecio").css("display","none");
+            $("#error_referenciaFechaVencimiento").css("display","none");
+            $("#error_customFile").css("display","none");
+            $("#error_customFileReporte").css("display","none");
+
+            function ocultaDivs() {
+                for (var i = 0; i < etipos.length; i++) {
+                    $("#div_" + etipos[i].replace(" ", "")).css("display", "none");
+                }
+            }
+
+            $(".lblTipos").click(function () {
+                ocultaDivs();
+                $("#div_" + $(this).data("tipo").replace(" ", "")).css("display","block");
+            });
+
+            $(document).on('click', '.view_file', function () {
+                let nombre = $(this).data('file');
+                let tipo = $(this).data('tipo');
+                let guia = $(this).data('guia');
+                let url = '<object class="objectPdf" width="100%" height="450" embedded=True data="' + '/view/entregable/' + model.folio + '/'+guia+'/'+ nombre + '"></object>';
+                $('#titlePDF').text("Entregable "+tipo);
+                $('#actaRoboPDF').html(url);
+                $('#modal_pdf').modal('show');
+            });
+
+            $(".addReference").click(function () {
+                $("#modalReferencias").modal("show");
+                $("#incidenciaId").val($(this).data("incidencia"));
+                $("#referenciaNG").val($(this).data("guia"));
+            });
+
+            $(".addReporte").click(function () {
+                $("#modalReporte").modal("show");
+                $("#referenciaId").val($(this).data("id"));
+            });
+
+            $("#customFile").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                var ext = fileName.split('.').pop();
+                if (ext == "pdf" || ext == "PDF") {
+                    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                    $('#customFile').removeClass('is-invalid');
+                    $('#customFile').removeClass('is-valid');
+                    $('#error_customFile').css('display', 'none');
+                } else {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Formato Incorrecto',
+                        'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                    });
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    document.getElementById('customFile').value = '';
+                    if ($('#customFile').hasClass('is-valid')) {
+                        $('#customFile').removeClass('is-valid');
+                    }
+                    $('#customFile').addClass('is-invalid');
+                    $('#error_customFile').css('display', 'block');
+                }
+            });
+
+            $('#referenciaBancaria').change(function () {
+                if ($('#referenciaBancaria').val() == "") {
+                    $('#referenciaBancaria').addClass('is-invalid');
+                    $('#error_referenciaBancaria').css('display', 'block');
+                } else {
+                    $('#referenciaBancaria').removeClass('is-invalid');
+                    $('#referenciaBancaria').addClass('is-valid');
+                    $('#error_referenciaBancaria').css('display', 'none');
+                }
+            });
+
+            $('#referenciaContrato').change(function () {
+                if ($('#referenciaContrato').val() == "") {
+                    $('#referenciaContrato').addClass('is-invalid');
+                    $('#error_referenciaContrato').css('display', 'block');
+                } else {
+                    $('#referenciaContrato').removeClass('is-invalid');
+                    $('#referenciaContrato').addClass('is-valid');
+                    $('#error_referenciaContrato').css('display', 'none');
+                }
+            });
+
+            $('#referenciaUMAS').change(function () {
+                if ($('#referenciaUMAS').val() == "") {
+                    $('#referenciaUMAS').addClass('is-invalid');
+                    $('#error_referenciaUMAS').css('display', 'block');
+                } else {
+                    $('#referenciaUMAS').removeClass('is-invalid');
+                    $('#referenciaUMAS').addClass('is-valid');
+                    $('#error_referenciaUMAS').css('display', 'none');
+                }
+            });
+
+            $('#referenciaPrecio').change(function () {
+                if ($('#sreferenciaPrecio').val() == "") {
+                    $('#referenciaPrecio').addClass('is-invalid');
+                    $('#error_referenciaPrecio').css('display', 'block');
+                } else {
+                    $('#referenciaPrecio').removeClass('is-invalid');
+                    $('#referenciaPrecio').addClass('is-valid');
+                    $('#error_referenciaPrecio').css('display', 'none');
+                }
+            });
+
+            $('#referenciaFechaVencimiento').change(function () {
+                if ($('#referenciaFechaVencimiento').val() == "") {
+                    $('#referenciaFechaVencimiento').addClass('is-invalid');
+                    $('#error_referenciaFechaVencimiento').css('display', 'block');
+                } else {
+                    $('#referenciaFechaVencimiento').removeClass('is-invalid');
+                    $('#referenciaFechaVencimiento').addClass('is-valid');
+                    $('#error_referenciaFechaVencimiento').css('display', 'none');
+                }
+            });
+
+            function validaCampos() {
+                if ($("#referenciaBancaria").val() != "" && $("#referenciaContrato").val() != "" && $("#referenciaUMAS").val() != "" &&
+                    $("#referenciaPrecio").val() != "" && $("#referenciaFechaVencimiento").val() != "") {
+                    return true;
+                }
+
+                if ($('#referenciaBancaria').val() == "") {
+                    $('#referenciaBancaria').addClass('is-invalid');
+                    $('#error_referenciaBancaria').css('display', 'block');
+                }
+
+                if ($('#referenciaContrato').val() == "") {
+                    $('#referenciaContrato').addClass('is-invalid');
+                    $('#error_referenciaContrato').css('display', 'block');
+                }
+
+                if ($('#referenciaUMAS').val() == "") {
+                    $('#referenciaUMAS').addClass('is-invalid');
+                    $('#error_referenciaUMAS').css('display', 'block');
+                }
+
+                if ($('#referenciaPrecio').val() == "") {
+                    $('#referenciaPrecio').addClass('is-invalid');
+                    $('#error_referenciaPrecio').css('display', 'block');
+                }
+
+                if ($('#referenciaFechaVencimiento').val() == "") {
+                    $('#referenciaFechaVencimiento').addClass('is-invalid');
+                    $('#error_referenciaFechaVencimiento').css('display', 'block');
+                }
+
+                if ($('#customFile').get(0).files.length === 0) {
+
+                    $('#customFile').addClass('is-invalid');
+                    $('#error_customFile').css('display', 'block');
+                }
+
+                return false;
+            }
+
+            $("#guardarReferencia").click(function () {
+                var formData = new FormData();
+
+                var referenciaId = $("#referenciaId").val();
+                var incidenciaId = $("#incidenciaId").val();
+                var numeroGuia = $("#referenciaNG").val();
+                var referencia = $("#referenciaBancaria").val();
+                var contrato = $("#referenciaContrato").val();
+                var umas = $("#referenciaUMAS").val();
+                var precio = $("#referenciaPrecio").val();
+                var fechaVencimiento = $("#referenciaFechaVencimiento").val();
+                var archivo = document.getElementById('customFile').files[0];
+                if (validaCampos()) {
+                    formData.append("IncidenciaId", incidenciaId);
+                    formData.append("NumeroReferencia", referencia);
+                    formData.append("Contrato", contrato);
+                    formData.append("Cantidad", umas);
+                    formData.append("NumeroGuia", numeroGuia);
+                    formData.append("PrecioUnitario", precio);
+                    formData.append("FechaVencimiento", fechaVencimiento);
+                    formData.append("FolioCedula", model.folio);
+
+                    if (archivo != null) {
+                        formData.append("AReferencia", archivo);
+                    } else {
+                        formData.append("ArchivoReferencia", $("#customFileReferencia").text());
+                    }
+
+                    if (referenciaId != 0 || referenciaId != "")
+                    {
+                        formData.append("Id", referenciaId);
+                        axios.post('/mensajeria/actualizaReferencias', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Seguimiento a Incidencias',
+                                    'text': 'Se adjuntó el entregable de forma correcta.'
+                                }).then(function () {
+                                    window.location.reload();
+                                });
+                            }
+                        }).catch(error => {
+                            Swal.fire({
+                                'icon': "error",
+                                'title': 'Seguimiento a Incidencias',
+                                'text': 'Se presento un error al intentar adjuntar el archivo.'
+                            });
+                        });
+                    }
+                    else
+                    {
+                        axios.post('/mensajeria/insertaReferencias', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Seguimiento a Incidencias',
+                                    'text': 'Se adjuntó el entregable de forma correcta.'
+                                }).then(function () {
+                                    window.location.reload();
+                                });
+                            }
+                        }).catch(error => {
+                            Swal.fire({
+                                'icon': "error",
+                                'title': 'Seguimiento a Incidencias',
+                                'text': 'Se presento un error al intentar adjuntar el archivo.'
+                            });
+                        });
+                    }
+                }
+            });
+
+            $(".editReference").click(function () {
+                $("#referenciaId").val($(this).data("id"));
+                $("#incidenciaId").val($(this).data("incidencia"));
+                $("#referenciaNG").val($(this).data("guia"));
+                $("#referenciaBancaria").val($(this).data("referencia"));
+                $("#referenciaContrato").val($(this).data("contrato"));
+                $("#referenciaUMAS").val($(this).data("cantidad"));
+                $("#referenciaPrecio").val($(this).data("precio"));
+                $("#referenciaFechaVencimiento").val($(this).data("fechav"));
+                $("#customFileReferencia").text("");
+                $("#customFileReferencia").text($(this).data("areferencia"));
+                $("#modalReferencias").modal("show");
+            });
+
+            $(".editPago").click(function () {
+                $("#referenciaId").val($(this).data("id"));
+                $("#referenciaNG").val($(this).data("guia"));
+                $("#customFileReporte").text($(this).data("areferencia"));
+                $("#modalReporte").modal("show");
+            });
+
+            $("#customFileR").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                var ext = fileName.split('.').pop();
+                if (ext == "pdf" || ext == "PDF") {
+                    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                    $('#customFileR').removeClass('is-invalid');
+                    $('#customFileR').removeClass('is-valid');
+                    $('#error_customFileReporte').css('display', 'none');
+                } else {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Formato Incorrecto',
+                        'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                    });
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    document.getElementById('customFileR').value = '';
+                    if ($('#customFileR').hasClass('is-valid')) {
+                        $('#customFileR').removeClass('is-valid');
+                    }
+                    $('#customFileR').addClass('is-invalid');
+                    $('#error_customFileReporte').css('display', 'block');
+                }
+            });
+
+            $("#adjuntarPago").click(function () {
+                var formData = new FormData();
+                var referenciaId = $("#referenciaId").val();
+                var numeroGuia = $("#referenciaNG").val();
+                var archivo = document.getElementById('customFileR').files[0];
+
+
+                if (archivo != null) {
+                    formData.append("Id", referenciaId);    
+                    formData.append("APago", archivo);
+                    formData.append("NumeroGuia", numeroGuia);
+                    formData.append("FolioCedula", model.folio);
+
+                    axios.post('/mensajeria/actualizaReferenciaPago', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Seguimiento a Incidencias',
+                                'text': 'Se adjuntó el entregable de forma correcta.'
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        }
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Seguimiento a Incidencias',
+                            'text': 'Se presentó un error al intentar adjuntar el archivo.'
+                        });
+                    });
+                }
+            });
+
+        });
+    </script>
+}

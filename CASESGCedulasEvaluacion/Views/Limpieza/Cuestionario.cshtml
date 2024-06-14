@@ -1,0 +1,1773 @@
+﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@{
+    ViewData["Title"] = "Cédula del Servicio de Limpieza en Áreas Comunes y Oficinas con Folio: " + Model.Folio;
+    var f = 0;
+    var cf = 0;
+    var i = 1;
+    decimal totalConceptos = 0;
+    decimal totalIVA = 0;
+}
+<div class="row col-lg-12 d-flex justify-content-end">
+    <a href="/limpieza/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip"
+       title="Regresar al listado de cédulas de limpieza" data-placement="top">
+        <i class="fal fa-arrow-left"></i>
+    </a>
+</div>
+<div class="row col-lg-12">
+    <div class="row col-lg-12">
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#evaluacion" role="tab" aria-controls="home" aria-selected="true">Evaluación del Servicio</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#facturacion" role="tab" aria-controls="profile" aria-selected="false">Facturación</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <!-- Pestaña de Evaluación -->
+                <div class="tab-pane fade mt-3 ml-3 show active" id="evaluacion" role="tabpanel" aria-labelledby="home-tab">
+                    <h4>Evaluación del Servicio</h4>
+                    <div class="row col-lg-12 mt-4 mb-3">
+                        <table class="table">
+                            <tr>
+                                <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;"><strong>Folio: </strong> @Model.Folio</td>
+                                <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
+                                <td data-toggle="tooltip" title="Mes evaluado" data-placement="top"><strong>Mes: </strong>@Model.Mes</td>
+                                <td data-toggle="tooltip" title="Administración/Inmueble evaluado" data-placement="top"><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                                <td data-toggle="tooltip" title="Estatus de la cédula del servicio de limpieza general" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
+                            </tr>
+                            <tr>
+                                <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes" del inmueble "@Model.inmuebles.Nombre"' data-placement="top">
+                                    <strong>Facturas asignadas: </strong> @Model.facturas.Count
+                                </td>
+                                <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
+                                    <strong>Monto Total IVA Incluido: </strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)
+                                </td>
+                                <td colspan="3"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-joke text-white">
+                            <h5 class="mt-2">Evaluación de la cédula</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        @foreach (var pr in Model.preguntas)
+                                        {
+                                            if (!pr.Abreviacion.Equals("Capacitacion"))
+                                            {
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link @(pr.Cierre ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
+                                                </li>
+                                            }
+                                            else if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                            {
+                                                <li class="nav-item" role="presentation">
+                                                    <a class="nav-link" id="home-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="home" aria-selected="true">Capacitación de Personal</a>
+                                                </li>
+                                            }
+                                        }
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        @foreach (var pr in Model.preguntas)
+                                        {
+                                            @if (!pr.Abreviacion.Equals("Capacitacion"))
+                                            {
+                                                <div class="tab-pane fade mt-2 ml-3 @(pr.Cierre ? "show active":"")" id="pregunta_@pr.NoPreguntaUsuario" role="tabpanel" aria-labelledby="home-tab">
+                                                    <p class="text-black h5">
+                                                        @pr.NoPreguntaUsuario.- @pr.Pregunta
+                                                        <a href="#" class="text-primary ml-2 btnAyuda" data-toggle="tooltip" title="Ayuda" data-placement="top" data-ayuda="@pr.Ayuda">
+                                                            <i class="fa-solid fa-circle-question"></i>
+                                                        </a>
+                                                    </p>
+                                                    @if (!pr.Cierre) //Si la pregunta no es cierre, aplicamos las opciones directamente
+                                                    {
+                                                        <div class="icheck-success d-inline">
+                                                            <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="true" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                                   data-pusuario="@pr.NoPreguntaUsuario">
+                                                            <label for="@String.Concat("radioSuccess", @i)">Si</label>
+                                                        </div>
+                                                        i++;
+                                                        <div class="icheck-success d-inline ml-3">
+                                                            <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="false" id="@String.Concat("radioSuccess", @i)" class="pregunta" data-pregunta="@pr.NoPregunta"
+                                                                   data-pusuario="@pr.NoPreguntaUsuario">
+                                                            <label for="@String.Concat("radioSuccess", @i)">No</label>
+                                                        </div>
+                                                        i++;
+                                                        @if (pr.Incidencias)
+                                                        {
+                                                            <div class="row col-lg-12 mt-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                                <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="@pr.NoPregunta" data-pusuario="@pr.NoPreguntaUsuario">
+                                                                    Capturar Incidencia
+                                                                </button>
+                                                                <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="@pr.NoPregunta" data-pusuario="@pr.NoPreguntaUsuario">
+                                                                    Consultar Incidencias
+                                                                </button>
+                                                            </div>
+                                                        }
+                                                        else if (pr.Numero)
+                                                        {
+                                                            <div class="form-row col-lg-12 mt-2">
+                                                                <div class="form-group mt-2 col-md-3 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                                    <label for="fechaCierre">Cantidad de Insistencias: </label>
+                                                                    <br />
+                                                                    <input type="number" name="inasistencias" id="inasistencias" class="form-control col-lg-6 float-left">
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        else if (pr.SUA)
+                                                        {
+                                                            <div class="form-row col-lg-12 mt-2 cIncidencias" id="divIncidencias_@pr.NoPreguntaUsuario">
+                                                                <div class="form-row col-lg-12">
+                                                                    <div class="col col-lg-2">
+                                                                        <label for="fechaCierre">Fecha de Entrega del SUA</label><br />
+                                                                        <input type="date" name="fechaSua" id="fechaSua" class="form-control float-left">
+                                                                    </div>
+                                                                    <div class="col-lg-3">
+                                                                        <label for="mesCorres">Corresponde al Mes:</label><br />
+                                                                        <select id="mes_correspondiente" class="form-control float-right"></select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                    else if (pr.Cierre)
+                                                    {
+                                                        <div class="form-group">
+                                                            <label for="fechaCierre">Fecha de Cierre</label>
+                                                            <input type="date" name="pregunta_@pr.Id" id="fechaCierre" class="form-control col-lg-2 pregunta_@pr.Id">
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="tab-pane fade mt-2 ml-3 @(pr.Cierre ? "show active" : "")" id="pregunta_@pr.NoPreguntaUsuario" role="tabpanel" aria-labelledby="home-tab">
+                                                    <p class="text-black h5">
+                                                        @pr.NoPreguntaUsuario.- @pr.Pregunta
+                                                        <a href="#" class="text-primary ml-2 btnAyuda" data-toggle="tooltip" title="Ayuda" data-placement="top" data-ayuda="@pr.Ayuda">
+                                                            <i class="fa-solid fa-circle-question"></i>
+                                                        </a>
+                                                    </p>
+                                                    <div class="icheck-success d-inline">
+                                                        <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="true" id="@String.Concat("radioSuccess", @i)" class="preguntaC" data-pregunta="@pr.NoPregunta"
+                                                               data-pusuario="@pr.NoPreguntaUsuario">
+                                                        <label for="@String.Concat("radioSuccess", @i)">Si</label>
+                                                    </div>
+                                                    @{i++;}
+                                                    <div class="icheck-success d-inline ml-3">
+                                                        <input type="radio" name="pregunta_@pr.NoPreguntaUsuario" value="false" id="@String.Concat("radioSuccess", @i)" class="preguntaC" data-pregunta="@pr.NoPregunta"
+                                                               data-pusuario="@pr.NoPreguntaUsuario">
+                                                        <label for="@String.Concat("radioSuccess", @i)">No</label>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                        @* Entregables *@
+                                        <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                                            <div class="col-lg-12 mt-3">
+                                                <h3>Adjuntar Entregables</h3>
+                                                Favor de Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
+                                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                            </div>
+                                            <div class="row col-lg-12 mt-3">
+                                                <table class="table" id="tblEntregables">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Entregable</th>
+                                                            <th>Archivo</th>
+                                                            <th>Fecha de Carga</th>
+                                                            <th>Acciones</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tEntregables"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        @* Fin de Entregables *@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class=" col-lg-12">
+                                @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                {
+                                    <button type="button" class="btn btn-joke float-right btnRevisar ml-3">Revisar Cédula</button>
+                                }
+                                <button type="button" class="btn btn-primary float-right ml-3 btn_enviar">Enviar a DAS</button>
+                                <button type="button" class="btn btn-success float-right btn_guardar">Guardar Cédula</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin de la Pestaña de Evaluación -->
+                <!-- Pestaña de Facturación -->
+                <div class="tab-pane fade mt-2 ml-3" id="facturacion" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="col-lg-12 h3 mt-4">
+                        Facturación del Servicio
+                    </div>
+                    <div class="row col-lg-12 d-flex justify-content-end">
+                        <button class='btn btn-sm btn-primary ml-2 mb-3' data-toggle="tooltip" title="Agregar Facturas" data-placement="top" id="add_facturas">
+                            <i class="fal fa-plus text-white"></i> Agregar Factura
+                        </button>
+                    </div>
+                    <div class="row">
+                        <div class="row col-lg-12">
+                            <p class="text-justify ml-3">
+                                <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
+                                la información de la factura que fue agregada.
+                            </p>
+                            <div class="col-lg-12 mt-3 ml-2">
+                                <table class="table tblIncidencias tablaFacturas" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tipo</th>
+                                            <th>Empresa</th>
+                                            <th>Folio Fiscal</th>
+                                            <th>Número Factura</th>
+                                            <th>Subtotal Factura</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="AA">
+                                        @foreach (var fac in Model.facturas)
+                                        {
+                                            f++;
+                                            <tr>
+                                                <td>@f</td>
+                                                <td>@fac.Tipo</td>
+                                                <td>@fac.emisor.Nombre</td>
+                                                <td>@fac.timbreFiscal.UUID</td>
+                                                <td>@fac.comprobante.Folio</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.SubTotal)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.traslado.Importe)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.Total)</td>
+                                                <td class="text-center">
+                                                    <a href="#" class="viewConceptosF" id="viewConceptos_@fac.Id" data-factura="@fac.Id" data-toggle="tooltip" title="Ver conceptos de la factura" data-placement="top">
+                                                        <i class="fas fa-eye text-success"></i>
+                                                    </a>
+                                                    @if (fac.Tipo.Equals("Factura") && (Model.Estatus.Equals("En Proceso") || Model.Estatus.Equals("Rechazada")))
+                                                    {
+                                                        <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Factura" data-placement="top">
+                                                            <i class="fas fa-times text-danger"></i>
+                                                        </a>
+                                                    }
+
+                                                    @if (fac.Tipo.Equals("NC") && (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado")))
+                                                    {
+                                                        <a href="#" class="eliminarFactura ml-2" data-factura="@fac.Id" data-folio="@fac.comprobante.Serie@fac.comprobante.Folio" data-toggle="tooltip" title="Eliminar Nota de Crédito" data-placement="top">
+                                                            <i class="fas fa-times text-danger"></i>
+                                                        </a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-lg-12 mt-3 ml-2 mb-3">
+                                @foreach (var fac in Model.facturas)
+                                {
+                                    <div class="conceptosFactura" id="conceptoFactura_@fac.Id">
+                                        <h3>Conceptos de la Factura con Folio: @fac.comprobante.Folio</h3>
+                                        <table id="@fac.comprobante.Folio" style="width: 90%" class="table tableConceptos mt-3 float-right">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Unidad</th>
+                                                    <th>Descripción</th>
+                                                    <th>Precio Unitario</th>
+                                                    <th>SubTotal</th>
+                                                    <th>IVA</th>
+                                                    <th>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var con in fac.concepto)
+                                                {
+                                                    if (@fac.Id == con.FacturaId)
+                                                    {
+                                                        cf++;
+                                                        <tr>
+                                                            <td>@cf</td>
+                                                            <td>@con.Cantidad</td>
+                                                            <td>@con.Unidad</td>
+                                                            <td>@con.Descripcion</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.ValorUnitario)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.IVA)</td>
+                                                            <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", con.Importe + con.IVA)</td>
+                                                        </tr>
+                                                        totalConceptos = totalConceptos + con.Importe;
+                                                        totalIVA = totalIVA + Convert.ToDecimal(con.IVA.ToString("N2"));
+                                                    }
+                                                }
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="5">Total:</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalIVA)</th>
+                                                    <th>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalConceptos + totalIVA)</th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fin de la Pestaña de Facturación-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!----------------------------------------- Agregar/Modificar una Factura ------------------------------------------------------------->
+<div class="modal fade" id="modal-facturas">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Agregar Factura</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input class="form-control" id="idFactura" type="hidden" />
+                <div class="row col-lg-12 mt-2">
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar factura en XML: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input file_factura" id="fileFactura" accept=".xml">
+                            <label class="custom-file-label" for="customFile">Subir factura en formato "XML"</label>
+                        </div>
+                        <div class="col-sm-12 error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="agregarFactura">Guardar Factura</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!--------------------------------------- Fin Agregar/Modificar una Factura ----------------------------------------------------------->
+<!------------------------------------------------------------------------------------------------>
+@* Modal para mostrar las Incidencias *@
+<div class="modal fade" id="modal-consultaIncidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Lista de Incidencias</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table table-responsive-xl">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tipo de Incidencia</th>
+                                    <th>Área</th>
+                                    <th>Fecha de la Incidencia</th>
+                                    <th>Comentarios</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl_incidencias"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para mostrar las Incidencias *@
+<!------------------------------------------------------------------------------------------------>
+@* Modal para la captura de Incidencias *@
+<div class="modal fade" id="modal-incidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar Incidencia</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="idIncidencia" />
+                            <input type="hidden" id="pregunta" />
+                            <div class="form-group col-md-6">
+                                <label for="fechaIncidencia">Fecha de la Incidencia: </label>
+                                <input type="date" class="form-control" id="fechaIncidencia" name="fechaIncidencia">
+                                <div class="col-sm-12" id="error_fechaIncidencia">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture la Fecha de la Incidencia
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="tipoIncidencia">Tipo de la Incidencia:</label>
+                        <select class="form-control" id="tipoIncidencia">
+                        </select>
+                        <div class="col-sm-12" id="error_tipoIncidencia">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de incidencia
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="areaIncidencia">Área:</label>
+                        <select class="form-control" id="areaIncidencia">
+                        </select>
+                        <div class="col-sm-12" id="error_areaIncidencia">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el área correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-lg-12">
+                        <label for="areaIncidencia">Comentarios:</label>
+                        <textarea type="textarea" id="inciComentarios" class="form-control" style="resize: none;" maxlength="256"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-primary" id="guardaIncidencia">Guardar Incidencia</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_evidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar Entregables</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" id="file_id" />
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Tipo de Entregable:</label>
+                        <select class="form-control" id="tipo_entregable"></select>
+                        <div class="col-sm-12" id="error_tipoEntre">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de entregable
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el archivo correspondiente
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-lg-12 mt-2" id="comentariosEntregable">
+                        <div class="form-group mt-2 col-md-12">
+                            <label for="fechaCierre">Comentarios:</label><br>
+                            <textarea id="comentarios_entregable" class="form-control float-left"></textarea>
+                            <div class="col-sm-12" id="error_comentariosEntre">
+                                <small id="comentariosHelp" class="text-danger">
+                                    Por favor capture los comentarios correspondientes
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Adjuntos *@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="show_pdf">
+    <div class="modal-dialog modal-xl-view">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body-view">
+                <table class="table">
+                    <tr>
+                        <td><strong>Folio: </strong> @Model.Folio</td>
+                        <td><strong>Año: </strong>@Model.Anio</td>
+                        <td><strong>Mes: </strong>@Model.Mes</td>
+                        <td><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
+                        <td><strong>Estatus: </strong>@Model.Estatus </td>
+                    </tr>
+                </table>
+                <div class="row" id="objectPdf">
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+@section Scripts{
+    <script>
+        $(function () {
+            var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            var totalPreguntas = '@Model.RespuestasEncuesta.Count';
+            var respuestas = @Html.Raw(Json.Serialize(@Model.RespuestasEncuesta));
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var perfil = @Html.Raw(Json.Serialize((@User.Claims.ElementAt(2).Value).Contains("Evaluador")));
+            var editIncidencia = true;
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".tablaFacturas").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".tableConceptos").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".error_customFile").css("display", "none");
+            $(".cIncidencias").css("display", "none");
+            $(".conceptosFactura").css("display", "none");
+
+            let optionsMes = "<option value=''>Selecciona el Mes</option>";
+            meses.forEach(function (mes) {
+                optionsMes += "<option value=" + mes + ">" + mes + "</option>"
+            });
+            $("#mes_correspondiente").html(optionsMes);
+
+            /*************** Div's de Errores de Captura ******************/
+
+                /*********************Incidencias*************************/
+                    $('#error_fechaIncidencia').css('display', 'none');
+                    $('#error_tipoIncidencia').css('display', 'none');
+                    $('#error_areaIncidencia').css('display', 'none');
+                /*********************Incidencias*************************/
+            /*************** Div's de Errores de Captura ******************/
+
+            /******************************** Ayuda del Cuestionario de Comedor ****************************************/
+                $(".btnAyuda").click(function(){
+                    var msg = $(this).data("ayuda");
+                    Swal.fire({
+                        'icon': "info",
+                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                        'html': '<p style="text-align: justify">'+msg+'.</p>'
+                    });
+                });
+            /******************************* Fin de Ayuda del Cuestionario de Comedor **********************************/
+
+            /********************************** Agregar/Cambiar Facturas *************************************/
+                /*Proceso para editar la cedula*/
+                    $(document).on('click','.update_factura',function () {
+                        var id = $(this).data('factura');
+                        $("#agregarFactura").text('Actualizar Factura');
+                        $("#idFactura").val(id);
+                        $('#modal-ver-facturas').modal('hide');
+                        $("#modal-facturas").modal('show');
+                    });
+
+                    $(document).on('click', '.eliminarFactura', function () {
+                        var id = $(this).data('factura');
+                        var folio = $(this).data('folio');
+
+                        Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                            'html': '<strong>Advertencia:</strong><p>¿Desea eliminar la factura con Folio <strong>' + folio + '</strong>?</p>',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, continuar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(yes => {
+                            if (yes.isConfirmed) {
+                                Swal.fire({
+                                    'icon': 'warning',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                    'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el borrado de la factura con folio: '+folio,
+                                    'confirmButtonColor': '#3085d6',
+                                    'cancelButtonColor': '#d33',
+                                    'confirmButtonText': 'Si, eliminar',
+                                    'cancelButtonText': 'Cancelar',
+                                    'showCancelButton': true,
+                                    'input': 'text',
+                                    'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                }).then(del => {
+                                    if (del.value == 'ELIMINAR' || del.value == 'eliminar') {
+                                        axios.delete('/facturas/deleteFactura/' + id).then(del => {
+                                            Swal.fire({
+                                                'icon': 'success',
+                                                'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                                'html': 'La factura fue eliminada exitósamente.',
+                                            }).then(function () {
+                                                window.location.reload();
+                                            });
+                                        })
+                                    } else {
+                                        Swal.fire({
+                                            'icon': 'error',
+                                            'title': 'Servicio de Limpieza en Áreas Comunes y Oficinas',
+                                            'html': 'La factura no fue eliminada exitósamente, favor de escribir correctamente la palabra <b>ELIMINAR</b>',
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    $(".file_factura").change(function (e) {
+                        var archivo = e.target.files[0];
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "xml" || ext == "XML") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            if ($('.file_factura').hasClass('is-invalid')) {
+                                $('.file_factura').removeClass('is-invalid');
+                                $('.file_factura').addClass('is-valid');
+                                $('.error_customFile').css('display', 'none')
+                            } else {
+                                $('.file_factura').addClass('is-valid');
+                            }
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Limpieza en Áreas Comunes',
+                                'text': 'El archivo que intenta adjuntar no es válido. Favor de solo seleccionar archivos "Xml"'
+                            });
+
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+
+                            if ($('.file_factura').hasClass('is-valid')) {
+                                $('.file_factura').removeClass('is-valid');
+                                $('.file_factura').addClass('is-invalid');
+                            }
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+                        }
+                    });
+
+                    function validaCamposArchivoXml() {
+                        if ($('.file_factura').val() == "") {
+                            $('.file_factura').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+
+                            return false;
+                        }
+                        return true;
+                    }
+
+                    $('#agregarFactura').click(function () {
+                        var id = $("#idFactura").val();
+                        var tipo = "Factura";
+
+                        var formData = new FormData();
+                        var file = document.getElementById('fileFactura').files[0];
+                        if (id.length > 0) {
+                            id = parseInt(id);
+                        } else {
+                            id = 0;
+                        }
+
+                        formData.append("Id", id);
+                        formData.append("ServicioId", model.servicioId);
+                        formData.append("Tipo", tipo);
+                        formData.append("CedulaId", model.id);
+                        formData.append("Xml", file);
+                        formData.append("FechaInicial",@Html.Raw(Json.Serialize(@Model.FechaInicial)));
+                        formData.append("FechaFinal",@Html.Raw(Json.Serialize(@Model.FechaFinal)));
+
+                        if (validaCamposArchivoXml() == true) {
+                            if (id == "") {
+                                axios.post('/facturas/insertaFactura', formData).then(fact => {
+                                    if (fact.data == 1) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                                            'html': 'La factura fue agreagada correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    } else if (fact.data != 1 && fact.data != -1) {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                                            'html': '<p style="text-align: justify">La factura que intenta adjuntar ya fue agregada previamente en la cédula con los siguientes datos: <br />' +
+                                                '<li> <b>Folio: </b>' + fact.data.folio + '</li>' +
+                                                '<li> <b>Inmueble: </b>' + fact.data.inmuebles.nombre + '</li></p>'
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                                        'html': '<p style="text-align: justitfy;">CASESG no puede adjuntar la factura, Contacte al administrador del Sistema.'
+                                    });
+                                });
+                            } else {
+                                axios.post('/facturas/updateFactura', formData).then(fact => {
+                                    if (fact.data == 1) {
+                                        Swal.fire({
+                                            'icon': "success",
+                                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                                            'html': 'La factura fue actualizada correctamente.'
+                                        }).then(function () {
+                                            window.location.reload();
+                                        });
+                                    } else if (fact.data != 1 && fact.data != -1) {
+                                        Swal.fire({
+                                            'icon': "error",
+                                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                                            'html': '<p style="text-align: justify">La factura que intenta adjuntar ya fue agregada previamente en la cédula con los siguientes datos: <br />' +
+                                                '<li> <b>Folio: </b>' + fact.data.folio + '</li>' +
+                                                '<li> <b>Inmueble: </b>' + fact.data.inmuebles.nombre + '</li></p>'
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                                        'html': '<p style="text-align: justitfy;">CASESG no puede adjuntar la factura, Contacte al administrador del Sistema.'
+                                    });
+                                });
+                            }
+                        }
+
+                        document.getElementById('customFile').value = '';
+                        $('#idFactura').val("");
+                        $(".custom-file .custom-file-label").text("Subir archivo \"XML\"");
+                        $('.file_factura').removeClass('is-valid');
+                        $("#tipoFactura").val('');
+                    });
+                /*FIN del proceso para editar la cedula*/
+
+                /*Agregar Facturas*/
+                    $('#add_facturas').click(function () {
+                        var id = $("#idFactura").val();
+                        $('#modal-ver-facturas').modal('hide');
+                        $('#modal-facturas').modal('show');
+                    });
+                /*Fin Agregar Facturas*/
+
+                /*Ver/Ocultar Conceptos de Factura*/
+                    $('.viewConceptosF').click(function () {
+                        let factura = $(this).data('factura');
+                        if ($("#conceptoFactura_" + factura).css('display') == 'none')
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "block");
+                        }
+                        else
+                        {
+                            $("#conceptoFactura_" + factura).css("display", "none");
+                        }
+                    });
+                /*Fin Ver/Ocultar Conceptos de Factura*/
+
+                /*Ver/Ocultar Conceptos*/
+                     $(".viewConceptosF").click(function () {
+                         if ($("#viewConceptos_"+$(this).data('factura')+" > i").hasClass("text-success")) {
+                             $("#viewConceptos_" + $(this).data('factura') + " > i").removeClass("text-success");
+                             $("#viewConceptos_" + $(this).data('factura') + "> i").addClass("text-danger");
+                         } else {
+                             $("#viewConceptos_" + $(this).data('factura') +" > i").removeClass("text-danger");
+                             $("#viewConceptos_"+$(this).data('factura')+" > i").addClass("text-success");
+                        }
+                    });
+                /*Fin de Ver/Ocultar Conceptos*/
+
+
+            /******************************* FIN Agregar/Cambiar Facturas **********************************/
+
+            /********************************* Validaciones para las respuestas *******************************/
+                $('.pregunta').change(function () {
+                    let pregunta = $(this).data('pregunta');
+                    let pusuario = $(this).data('pusuario');
+                    let respuesta = $('input:radio[name="pregunta_' + pusuario + '"]:checked').val();
+
+                    if (respuesta == "false") {
+                        if (pregunta == 5 || pregunta == 6) {
+                            if (pregunta == 6) {
+                                $("#mes_correspondiente").val('');
+                                $("#fechaSua").val('');
+                            } else {
+                                $("#inasistencias").val('');
+                            }
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        }
+                        else
+                        {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        }
+                    }
+                    else
+                    {
+                        if (pregunta == 5 || pregunta == 6) {
+                            $("#divIncidencias_" + pusuario).css("display", "block");
+                        } else {
+                            axios.get('/limpieza/totalIncidencia/' + model.id + '/' + pregunta).then(total => {
+                                if (total.data > 0) {
+                                    Swal.fire({
+                                        'icon': 'warning',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                                        'html': '<strong>Advertencia:</strong><p>Tiene incidencias capturadas en esta pregunta, al cambiar la respuesta de "NO" a "SI" ' +
+                                            '<strong>se eliminarán todas las incidencias. ¿Desea continuar? </strong></p>',
+                                        'confirmButtonColor': '#3085d6',
+                                        'cancelButtonColor': '#d33',
+                                        'confirmButtonText': 'Si, eliminar',
+                                        'cancelButtonText': 'Cancelar',
+                                        'showCancelButton': true
+                                    }).then(p => {
+                                        if (p.isConfirmed) {
+                                            $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                            $("#divIncidencias_" + pusuario).css("display", "block");
+                                            Swal.fire({
+                                                'icon': 'warning',
+                                                'title': 'Servicio de Limpieza en Áreas Comunes',
+                                                'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el cambio de respuesta.',
+                                                'confirmButtonColor': '#3085d6',
+                                                'cancelButtonColor': '#d33',
+                                                'confirmButtonText': 'Si, eliminar todo',
+                                                'cancelButtonText': 'Cancelar',
+                                                'showCancelButton': true,
+                                                'input': 'text',
+                                                'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                            }).then(res => {
+                                                if ((res.value).toUpperCase() == 'ELIMINAR') {
+                                                    axios.get('/limpieza/eliminaIncidencias/' + model.id + '/' + pregunta).then(r => {
+                                                        Swal.fire({
+                                                            'icon': 'success',
+                                                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                                                            'text': 'Las incidencias de esta pregunta fueron eliminadas correctamente.',
+                                                        }).then(function () {
+                                                            $('input:radio[name="pregunta_' + pusuario + '"][value="' + respuesta + '"]').prop('checked', true);
+                                                            $("#divIncidencias_" + pusuario).css("display", "none");
+                                                            guardaCedula();
+                                                        });
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        'icon': 'error',
+                                                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                                                        'text': 'Debe escribir correctamente la palabra ELIMINAR en mayúsculas.',
+                                                    });
+                                                    $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                                    $("#divIncidencias_" + pusuario).css("display", "block");
+                                                }
+                                            });
+                                        } else {
+                                            $('input:radio[name="pregunta_' + pusuario + '"][value="false"]').prop('checked', true);
+                                            $("#divIncidencias_" + pusuario).css("display", "block");
+                                        }
+                                    });
+                                }
+                            });
+                            $("#divIncidencias_" + pusuario).css("display", "none");
+                        }
+                    }
+                });
+            /********************************* Validaciones para las respuestas *******************************/
+
+            /********************************** Incidencias ************************************************/
+                $(".addIncidencias").click(function () {
+                    var pregunta = $(this).data('pregunta');
+                    var pusuario = $(this).data('pusuario');
+                    editIncidencia = false;
+                    $('#idIncidencia').val('');
+                    $('#pregunta').val('');
+                    $('#fechaIncidencia').val('');
+                    $('#tipoIncidencia').val('');
+                    $('#areaIncidencia').val('');
+                    $('#areaIncidencia').prop('disabled',true);
+                    $('#inciComentarios').val('');
+                    $("#pregunta").val(pregunta);
+                    $("#pusuario").val(pusuario);
+                    obtieneTiposIncidencia();
+                    $("#modal-incidencias").modal("show");
+                });
+
+                function validaIncidencias() {
+                    if ($('#fechaIncidencia').val() != "" && $('#areaIncidencia').val() != "" && $('#tipoIncidencia').val() != "") {
+                        return true;
+                    }
+
+                    if ($('#fechaIncidencia').val() == "") {
+                        $('#fechaIncidencia').addClass('is-invalid');
+                        $('#error_fechaIncidencia').css('display', 'block');
+                    }
+
+                    if ($('#tipoIncidencia').val() == "") {
+                        $('#tipoIncidencia').addClass('is-invalid');
+                        $('#error_tipoIncidencia').css('display', 'block');
+                    }
+
+                    if ($('#areaIncidencia').val() == "") {
+                        $('#areaIncidencia').addClass('is-invalid');
+                        $('#error_areaIncidencia').css('display', 'block');
+                    }
+
+                    return false;
+            }
+
+                function obtieneTiposIncidencia(tipo,area) {
+                    var pregunta = $("#pregunta").val();
+                    axios.get("/variables/getTiposIncidencia/" + model.servicioId).then(response => {
+                        var tipos = "<option value=''>Seleccione un tipo de incidencia</option>";
+                        for (let i = 0; i < response.data.length; i++) {
+                            if (pregunta == 2 && response.data[i].abreviacion == "Equipo") {
+                                tipos += "<option value='" + response.data[i].abreviacion + "' disabled>" + response.data[i].abreviacion + "</option>";
+                            } else {
+                                tipos += "<option value='" + response.data[i].abreviacion + "'>" + response.data[i].abreviacion + "</option>";
+                            }
+                        }
+                        $("#tipoIncidencia").html(tipos);
+                        if (pregunta == 4) {
+                            $('#tipoIncidencia').val("Equipo").change();
+                        }
+                        $('#tipoIncidencia').prop("disabled", (pregunta == 4 ? true : false));
+                        if (editIncidencia) {
+                            $('#tipoIncidencia').val(tipo).change();
+                            obtieneAreasByTipo(area);
+                        }
+                    });
+                }
+
+                function obtieneAreasByTipo(area){
+                    var tipos = "<option value=''>Seleccione un área</option>";
+                    axios.get("/variables/getTiposIncidencia/" + model.servicioId+"/"+$("#tipoIncidencia").val()).then(response => {
+                        for (let i = 0; i < response.data.length; i++) {
+                            tipos += "<option value='" + response.data[i].valor + "'>" + response.data[i].valor + "</option>";
+                        }
+                        $('#areaIncidencia').prop('disabled', false);
+                        $("#areaIncidencia").html(tipos);
+                        if (editIncidencia) {
+                            $('#areaIncidencia').val(area).change();
+                            $('#areaIncidencia').removeClass('is-valid');
+                        }
+                    });
+                }
+
+                $(".viewIncidencias").click(function () {
+                    let pregunta = $(this).data('pregunta');
+                    let pusuario = $(this).data('pusuario');
+                    axios.get('/limpieza/getIncidencias/' + model.id + '/' + pregunta).then(table => {
+                        $("#tbl_incidencias").html(table.data);
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                            'html': 'Hubo un error al obtener el listado de incidencias. Contacte a su administrador del sistema.'
+                        });
+                    });
+                    $("#modal-consultaIncidencias").modal('show');
+                });
+
+                $('#guardaIncidencia').click(function () {
+                    let url = "insertar";
+                    let msg = "insertó";
+                    let id = $('#idIncidencia').val();
+                    let pregunta = $('#pregunta').val();
+                    let tipoIncidencia = $("#tipoIncidencia").val();
+                    let areaIncidencia = $("#areaIncidencia").val();
+                    let fechaIncidencia = $("#fechaIncidencia").val();
+                    let comentarios = $('#inciComentarios').val();
+
+                    if (id != "" && id != null) {
+                        id = id;
+                        url = "actualizar";
+                        msg = "actualizó";
+                    } else {
+                        id = 0;
+                    }
+                    
+                    if (validaIncidencias()) {
+                        axios.post("/limpieza/" + url + "/incidencia", {
+                            Id: parseInt(id), CedulaLimpiezaId: parseInt(model.id), Pregunta: parseInt(pregunta), Tipo: tipoIncidencia, Area: areaIncidencia, 
+                            FechaIncidencia: fechaIncidencia, Comentarios: comentarios
+                        }).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': "La incidencia se " + msg + " correctamente."
+                                }).then(function () {
+                                    $("#modal-incidencias").modal("hide");
+                                });
+                                guardaCedula();
+                            }
+                        }).catch(error => {
+                            Swal.fire({
+                                'icon': "error",
+                                'title': 'Servicio de Limpieza en Áreas Comunes',
+                                'html': "Hubo un error al insertar/actualizar la incidencia. Contacte a su administrador del sistema." + error
+                            });
+                        });
+                        $('#idIncidencia').val('');
+                        $('#pregunta').val('');
+                        $('#fechaIncidencia').val('');
+                        $('#tipoIncidencia').val('');
+                        $('#areaIncidencia').val('');
+                        $('#inciComentarios').val('');
+                    }
+                });
+
+                $(document).on("click", ".update_incidencia", function () {
+                    $("#modal-consultaIncidencias").modal('show');
+                    editIncidencia = true;
+                    obtieneTiposIncidencia($(this).data('tipo'), $(this).data('area'));
+                    $("#idIncidencia").val($(this).data('id'));
+                    $("#pregunta").val($(this).data('pregunta'));
+                    $("#fechaIncidencia").val($(this).data('fechaincidencia'));
+                    $("#inciComentarios").val($(this).data('comentarios'));
+                    $("#modal-incidencias").modal('show');
+                });
+
+                $(document).on("click", ".delete_incidencia", function(){
+                    var id = $(this).data("id");
+                    var pregunta = $(this).data("pregunta");
+                    var pusuario = $(this).data("pusuario");
+
+                    Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                            'html': '¿Está seguro de eliminar la incidencia?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, eliminar',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.get("/limpieza/incidencia/eliminar/"+id).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire({
+                                            'icon': 'success',
+                                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                                            'html': 'La incidencia fue eliminada correctamente de la pregunta ' + pusuario+'.',
+                                        }).then(function () {
+                                            axios.get('/limpieza/getIncidencias/' + model.id + '/' + pregunta).then(table => {
+                                                $("#tbl_incidencias").html(table.data);
+                                            }).catch(error => {
+                                                Swal.fire({
+                                                    'icon': 'error',
+                                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                                    'html': 'Hubo un error al obtener el listado de incidencias. Contacte a su administrador del sistema.'
+                                                });
+                                            });
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire({
+                                        'icon': 'error',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                                        'html':'No se pudo eliminar la incidencia del servicio de Comedor General. Contacta a tu Administrador.',
+                                    });
+                                });
+                            }
+                        });
+
+                });
+
+                $('#fechaIncidencia').change(function () {
+                    if ($('#fechaIncidencia').val() == "") {
+                        $('#fechaIncidencia').removeClass('is-valid');
+                        $('#fechaIncidencia').addClass('is-invalid');
+                        $('#error_fechaIncidencia').css('display', 'block');
+                    } else {
+                        $('#fechaIncidencia').removeClass('is-invalid');
+                        $('#fechaIncidencia').addClass('is-valid');
+                        $('#error_fechaIncidencia').css('display', 'none');
+                    }
+                });
+
+                $('#tipoIncidencia').change(function () {
+                    if ($('#tipoIncidencia').val() == "") {
+                        $('#tipoIncidencia').removeClass('is-valid');
+                        $('#tipoIncidencia').addClass('is-invalid');
+                        $('#error_tipoIncidencia').css('display', 'block');
+                    } else {
+                        obtieneAreasByTipo();
+                    }
+                });
+
+                $('#areaIncidencia').change(function () {
+                    if ($('#areaIncidencia').val() == "") {
+                        $('#areaIncidencia').removeClass('is-valid');
+                        $('#areaIncidencia').addClass('is-invalid');
+                        $('#error_areaIncidencia').css('display', 'block');
+                    } else {
+                        $('#areaIncidencia').removeClass('is-invalid');
+                        $('#areaIncidencia').addClass('is-valid');
+                        $('#error_areaIncidencia').css('display', 'none');
+                    }
+                });
+
+
+            /********************************* Fin Incidencias************************************/
+
+            /*********************************** Entregables **************************************/
+                $('#error_tipoEntre').css('display', 'none');
+                $('#error_customFile').css('display', 'none');
+                $('#error_comentariosEntre').css('display', 'none');
+
+                axios.get("/limpieza/getEntregables/"+model.id+"/"+model.servicioId).then(response => {
+                    if (response.data == null || response.data == "") {
+                        $('#tEntregables').html(response.data);
+                    }
+                    $('#tEntregables').html(response.data);
+                });
+
+                $('.btn_addFile').click(function () {
+                     var option = '<option value="">Seleccione un Entregable</option>';
+                     axios.get('/variables/getEntregables/' + model.servicioId + "/" + model.id).then(entre => {
+                         entre = entre.data;
+                         for (var i = 0; i < entre.length; i++) {
+                             option += "<option value='" + entre[i].abreviacion + "'>" + entre[i].valor + "</option>";
+                         }
+                         $('#tipo_entregable').html(option);
+                     });
+                    $('#customFile').removeClass('is-valid');
+                    $('#comentarios_entregable').removeClass('is-valid');
+                    $('#tipo_entregable').removeClass('is-valid');
+                    $('#customFile').removeClass('is-invalid');
+                    $('#comentarios_entregable').removeClass('is-invalid');
+                    $('#tipo_entregable').removeClass('is-invalid');
+                    $('#error_tipoEntre').css('display', 'none');
+                    $('#error_customFile').css('display', 'none');
+                    $('#error_comentariosEntre').css('display', 'none');
+                    $('#modal_evidencias').modal('show');
+                });
+
+                function validaCamposArchivo() {
+                    if ($('#tipo_entregable').val() == "" && $('#customFile').val() == "") {
+                        $('#tipo_entregable').addClass('is-invalid');
+                        $('#error_tipoEntre').css('display', 'block');
+                        $('#customFile').addClass('is-invalid');
+                        $('#error_customFile').css('display', 'block');
+                        return false;
+                    }
+
+                    if ($('#tipo_entregable').val() == "") {
+                        $('#tipo_entregable').addClass('is-invalid');
+                        $('#error_tipoEntre').css('display', 'block');
+                        return false;
+                    }
+
+                    if (($('#customFile').val() == "" && $('.custom-file-label').text() == "")) {
+                        $('#customFile').addClass('is-invalid');
+                        $('#error_customFile').css('display', 'block');
+                        return false;
+                    }
+
+                    return true;
+            }
+
+                $("#customFile").on("change", function () {
+                    var fileName = $(this).val().split("\\").pop();
+                    var ext = fileName.split('.').pop();
+                    if (ext == "pdf" || ext == "PDF") {
+                        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                    } else {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                            'text': 'El archivo que intenta adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                        });
+                        $(".custom-file-label").text("Seleccionar Archivo");
+                        document.getElementById('customFile').value = '';
+                        if ($('#customFile').hasClass('is-valid')) {
+                            $('#customFile').removeClass('is-valid');
+                        }
+                        $('#customFile').addClass('is-invalid');
+                        $('#error_customFile').css('display', 'block');
+                    }
+                });
+
+                $('#tipo_entregable').change(function () {
+                    if ($('#tipo_entregable').val() == "") {
+                        $('#tipo_entregable').addClass('is-invalid');
+                        $('#error_tipoEntre').css('display', 'block');
+                        return false;
+                    } else {
+                        $('#tipo_entregable').removeClass('is-invalid');
+                        $('#tipo_entregable').addClass('is-valid');
+                        $('#error_tipoEntre').css('display', 'none');
+                    }
+                });
+
+                $('#customFile').change(function () {
+                    if ($('#customFile').val() == "") {
+                        $('#customFile').addClass('is-invalid');
+                        $('#error_customFile').css('display', 'block');
+                    } else {
+                        var fileName = $("#customFile").val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext != "pdf") {
+                            $('#customFile').addClass('is-invalid');
+                            $('#error_customFile').css('display', 'block');
+                        } else {
+                            $('#customFile').removeClass('is-invalid');
+                            $('#customFile').addClass('is-valid');
+                            $('#error_customFile').css('display', 'none');
+                        }
+                    }
+                });
+
+                $('#comentarios_entregable').change(function () {
+                    if ($('#comentarios_entregable').val() == "") {
+                        $('#comentarios_entregable').addClass('is-invalid');
+                        $('#error_comentariosEntre').css('display', 'block');
+                        return false;
+                    } else {
+                        $('#comentarios_entregable').removeClass('is-invalid');
+                        $('#comentarios_entregable').addClass('is-valid');
+                        $('#error_comentariosEntre').css('display', 'none');
+                    }
+                });
+
+                $('#adjuntarArchivo').click(function () {
+                    var formData = new FormData();
+                    var file = document.getElementById('customFile').files[0];
+                    var id = $('#file_id').val();
+                    var tipo = $('#tipo_entregable').val();
+                    var comentarios = $('#comentarios_entregable').val();
+
+                    if (id.length > 0) {
+                        id = parseInt(id);
+                    } else {
+                        id = 0;
+                    }
+
+                    formData.append("Id", id);
+                    formData.append("CedulaEvaluacionId", model.id);
+                    formData.append("Folio", model.folio);
+                    formData.append("Tipo", tipo);
+                    formData.append("Comentarios", comentarios);
+                    if (file != null) {
+                        formData.append("Archivo", file);
+                    }
+
+                    if (validaCamposArchivo()) {
+                        axios.post('/limpieza/adjuntaEntregable', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(response => {
+                            $('#cerrar_modal_sua').trigger('click');
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'text': 'Se adjuntó el archivo de correctamente.'
+                                }).then(function () {
+                                    axios.get("/limpieza/getEntregables/" + model.id + "/" + model.servicioId).then(success => {
+                                        if (success.data == null || success.data == "") {
+                                            $('#tEntregables').html(success.data);
+                                        }
+                                        $('#tEntregables').html(success.data);
+                                    });
+                                });
+                            }
+                        });
+                    }
+                    document.getElementById('customFile').value = '';
+                    $('#file_id').val("");
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    $('#tipo_entregable').val('');
+                    $('#comentarios_entregable').val('');
+                    $('#customFile').removeClass('is-valid');
+                    $('#comentarios_entregable').removeClass('is-valid');
+                    $('#tipo_entregable').removeClass('is-valid');
+                });
+
+                $(document).on("click", ".update_files", function () {
+                    $('#modal_evidencias').modal('show');
+                    var id = $(this).data('id');
+                    var tipo = $(this).data('tipo');
+                    var coments = $(this).data('coments');
+                    var file = $(this).data('file');
+                    $('#file_id').val(parseInt(id));
+                    $(".custom-file-label").text(file);
+                    $('#tipo_entregable').val(tipo);
+                    $('#comentarios_entregable').val(coments);
+                    $('#modal_evidencias').modal('show');
+                });
+
+                $(document).on("click", ".delete_files", function () {
+                    let id = $(this).data('id');
+                    let tipo = $(this).data('tipo');
+                    Swal.fire({
+                        'icon': 'warning',
+                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                        'text': '¿Está seguro de eliminar el archivo relacionado a "' + tipo + '"?',
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Si, Eliminar Archivo',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(response => {
+                        if (response.isConfirmed) {
+                            axios.post("/limpieza/eliminaArchivo", { Id: id, Folio: model.folio }).then(response => {
+                                if (response.status == 200) {
+                                    Swal.fire({
+                                        'icon': 'success',
+                                        'title': 'Servicio de Limpieza en Áreas Comunes',
+                                        'html': 'El archivo fue eliminado con éxito.',
+                                    }).then(function () {
+                                        axios.get("/limpieza/getEntregables/" + model.id + "/" + model.servicioId).then(response => {
+                                            if (response.data == null || response.data == "") {
+                                                $('#tEntregables').html(response.data);
+                                            }
+                                            $('#tEntregables').html(response.data);
+                                        });
+                                    });
+                                }
+                            }).catch(error => {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': 'No se pudo procesar tu solicitud. Contacta a tu Administrador.',
+                                });
+                            });
+                        }
+                    });
+                });
+
+                $(document).on('click', '.view_file', function () {
+                    let nombre = $(this).data('file');
+                    let tipo = $(this).data('tipo');
+                    let data = "<object width='100%' height='710px' data='/view/entregable/" + model.folio + "/" + nombre + "'></object>";
+                    $('#titlePDF').text("PDF - \"" + tipo + "\"");
+                    $('#objectPdf').html(data);
+                    $('#show_pdf').modal('show');
+                });
+            /********************************* Fin Entregables ************************************/
+
+            /********************************* Editar Cuestionario ************************************/
+                if (respuestas != null && respuestas.length != 0) {
+                    for (var i = 0; i < respuestas.length; i++) {
+                        for (var j = 0; j < model.preguntas.length; j++) {
+                            if (respuestas[i].pregunta == model.preguntas[j].noPreguntaUsuario) {
+                                if (model.preguntas[j].cierre) {
+                                    $("#fechaCierre").val(respuestas[i].detalles);
+                                }
+                                else
+                                {
+                                    $('input:radio[name="pregunta_' + respuestas[i].pregunta + '"][value="' + respuestas[i].respuesta + '"]').prop('checked', true);
+                                    if (model.preguntas[j].incidencias) {
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "none" : "block"));
+                                    }
+                                    else if (model.preguntas[j].numero) {
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "block" : "none"));
+                                        $("#inasistencias").val(respuestas[i].detalles);
+                                    }
+                                    else if (model.preguntas[j].sua) {
+                                        $("#divIncidencias_" + respuestas[i].pregunta).css("display", (respuestas[i].respuesta ? "block" : "none"));
+                                        $("#mes_correspondiente").val(respuestas[i].detalles.split("|")[1]);
+                                        $("#fechaSua").val(respuestas[i].detalles.split("|")[0]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            /********************************* Editar Cuestionario ************************************/
+
+            /********************************* Guardar/Enviar Cuestionario ************************************/
+                $('.btn_guardar').click(function () {
+                    var respuestas = new Array();
+                    let detalles = null;
+                    for (let i = 0; i < model.preguntas.length; i++) {
+                        let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                        detalles = null;
+                        if (model.preguntas[i].cierre) {
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: "false", Detalles: $("#fechaCierre").val() });
+                        } else if (respuesta != null && respuesta != undefined) {
+                            if (model.preguntas[i].numero) {
+                                if (respuesta == "true") {
+                                    detalles = $("#inasistencias").val();
+                                }
+                            }
+                            else if (model.preguntas[i].sua) {
+                                if (respuesta == "true") {
+                                    detalles = $("#fechaSua").val()+"|"+$("#mes_correspondiente").val();
+                                }
+                            }
+
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                        }
+                    }
+
+                    if (respuestas.length >0) {
+                        axios.post("/limpieza/evaluation", respuestas).then(response => {
+                            if (response.status == 200) {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': "Se guardaron las respuestas de la cédula correctamente."
+                                }).then(function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    'icon': "error",
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': "Hubo un error al guardar la(s) respuesta(s) de la cédula. Contacte al Administrador del Sistema"
+                                });
+                            }
+                        });
+                    }
+
+                 });
+
+                function cuentaincidenciasComedor(pregunta) {
+                    var isContinue = true;
+                    $.ajax({
+                        url: '/limpieza/totalIncidencia/' + model.id + '/' + pregunta,
+                        type: 'GET',
+                        async: false,
+                        success: function (json) {
+                            json == 0 ? isContinue = false : true;
+                        },
+                    });
+                    return isContinue;
+            }
+
+                function guardaCedula(){
+                    var respuestas = new Array();
+                    for (let i = 0; i < model.preguntas.length; i++) {
+                        let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                        detalles = null;
+                        if (model.preguntas[i].cierre) {
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: "false", Detalles: $("#fechaCierre").val() });
+                        } else if (respuesta != null && respuesta != undefined) {
+                            if (model.preguntas[i].numero) {
+                                if (respuesta == "true") {
+                                    detalles = $("#inasistencias").val();
+                                }
+                            }
+                            else if (model.preguntas[i].sua) {
+                                if (respuesta == "true") {
+                                    detalles = $("#fechaSua").val() + "|" + $("#mes_correspondiente").val();
+                                }
+                            }
+
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                        }
+                    }
+
+                     axios.post("/limpieza/evaluation", respuestas).then(response => {
+                         if (response.status == 200) {
+
+                         } else {
+                             Swal.fire({
+                                 'icon': "error",
+                                 'title': 'Servicio de Limpieza en Áreas Comunes',
+                                 'html': "Hubo un error al guardar la(s) respuesta(s) de la cédula. Contacte al Administrador del Sistema"
+                             });
+                         }
+                     });
+                }
+
+                function validaEntregables() {
+                    var msgEntregables = ["Factura", "Validación del SAT"];
+                    var entregables = ["Factura", "SAT"];
+                    var msg = "";
+                    var nota = false;
+                    var found = false;
+                    axios.get('/limpieza/getListadoEntregables/' + model.id + "/" + model.servicioId).then(response => {
+                        for (var j = 0; j < entregables.length; j++) {
+                            for (var i = 0; i < response.data.length; i++) {
+                                if (entregables[j] == response.data[i].tipo) {
+                                    found = true;
+                                    break;
+                                } else {
+                                    found = false;
+                                }
+                            }
+                            if (!found) {
+                                msg += "<strong> - "+msgEntregables[j]+"<br/></strong>";
+                            }
+                        }
+
+                        if (msg != "") {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Limpieza en Áreas Comunes',
+                                'html': 'Para enviar la cédula a la DAS, es necesario adjuntar los siguientes entregables: <br/><br/>' + msg
+                            });
+                            return false;
+                        } else {
+                            axios.post('/limpieza/historialLimpieza',
+                                {
+                                    ServicioId: model.servicioId, CedulaId: model.id, UsuarioId: parseInt(@User.Claims.ElementAt(0).Value), Estatus: "Enviado a DAS",
+                                    Comentarios: "Se envía la cédula a la DAS para su revisión."
+                                }
+                            ).then(response => {
+                                 axios.post("/limpieza/sendCedula/" + model.servicioId + "/" + model.id).then(response => {
+                                     if (response.status == 200) {
+                                         Swal.fire({
+                                             'icon': "success",
+                                             'title': 'Servicio de Limpieza en Áreas Comunes',
+                                             'html': "Se envió la cédula correctamente."
+                                         }).then(function () {
+                                             window.location.href = "/limpieza/index/" + model.servicioId + "?Estatus=Enviado a DAS";
+                                         });
+                                     } else {
+                                         Swal.fire({
+                                             'icon': "error",
+                                             'title': 'Servicio de Limpieza en Áreas Comunes',
+                                             'html': "Hubo un error al guardar las respuestas de la cédula. Contacte al Administrador del Sistema"
+                                         });
+                                     }
+                                 });
+                             });
+                        }
+                    });
+                }
+
+                function buscaPregunta(pregunta) {
+                    let respuesta = $("input[name=pregunta_" + pregunta + "]:checked").val();
+                    let exists = -1;
+
+                    if (pregunta == 1 && model.preguntas[pregunta - 1].cierre)
+                    {
+                        return pregunta;
+                    }
+                    else
+                    {
+                        for (let i = 0; i < model.respuestasEncuesta.length; i++) {
+                            if (pregunta == model.respuestasEncuesta[i].pregunta) {
+                                exists = 1;
+                            }
+                        }
+
+                        if (exists == 1 && respuesta != null && respuesta != undefined && respuesta != "") {
+                            return model.preguntas[pregunta - 1].noPregunta;
+                        }
+                    }
+
+                    return exists;
+                }
+
+                function muestraMensaje(pregunta){
+                    for (var i = 0; i < model.preguntas.length; i++) {
+                        if (model.preguntas[i].noPregunta == pregunta) {
+                            if (model.preguntas[i].cierre) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': 'No ha capturado la fecha de cierre en la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong>'
+                                });
+                            } else if (model.preguntas[i].sua) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': 'No ha capturado la <strong>Fecha de Entrega</strong> o falta capturar el <strong>Mes Correspondiente</strong> de SUA en la pregunta'+
+                                        model.preguntas[i].noPreguntaUsuario+'.'
+                                });
+                            } else if (model.preguntas[i].incidencias) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': 'No ha capturado la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong> o aún falta capturar las <strong>incidencias</strong>.'
+                                });
+                            }
+                            else if (model.preguntas[i].numero) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': 'No ha capturado la <strong>Cantidad de Inasistencias</strong> en la pregunta ' + model.preguntas[i].noPreguntaUsuario + '.'
+                                });
+                            }
+                            else if (model.preguntas[i].abreviacion == "Capacitacion") {
+                                 if (!perfil) {
+                                     Swal.fire({
+                                         'icon': 'error',
+                                         'title': 'Servicio de Limpieza en Áreas Comunes',
+                                         'html': 'No ha capturado la <strong>Capacitación</strong> en la pregunta ' + model.preguntas[i].noPreguntaUsuario + '.'
+                                     });
+                                     return false;
+                                 } else {
+                                     return true;
+                                 }
+                            }
+                            else
+                            {
+                                 Swal.fire({
+                                     'icon': 'error',
+                                     'title': 'Servicio de Limpieza en Áreas Comunes',
+                                     'html': 'No ha capturado la <strong>Pregunta ' + model.preguntas[i].noPreguntaUsuario + '</strong>.'
+                                 });
+                            }
+                        }
+                    }
+            }
+
+
+                $('.btn_enviar').click(function () {
+                    guardaCedula();
+                    let pregunta = 0;
+                    let i = 0;
+                    let respuesta = "";
+                    let isContinue = true;
+                    let totalP = (perfil == false ? model.preguntas.length : (model.preguntas.length - 1));
+                    if (model.facturas.length == 0) {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Limpieza en Áreas Comunes',
+                            'html': 'No ha registrado ninguna factura en la cédula'
+                        });
+                        return false;
+                    }
+
+                    for (i = 0; i < totalP; i++) {
+                        respuesta = $('input:radio[name="pregunta_' + (i + 1) + '"]:checked').val();
+                        if (buscaPregunta(model.preguntas[i].noPreguntaUsuario) != -1) {
+                            pregunta = buscaPregunta(model.preguntas[i].noPreguntaUsuario);
+                            if (pregunta == 1 && $("#fechaCierre").val() == "") {
+                                break;
+                            } else if (respuesta == "false") {
+                                if (model.preguntas[i].incidencias) {
+                                    isContinue = cuentaincidenciasComedor(model.preguntas[i].noPregunta);
+                                    if (isContinue == false) {
+                                        break;
+                                    }
+                                }
+                            } else if (respuesta == "true") {
+                                if (model.preguntas[i].numero) {
+                                    if ($("#inasistencias").val() == "") {
+                                        break;
+                                    }
+                                } else if (model.preguntas[i].sua) {
+                                    if ($("#fechaSua").val() == "" || $("#mes_correspondiente").val() == "") {
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            pregunta = model.preguntas[i].noPregunta;
+                            break;
+                        }
+                    }
+
+                    if (i < totalP) {
+                        muestraMensaje(pregunta)
+                        return false;
+                    } else {
+                        validaEntregables();
+                    }
+                });
+
+                $('.btnRevisar').click(function () {
+                    var respuestas = new Array();
+                    for (let i = 0; i < model.preguntas.length; i++) {
+                        let respuesta = $("input[name=pregunta_" + (i + 1) + "]:checked").val();
+                        detalles = null;
+                        if (model.preguntas[i].cierre) {
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: "false", Detalles: $("#fechaCierre").val() });
+                        } else if (respuesta != null && respuesta != undefined) {
+                            if (model.preguntas[i].numero) {
+                                if (respuesta == "true") {
+                                    detalles = $("#inasistencias").val();
+                                }
+                            }
+                            else if (model.preguntas[i].sua) {
+                                if (respuesta == "true") {
+                                    detalles = $("#fechaSua").val() + "|" + $("#mes_correspondiente").val();
+                                }
+                            } else if (model.preguntas[i].concepto == "Capacitación") {
+                                detalles = "Capacitación";
+                            }
+
+                            respuestas.push({ CedulaEvaluacionId: parseInt(model.id), Pregunta: (i + 1), Respuesta: (respuesta == "true"), Detalles: detalles });
+                        }
+                    }
+
+                    axios.post("/limpieza/capacitacion", respuestas).then(response => {
+                        if (response.status == 200) {
+                            axios.post("/limpieza/sendCedula/" + model.servicioId + "/" + model.id).then(response => {
+                                Swal.fire({
+                                    'icon': "success",
+                                    'title': 'Servicio de Limpieza en Áreas Comunes',
+                                    'html': "Se guardaron las respuestas de la cédula correctamente."
+                                }).then(function () {
+                                    window.location.href = "/limpieza/revision/" + model.id;
+                                });
+                            });
+                        } else {
+                            Swal.fire({
+                                'icon': "error",
+                                'title': 'Servicio de Limpieza en Áreas Comunes',
+                                'html': "Hubo un error al guardar la(s) respuesta(s) de la cédula. Contacte al Administrador del Sistema"
+                            });
+                        }
+                    });
+                });
+
+            /******************************* FIN Guardar/Enviar Cuestionario **********************************/
+        });
+    </script>
+}

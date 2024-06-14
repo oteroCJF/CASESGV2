@@ -1,0 +1,107 @@
+﻿@model CedulasEvaluacion.Entities.Models.Inmueble;
+@{
+    var returnUrl = ViewData["ReturnUrl"] as string;
+    var success = ViewData["Success"];
+    var error = ViewData["Error"];
+    ViewData["Title"] = "Nuevo Inmuebles";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-joke text-white">
+                <h4>Nuevo Inmueble</h4>
+            </div>
+            <form action="/administrator/insert" method="post">
+                <div class="card-body">
+                    <div class="row col-lg-12">
+                        <input type="hidden" class="form-control" asp-for="@Model.Id" />
+                        <div class="col-lg-4">
+                            <label for="">Administración:</label>
+                            <select class="form-control select2bs4" id="selectAdmins" asp-for="@Model.AdministracionId"></select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label for="">Clave del inmueble:</label>
+                            <input type="number" class="form-control" asp-for="@Model.Clave" />
+                        </div>
+                    </div>
+                    <div class="row col-lg-12">
+                        <div class="col-lg-12 mt-3">
+                            <label for="">Nombre del inmueble:</label>
+                            <input type="text" class="form-control" asp-for="@Model.Nombre" />
+                        </div>
+                    </div>
+                    <div class="row col-lg-12">
+                        <div class="col-lg-12 mt-3">
+                            <label for="">Dirección del inmueble:</label>
+                            <textarea class="form-control" asp-for="@Model.Direccion"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="col-lg-12">
+                        <a href="/inmuebles/administraciones" class="btn btn-danger float-right">Cancelar</a>
+                        <button type="submit" class="btn btn-primary float-right mr-3">Guardar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var success = @Html.Raw(Json.Serialize(@success));
+            var error = @Html.Raw(Json.Serialize(@error));
+
+            /*Mensajes de Error/Completado*/
+            if (success != null) {
+                Swal.fire({
+                    'icon': 'success',
+                    'title': 'Crear Inmueble',
+                    'text': success
+                }).then(function () {
+                    window.location.href = '/administrators'
+                });
+            } else if (error != null) {
+                Swal.fire({
+                    'icon': 'error',
+                    'title': 'Crear Inmueble',
+                    'text': error
+                });
+            }
+            /*FIN Mensajes de Error/Completado*/
+            //Inicializamos el buscador en los combobox
+                $('.select2').select2()
+
+            //Inicializamos el tema de bootstrap para el buscador en los combobox
+                $('.select2bs4').select2({
+            theme: 'bootstrap4'
+                });
+
+            @*Llenamos la Lista desplegable con los Tipo de Incidencia*@
+            axios.get("/listAdmins").then(response => {
+                    var tipos = "<option value=''>Seleccione una admninistración</option>";
+                    for (let i = 0; i < response.data.length; i++) {
+                        tipos += "<option value='" + response.data[i].id + "'>" + response.data[i].administracion + "</option>";
+                    }
+                    $("#selectAdmins").html(tipos);
+                    $('#selectAdmins option[value=' + model.administracionId + ']').attr('selected', 'selected');
+                });
+            @*Fin Llenamos la Lista desplegable con los Tipo de Incidencia*@
+        });
+    </script>
+}

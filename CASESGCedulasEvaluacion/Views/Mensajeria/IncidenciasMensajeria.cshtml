@@ -1,0 +1,1311 @@
+﻿@* Cuestionario Mensajeria *@
+@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
+@{
+    ViewData["Title"] = "Incidencias en la Cédula del Servicio de Mensajería Acelerada con Folio: " + Model.Folio;
+    var i = 0;
+}
+<div class="row col-lg-12">
+    <div class="col-lg-12">
+        <a href="/mensajeria/evaluacion/@Model.Id@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar a la evaluación" data-placement="top">
+            <i class="fal fa-arrow-to-left"></i>
+        </a>
+        <a href="#" type='button' class='btn-sm btn-success float-right mr-2 mb-3' id="btn_excel" data-toggle="tooltip" title='Subir incidencias desde "Excel"' data-placement="top">
+            <i class="fal fa-file-excel"></i>
+        </a>
+        <a href="/mensajeria/getPlantilla" type='button' class='btn-sm btn-download float-right mr-2 mb-3' id="btn_excel" data-toggle="tooltip" title='Descargar Plantilla para Incidencias' data-placement="top">
+            <i class="fas fa-cloud-download-alt"></i>
+        </a>
+        <a href="#" class='btn-sm btn-primary float-right mr-2 mb-3' id="btn_add" data-toggle="tooltip" title="Capturar Incidencia" data-placement="top">
+            <i class="fal fa-plus"></i>
+        </a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#recoleccion" role="tab" aria-controls="home" aria-selected="true">Recolección</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#entrega" role="tab" aria-controls="profile" aria-selected="false">Entrega</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#acuses" role="tab" aria-controls="contact" aria-selected="false">Acuses</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#malEstado" role="tab" aria-controls="contact" aria-selected="false">Guías en Mal Estado</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#extravio" role="tab" aria-controls="contact" aria-selected="false">Guías Extraviadas</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#robadas" role="tab" aria-controls="contact" aria-selected="false">Guías Robadas</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            @* Recolección*@
+            <div class="tab-pane fade mt-2 ml-3 show active" id="recoleccion" role="tabpanel" aria-labelledby="home-tab">
+                <div class="row">
+                    <h4 class="mt-2 mb-2">Incidencias de Recolección</h4>
+                    <div class="col-lg-12 mt-3">
+                        <table class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Programada</th>
+                                    <th>Fecha Efectiva</th>
+                                    <th>Numero Guía</th>
+                                    <th>Codigo Rastreo</th>
+                                    <th>Tipo de Servicio</th>
+                                    <th>Sobrepeso (Kg)</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tIncidenciasEquipo">
+                                @{ i = 0; }
+                                @foreach (var incidencia in Model.incidencias.mensajeria)
+                                {
+                                    if (incidencia.Tipo.Equals("Recoleccion"))
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@incidencia.Tipo</td>
+                                            <td>@incidencia.FechaProgramada.ToString("dd/MM/yyyy")</td>
+                                            <td>@incidencia.FechaEfectiva.ToString("dd/MM/yyyy")</td>
+                                            <td>@incidencia.NumeroGuia</td>
+                                            <td>@incidencia.CodigoRastreo</td>
+                                            <td>@incidencia.TipoServicio</td>
+                                            <td>@incidencia.Sobrepeso</td>
+                                            <td>
+                                                <a href="#" class="update_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-fechap="@incidencia.FechaProgramada.ToString("yyyy-MM-dd")"
+                                                   data-fechae="@incidencia.FechaEfectiva.ToString("yyyy-MM-dd")" data-numero="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo"
+                                                   data-tipose="@incidencia.TipoServicio" data-sobrepeso="@incidencia.Sobrepeso">
+                                                    <i class="fad fa-pencil text-primary mr-2"></i>
+                                                </a>
+                                                <a href="#" class="delete_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia">
+                                                    <i class="fad fa-times text-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @* Fin de Recolección*@
+            @* Entrega *@
+            <div class="tab-pane fade mt-2 ml-3" id="entrega" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="row">
+                    <h4 class="mt-2 mb-2">Incidencias de Entrega de Guías</h4>
+                    <div class="col-lg-12 mt-3">
+                        <table class="table table-responsive-xl display" style="width:101%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Programada</th>
+                                    <th>Fecha Efectiva</th>
+                                    <th>Numero Guía</th>
+                                    <th>Codigo Rastreo</th>
+                                    <th>Tipo de Servicio</th>
+                                    <th>Sobrepeso (Kg)</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tIncidenciasEquipo">
+                                @{ i = 0; }
+                                @foreach (var incidencia in Model.incidencias.mensajeria)
+                                {
+                                    if (incidencia.Tipo.Equals("Entrega"))
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@incidencia.Tipo</td>
+                                            <td>@incidencia.FechaProgramada.ToString("dd/MM/yyyy")</td>
+                                            <td>@incidencia.FechaEfectiva.ToString("dd/MM/yyyy")</td>
+                                            <td>@incidencia.NumeroGuia</td>
+                                            <td>@incidencia.CodigoRastreo</td>
+                                            <td>@incidencia.TipoServicio</td>
+                                            <td>@incidencia.Sobrepeso</td>
+                                            <td>
+                                                <a href="#" class="update_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-fechap="@incidencia.FechaProgramada.ToString("yyyy-MM-dd")"
+                                                   data-fechae="@incidencia.FechaEfectiva.ToString("yyyy-MM-dd")" data-numero="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo"
+                                                   data-tipose="@incidencia.TipoServicio" data-sobrepeso="@incidencia.Sobrepeso">
+                                                    <i class="fad fa-pencil text-primary mr-2"></i>
+                                                </a>
+                                                <a href="#" class="delete_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia">
+                                                    <i class="fad fa-times text-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @* Fin de Entrega *@
+            @* Acuses *@
+            <div class="tab-pane fade mt-2 ml-3" id="acuses" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row">
+                    <h4 class="mt-2 mb-2">Incidencias de Acuse de Guías</h4>
+                    <div class="col-lg-12 mt-3">
+                        <table class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Fecha Programada</th>
+                                    <th>Fecha Efectiva</th>
+                                    <th>Total Acuses</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tIncidenciasEquipo">
+                                @{ i = 0; }
+                                @foreach (var incidencia in Model.incidencias.mensajeria)
+                                {
+                                    if (incidencia.Tipo.Equals("Acuses"))
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@incidencia.Tipo</td>
+                                            <td>@incidencia.FechaProgramada.ToString("dd/MM/yyyy")</td>
+                                            <td>@incidencia.FechaEfectiva.ToString("dd/MM/yyyy")</td>
+                                            <td>@incidencia.TotalAcuses</td>
+                                            <td>
+                                                <a href="#" class="update_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-fechap="@incidencia.FechaProgramada.ToString("yyyy-MM-dd")"
+                                                   data-fechae="@incidencia.FechaEfectiva.ToString("yyyy-MM-dd")" data-total="@incidencia.TotalAcuses">
+                                                    <i class="fad fa-pencil text-primary mr-2"></i>
+                                                </a>
+                                                <a href="#" class="delete_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo">
+                                                    <i class="fad fa-times text-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @* Fin de Acuses *@
+            @* Mal Estado *@
+            <div class="tab-pane fade mt-2 ml-3" id="malEstado" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row">
+                    <h4 class="mt-2 mb-2">Incidencias de Guías en Mal Estado</h4>
+                    <div class="col-lg-12 mt-3">
+                        <table class="table table-responsive-xl display" style="width:101%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Numero Guía</th>
+                                    <th>Codigo Rastreo</th>
+                                    <th>Tipo de Servicio</th>
+                                    <th>Sobrepeso(Kg)</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tIncidenciasEquipo">
+                                @{ i = 0; }
+                                @foreach (var incidencia in Model.incidencias.mensajeria)
+                                {
+                                    if (incidencia.Tipo.Equals("Mal Estado"))
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@incidencia.Tipo</td>
+                                            <td>@incidencia.NumeroGuia</td>
+                                            <td>@incidencia.CodigoRastreo</td>
+                                            <td>@incidencia.TipoServicio</td>
+                                            <td>@(incidencia.TipoServicio.Contains("Sobrepeso") ? incidencia.Sobrepeso.ToString("N2"):"N/A")</td>
+                                            <td>
+                                                <a href="#" class="update_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo"
+                                                   data-tipose="@incidencia.TipoServicio" data-sobrepeso="@incidencia.Sobrepeso">
+                                                    <i class="fad fa-pencil text-primary mr-2"></i>
+                                                </a>
+                                                <a href="#" class="delete_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia">
+                                                    <i class="fad fa-times text-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @* Fin de Mal Estado *@
+            @* Guías Extraviadas *@
+            <div class="tab-pane fade mt-2 ml-3" id="extravio" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row">
+                    <h4 class="mt-2 mb-2">Incidencias de Guías Extraviadas</h4>
+                    <div class="col-lg-12 mt-3">
+                        <table class="table table-responsive-xl display" style="width:101%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Numero Guía</th>
+                                    <th>Codigo Rastreo</th>
+                                    <th>Tipo de Servicio</th>
+                                    <th>Sobrepeso(Kg)</th>
+                                    <th>Acta de Extravío</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tIncidenciasEquipo">
+                                @{ i = 0; }
+                                @foreach (var incidencia in Model.incidencias.mensajeria)
+                                {
+                                    if (incidencia.Tipo.Equals("Extraviadas"))
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>Guías Extraviadas</td>
+                                            <td>@incidencia.NumeroGuia</td>
+                                            <td>@incidencia.CodigoRastreo</td>
+                                            <td>@incidencia.TipoServicio</td>
+                                            <td>@(incidencia.TipoServicio.Contains("Sobrepeso") ? incidencia.Sobrepeso.ToString("N2"):"N/A")</td>
+                                            <td>@incidencia.NombreActa</td>
+                                            <td>
+                                                <a href="#" class="view_actaRobo" data-toggle="tooltip" title='Ver el Acta de Robo' data-placement="top" data-tipo="@incidencia.TipoServicio"
+                                                   data-guia="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo" data-file="@incidencia.NombreActa">
+                                                    <i class="fad fa-eye text-success mr-2"></i>
+                                                </a>
+                                                <a href="#" class="update_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo"
+                                                   data-tipose="@incidencia.TipoServicio" data-file="@incidencia.NombreActa" data-sobrepeso="@incidencia.Sobrepeso">
+                                                    <i class="fad fa-pencil text-primary mr-2"></i>
+                                                </a>
+                                                <a href="#" class="delete_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia" data-file="@incidencia.NombreActa">
+                                                    <i class="fad fa-times text-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @* Fin de Guías Extraviadas *@
+            @* Guías Robadas *@
+            <div class="tab-pane fade mt-2 ml-3" id="robadas" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row">
+                    <h4 class="mt-2 mb-2">Incidencias en Guías Robadas</h4>
+                    <div class="col-lg-12 mt-3">
+                        <table class="table table-responsive-xl display" style="width:101%">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tipo</th>
+                                    <th>Numero Guía</th>
+                                    <th>Codigo Rastreo</th>
+                                    <th>Tipo de Servicio</th>
+                                    <th>Acta de Robo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tIncidenciasEquipo">
+                                @{ i = 0; }
+                                @foreach (var incidencia in Model.incidencias.mensajeria)
+                                {
+                                    if (incidencia.Tipo.Equals("Robadas"))
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>Guías Robadas</td>
+                                            <td>@incidencia.NumeroGuia</td>
+                                            <td>@incidencia.CodigoRastreo</td>
+                                            <td>@incidencia.TipoServicio</td>
+                                            <td>@incidencia.NombreActa</td>
+                                            <td>
+                                                <a href="#" class="view_actaRobo" data-toggle="tooltip" title='Ver el Acta de Robo' data-placement="top" data-tipo="@incidencia.TipoServicio"
+                                                   data-guia="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo" data-file="@incidencia.NombreActa" data-sobrepeso="@incidencia.Sobrepeso">
+                                                    <i class="fad fa-eye text-success mr-2"></i>
+                                                </a>
+                                                <a href="#" class="update_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia" data-codigo="@incidencia.CodigoRastreo"
+                                                   data-tipose="@incidencia.TipoServicio" data-file="@incidencia.NombreActa">
+                                                    <i class="fad fa-pencil text-primary mr-2"></i>
+                                                </a>
+                                                <a href="#" class="delete_incidencia" data-id="@incidencia.Id" data-tipo="@incidencia.Tipo" data-numero="@incidencia.NumeroGuia" data-file="@incidencia.NombreActa">
+                                                    <i class="fad fa-times text-danger"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            @* Fin de Guías Robadas *@
+        </div>
+    </div>
+</div>
+
+
+@* Modal para la captura de Adjuntos *@
+<div class="modal fade" id="modal_incidenciasExcel">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Adjuntar incidencias desde "Excel"</h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Categoria:</label>
+                        <select class="form-control" id="tipo_categoria">
+                            <option value="">Seleccione la Categoría</option>
+                            <option value="Recoleccion">Recolección de Guías</option>
+                            <option value="Entrega">Guías Entregadas</option>
+                            <option value="Acuses">Acuses Entregados</option>
+                            <option value="Mal Estado">Guías en Mal Estado</option>
+                            <option value="Extraviadas">Extraviadas</option>
+                        </select>
+                        <div class="col-sm-12" id="error_tipoCate">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la categoría
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo de Excel: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input incidencias_excel" id="fileExcel" accept=".xlsx,.xls">
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                        <div class="col-sm-12" id="error_customFile">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor el archivo de excel correspondiente
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="addExcel">Adjuntar Excel</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@* Modal para la ver Adjuntos *@
+<div class="modal fade" id="modal_pdf">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white" id="titlePDF"></h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <td id="view_folio"><strong>Folio de la Cédula: </strong>@Model.Folio</td>
+                        <td id="view_guia"></td>
+                        <td id="view_codigoRastreo"></td>
+                        <td id="view_tipoServicio"></td>
+                    </tr>
+                </table>
+                <div class="row" id="actaRoboPDF"></div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para ver Adjuntos*@
+
+@* Modal para la captura de Incidencias *@
+<div class="modal fade" id="modal-incidencias">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Registrar Incidencia</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-lg-4">
+                        <label for="tipoIncidencia">Categoria:</label>
+                        <select class="form-control" id="categoria">
+                            <option value="">Seleccione la Categoría</option>
+                            <option value="Recoleccion">Recolección de Guías</option>
+                            <option value="Entrega">Guías Entregadas</option>
+                            <option value="Acuses">Acuses Entregados</option>
+                            <option value="Mal Estado">Guías en Mal Estado</option>
+                            <option value="Extraviadas">Extraviadas</option>
+                            <option value="Robadas">Robadas</option>
+                        </select>
+                        <div class="col-sm-12" id="error_tipoCategoria">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la categoría
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="id_incidencia" />
+                            <div class="form-group col-md-4" id="div_fechaProgramada">
+                                <label for="fechaIncidencia">Fecha Programada: </label>
+                                <input type="date" class="form-control" id="fecha_programada" name="fechaProgramada">
+                                <div class="col-sm-12" id="error_fechaProgramada">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture la Fecha de Programada
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4" id="div_fechaEfectiva">
+                                <label for="fechaIncidencia">Fecha Efectiva: </label>
+                                <input type="date" class="form-control" id="fecha_efectiva" name="fechaEfectiva">
+                                <div class="col-sm-12" id="error_fechaEfectiva">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture la Fecha Efectuada
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4" id="div_codigoRastreo">
+                                <label for="areaIncidencia">Codigo Rastreo:</label>
+                                <input type="number" id="codigo_rastreo" class="form-control" maxlength="10" />
+                                <div class="col-sm-12" id="error_codigoRastreo">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture los comentarios correspondientes
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4" id="div_numeroGuia">
+                                <label for="areaIncidencia">Numero de Guía:</label>
+                                <input type="text" class="form-control" id="numero_guia" maxlength="22" />
+                                <div class="col-sm-12" id="error_numeroGuia">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor seleccione el área correspondiente
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4" id="div_totalAcuses">
+                                <label for="acusesFaltantes">Cantidad de Acuses Faltantes:</label>
+                                <input type="number" class="form-control" id="acuses_faltantes" max="999" />
+                                <div class="col-sm-12" id="error_totalAcuses">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor seleccione el área correspondiente
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4" id="div_tipoServicio">
+                                <label for="tipoIncidencia">Tipo de Servicio:</label>
+                                <select class="form-control" id="tipo_servicio">
+                                    <option value="">Seleccione el Tipo de Servicio</option>
+                                    <option value="Nacional">Nacional</option>
+                                    <option value="Nacional Sobrepeso">Nacional Sobrepeso</option>
+                                    <option value="Internacional">Internacional</option>
+                                    <option value="Internacional Sobrepeso">Internacional Sobrepeso</option>
+                                </select>
+                                <div class="col-sm-12" id="error_tipoServicio">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor seleccione el tipo de servicio
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4" id="divSobrepeso">
+                                <label for="tieneAcuse">Peso Real (Kg)</label>
+                                <input class="form-control" id="total_sobrepeso" type="number" />
+                                <div class="col-sm-12" id="error_sobrepeso">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor capture el sobrepeso de la guía
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-8" id="divArchivoActa">
+                                <label for="tieneAcuse">Adjuntar Acta de Robo</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input incidencias_robo" id="fileActa" accept=".pdf,.PDF">
+                                    <label class="custom-file-label nameFile" for="customFile">Seleccionar Archivo</label>
+                                </div>
+                                <div class="col-sm-12" id="error_archivoActa">
+                                    <small id="dateHelp" class="text-danger">
+                                        Por favor cargue el Acta de Robo
+                                    </small>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="guardaIncidencia">Guardar Incidencia</button>
+                <button type="button" class="btn btn-primary" id="guardaIncidenciaRobada">Guardar Incidencia</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la captura de Incidencias *@
+
+@section Scripts{
+    <script>
+        window.onload = function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $('.display').DataTable({
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Servicio de Mensajería Acelerada - Listado de Incidencias',
+                        className: "bg-cjf mr-1",
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Servicio de Mensajería Acelerada - Listado de Incidencias',
+                        className: "bg-cjf mr-1"
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Servicio de Mensajería Acelerada - Listado de Incidencias',
+                        text: 'Imprimir',
+                        className: "bg-cjf mr-1"
+                    },
+                    /*{
+                        extend: 'colvis',
+                        text: 'Ocultar Columnas',
+                        className: "bg-cjf"
+                    }*/],
+                autoWidth: false,
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+            });
+
+            /*DataTables de las Incidencias*/
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+            });
+
+            /*Ver archivo en modal (REVISAR PARA AJUSTAR)*/
+            $(document).on('click', '.view_actaRobo', function () {
+                let nombre = $(this).data('file');
+                let guia = $(this).data('guia');
+                let codigo = $(this).data('codigo');
+                let tipo = $(this).data('tipo');
+                let url = '<object class="objectPdf" width="100%" height="450" embedded=True data="' + '/view/actadeRobo/' + model.folio + '/' + nombre + '"></object>';
+                $('#titlePDF').text("Acta de Robo");
+                $('#view_guia').html("<strong>Número de Guía: </strong>"+guia);
+                $('#view_codigoRastreo').html("<strong>Código de Rastreo: </strong>"+codigo);
+                $('#view_tipoServicio').html("<strong>Tipo de Servicio: </strong>"+tipo);
+                $('#actaRoboPDF').html(url);
+                $('#modal_pdf').modal('show');
+            });
+                /*FIN de ver archivo en modal*/
+
+            /*Mensajes de Error*/
+                $('#error_tipoCate').css('display', 'none');
+                $('#error_customFile').css('display', 'none');
+                $('#error_tipoCategoria').css('display', 'none');
+                $('#error_fechaProgramada').css('display', 'none');
+                $('#error_fechaEfectiva').css('display', 'none');
+                $('#error_codigoRastreo').css('display', 'none');
+                $('#error_numeroGuia').css('display', 'none');
+                $('#error_tipoServicio').css('display', 'none');
+                $('#error_totalAcuses').css('display', 'none');
+                $('#error_sobrepeso').css('display', 'none');
+                $('#error_archivoActa').css('display', 'none');
+            /*Fin de Mensajes de Error*/
+
+            /*Ocultamos los Elementos*/
+                $('#div_fechaProgramada').css('display', 'none');
+                $('#div_fechaEfectiva').css('display', 'none');
+                $('#div_codigoRastreo').css('display', 'none');
+                $('#div_numeroGuia').css('display', 'none');
+                $('#div_tipoServicio').css('display', 'none');
+                $('#div_totalAcuses').css('display', 'none');
+                $('#divSobrepeso').css('display', 'none');
+                $('#divArchivoActa').css('display', 'none');
+            /*Fin de Ocultar los Elementos*/
+
+            /*Boton de Acuerdo a la Categoria*/
+                 $('#guardaIncidencia').css('display', 'none');
+                $('#guardaIncidenciaRobada').css('display', 'none');
+            /*Fin del Boton de Acuerdo a la Categoria*/
+
+            /*Campos a Llenar al seleccionar la categoria de incidencias*/
+                $("#categoria").change(function(){
+                    if ($(this).val() == "") {
+                        $("#id_incidencia").val("");
+                        $("#fecha_programada").val("");
+                        $("#fecha_efectiva").val("");
+                        $("#codigo_rastreo").val("");
+                        $("#numero_guia").val("");
+                        $("#tipo_servicio").val("");
+                        $("#acuses_faltantes").val("");
+                        $("#tiene_acuse").val("");
+                        $('#guardaIncidencia').css('display', 'none');
+                        $('#guardaIncidenciaRobada').css('display', 'none');
+                    }
+
+                    if ($(this).val() == "Recoleccion" || $(this).val() == "Entrega") {
+                        $("#acuses_faltantes").val("");
+                        $("#fecha_programada").val("");
+                        $("#fecha_efectiva").val("");
+
+                        $('#div_fechaProgramada').css('display', 'block');
+                        $('#div_fechaEfectiva').css('display', 'block');
+                        $('#div_codigoRastreo').css('display', 'block');
+                        $('#div_numeroGuia').css('display', 'block');
+                        $('#div_tipoServicio').css('display', 'block');
+                        $('#div_totalAcuses').css('display', 'none');
+                    } else if ($(this).val() == "Acuses") {
+                        $("#id_incidencia").val("");
+                        $("#fecha_programada").val("");
+                        $("#fecha_efectiva").val("");
+                        $("#codigo_rastreo").val("");
+                        $("#numero_guia").val("");
+                        $("#tipo_servicio").val("");
+                        $("#tiene_acuse").val("");
+
+                        $('#div_codigoRastreo').css('display', 'none');
+                        $('#div_numeroGuia').css('display', 'none');
+                        $('#div_tipoServicio').css('display', 'none');
+                        $('#divSobrepeso').css('display', 'none');
+                        $('#div_fechaProgramada').css('display', 'block');
+                        $('#div_fechaEfectiva').css('display', 'block');
+                        $('#div_totalAcuses').css('display', 'block');
+                    } else if ($(this).val() == "Mal Estado" || $(this).val() == "Extraviadas" || $(this).val() == "Robadas") {
+                        $("#id_incidencia").val("");
+                        $("#fecha_programada").val("");
+                        $("#fecha_efectiva").val("");
+                        $("#codigo_rastreo").val("");
+                        $("#numero_guia").val("");
+                        $("#tipo_servicio").val("");
+                        $("#acuses_faltantes").val("");
+                        $("#total_sobrepeso").val("");
+
+                        $('#div_codigoRastreo').css('display', 'block');
+                        $('#div_numeroGuia').css('display', 'block');
+                        $('#div_tipoServicio').css('display', 'block');
+                        $('#divTieneAcuse').css('display', 'none');
+                        $('#div_fechaProgramada').css('display', 'none');
+                        $('#div_fechaEfectiva').css('display', 'none');
+                        $('#div_totalAcuses').css('display', 'none');
+                    }
+                    if ($(this).val() == "Robadas" || $(this).val() == "Extraviadas") {
+                        $('#divArchivoActa').css('display', 'block');
+                        $('#guardaIncidenciaRobada').css('display', 'block');
+                        $('#guardaIncidencia').css('display', 'none');
+                    } else {
+                        $('#divArchivoActa').css('display', 'none');
+                        $('#guardaIncidenciaRobada').css('display', 'none');
+                        $('#guardaIncidencia').css('display', 'block');
+                    }
+                });
+            /*FIN de Campos a Llenar al seleccionar la categoria de incidencias*/
+
+            /****************** Adjuntar Incidencias Excel  *************************/
+                $("#btn_add").click(function () {
+                    $('#div_fechaProgramada').css('display', 'none');
+                    $('#div_fechaEfectiva').css('display', 'none');
+                    $('#div_codigoRastreo').css('display', 'none');
+                    $('#div_numeroGuia').css('display', 'none');
+                    $('#div_tipoServicio').css('display', 'none');
+                    $('#div_totalAcuses').css('display', 'none');
+                    $('#divSobrepeso').css('display', 'none');
+                    $("#modal-incidencias").modal('show');
+                    $("#categoria").val("");
+                    $("#categoria").prop('disabled',false);
+                    $("#id_incidencia").val("");
+                    $("#fecha_programada").val("");
+                    $("#fecha_efectiva").val("");
+                    $("#codigo_rastreo").val("");
+                    $("#numero_guia").val("");
+                    $("#tipo_servicio").val("");
+                    $("#acuses_faltantes").val("");
+                });
+
+                $("#btn_excel").click(function () {
+                    $("#modal_incidenciasExcel").modal('show');
+                });
+
+                function validaCamposArchivoExcel() {
+                     if ($('.incidencias_excel').val() == "") {
+                         $('.incidencias_excel').addClass('is-invalid');
+                         $('.error_customFile').css('display', 'block');
+                     }
+
+                    if ($('#tipo_categoria').val() == "") {
+                        $('#tipo_categoria').addClass('is-invalid');
+                        $('#error_tipoCate').css('display', 'block');
+                    }
+
+                    if ($('#tipo_categoria').val() == "" || $('.incidencias_excel').val() == "") {
+                        return false;
+                    }
+
+                    return true;
+                 }
+
+                $("#addExcel").click(function () {
+                    var id = model.id;
+                    var formData = new FormData();
+                    var file = document.getElementById('fileExcel').files[0];
+                    var tipo = $("#tipo_categoria").val();
+
+                    formData.append("Id", id);
+                    formData.append("CedulaMensajeriaId", model.id);
+                    formData.append("Folio", model.folio);
+                    formData.append("Excel", file);
+                    formData.append("Tipo", tipo);
+
+                    if (validaCamposArchivoExcel() == true) {
+                        axios.post('/mensajeria/incidencias/subirExcel', formData).then(fact => {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': "Incidencias Mensajeria",
+                                'html': 'Las incidencias fueron agregadas de forma correcta.'
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        }).catch(e => {
+                            var msg = "";
+                            msg = e.response.data == -1 ? "las fechas " : e.response.data == -2 ? "la(las) guías " : "el(los) códigos de rastreo ";
+                            Swal.fire({
+                                'icon': "error",
+                                'title': "Mensajeria Acelerada",
+                                'html': '<p style="text-align: justify">Las incidencias no fueron agregadas de forma correcta, verifique que capturó <b>' +
+                                            msg + '</b> dentro del excel correctamente.</p>'
+                            });
+                        });
+                    }
+                });
+
+                $(".incidencias_excel").change(function (e) {
+                        var archivo = e.target.files[0];
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "xlsx" || ext == "xls") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            if ($('.incidencias_excel').hasClass('is-invalid')) {
+                                $('.incidencias_excel').removeClass('is-invalid');
+                                $('.incidencias_excel').addClass('is-valid');
+                                $('.error_customFile').css('display', 'none')
+                            } else {
+                                $('.incidencias_excel').addClass('is-valid');
+                            }
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Mensajería Acelerada',
+                                'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "Excel"'
+                            });
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('customFile').value = '';
+                            if ($('.incidencias_excel').hasClass('is-valid')) {
+                                $('.incidencias_excel').removeClass('is-valid');
+                                $('.incidencias_excel').addClass('is-invalid');
+                            }
+                            $('.incidencias_excel').addClass('is-invalid');
+                            $('.error_customFile').css('display', 'block');
+                        }
+                });
+
+                $(".incidencias_robo").change(function (e) {
+                        var archivo = e.target.files[0];
+                        var fileName = $(this).val().split("\\").pop();
+                        var ext = fileName.split('.').pop();
+                        if (ext == "pdf" || ext == "PDF") {
+                            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            if ($('.incidencias_robo').hasClass('is-invalid')) {
+                                $('.incidencias_robo').removeClass('is-invalid');
+                                $('.incidencias_robo').addClass('is-valid');
+                                $('.error_archivoActa').css('display', 'none')
+                            } else {
+                                $('.incidencias_robo').addClass('is-valid');
+                            }
+                        } else {
+                            Swal.fire({
+                                'icon': 'error',
+                                'title': 'Servicio de Mensajería Acelerada',
+                                'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                            });
+                            $(".custom-file-label").text("Seleccionar Archivo");
+                            document.getElementById('fileActa').value = '';
+                            if ($('.incidencias_robo').hasClass('is-valid')) {
+                                $('.incidencias_robo').removeClass('is-valid');
+                                $('.incidencias_robo').addClass('is-invalid');
+                            }
+                            $('.incidencias_robo').addClass('is-invalid');
+                            $('.error_archivoActa').css('display', 'block');
+                        }
+                });
+
+            /****************** Fin Adjuntar Incidencias Excel  *********************/
+
+            /********************** Capturar Incidencias ***********************/
+                $("#tipo_servicio").change(function () {
+                    if ($(this).val() == "Nacional Sobrepeso" || $(this).val() == "Internacional Sobrepeso") {
+                        $("#divSobrepeso").css("display", "block");
+                    } else {
+                        $("#divSobrepeso").css("display", "none");
+                        $("#total_sobrepeso").val("");
+                    }
+                });
+
+                function validaCampos(){
+                    var categoria = $("#categoria").val();
+
+                    if (categoria == "Entrega" || categoria == "Recoleccion") {
+                        if ($("#fecha_programada").val() != "" && $("#fecha_efectiva").val() != "" && $("#codigo_rastreo").val() != "" &&
+                            $("#numero_guia").val() != "" && $("#tipo_servicio").val() != "") {
+                            if ($("#tipo_servicio").val() == "Nacional Sobrepeso" && $("#total_sobrepeso").val() == "") {
+                                if ($("#total_sobrepeso").val() == "") {
+                                    $('#total_sobrepeso').addClass('is-invalid');
+                                    $('#error_sobrepeso').css('display', 'block');
+                                }
+                                return false;
+                            }
+                            else if ($("#tipo_servicio").val() == "Internacional Sobrepeso" && $("#total_sobrepeso").val() == "") {
+                                if ($("#total_sobrepeso").val() == "") {
+                                    $('#total_sobrepeso').addClass('is-invalid');
+                                    $('#error_sobrepeso').css('display', 'block');
+                                }
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }
+
+                        if ($("#fecha_programada").val() == "") {
+                            $('#fecha_programada').addClass('is-invalid');
+                            $('#error_fechaProgramada').css('display', 'block');
+                        }
+
+                        if ($("#fecha_efectiva").val() == "") {
+                            $('#fecha_efectiva').addClass('is-invalid');
+                            $('#error_fecha_efectiva').css('display', 'block');
+                        }
+
+                        if ($("#codigo_rastreo").val() == "") {
+                            $('#codigo_rastreo').addClass('is-invalid');
+                            $('#error_codigoRastreo').css('display', 'block');
+                        }
+
+                        if ($("#numero_guia").val() == "") {
+                            $('#numero_guia').addClass('is-invalid');
+                            $('#error_numeroGuia').css('display', 'block');
+                        }
+
+                        if ($("#tipo_servicio").val() == "") {
+                            $('#tipo_servicio').addClass('is-invalid');
+                            $('#error_tipoServicio').css('display', 'block');
+                        }
+
+                        return false;
+                    }
+                    else if (categoria == "Acuses") {
+                        if ($("#fecha_programada").val() != "" && $("#fecha_efectiva").val() != "" && $("#acuses_faltantes").val() != "") {
+                            return true;
+                        }
+                        if ($("#fecha_programada").val() == "") {
+                            $('#fecha_programada').addClass('is-invalid');
+                            $('#error_fechaProgramada').css('display', 'block');
+                        }
+
+                        if ($("#fecha_efectiva").val() == "") {
+                            $('#fecha_efectiva').addClass('is-invalid');
+                            $('#error_fecha_efectiva').css('display', 'block');
+                        }
+
+                        if ($("#acuses_faltantes").val() == "") {
+                            $('#acuses_faltantes').addClass('is-invalid');
+                            $('#error_totalAcuses').css('display', 'block');
+                        }
+                        return false;
+                    }
+                    if (categoria == "Mal Estado") {
+                        if ($("#codigo_rastreo").val() != "" && $("#numero_guia").val() != "" && $("#tipo_servicio").val() != "") {
+                            return true;
+                        }
+
+                        if ($("#codigo_rastreo").val() == "") {
+                            $('#codigo_rastreo').addClass('is-invalid');
+                            $('#error_codigoRastreo').css('display', 'block');
+                        }
+
+                        if ($("#numero_guia").val() == "") {
+                            $('#numero_guia').addClass('is-invalid');
+                            $('#error_numeroGuia').css('display', 'block');
+                        }
+
+                        if ($("#tipo_servicio").val() == "") {
+                            $('#tipo_servicio').addClass('is-invalid');
+                            $('#error_tipoServicio').css('display', 'block');
+                        }
+
+                        return false;
+                    }
+
+                    if (categoria == "Robadas" || categoria == "Extraviadas") {
+                        if ($("#codigo_rastreo").val() != "" && $("#numero_guia").val() != "" && $("#tipo_servicio").val() != "" && $('.incidencias_robo').val() != "") {
+                            return true;
+                        }
+
+                        if ($("#codigo_rastreo").val() == "") {
+                            $('#codigo_rastreo').addClass('is-invalid');
+                            $('#error_codigoRastreo').css('display', 'block');
+                        }
+
+                        if ($("#numero_guia").val() == "") {
+                            $('#numero_guia').addClass('is-invalid');
+                            $('#error_numeroGuia').css('display', 'block');
+                        }
+
+                        if ($("#tipo_servicio").val() == "") {
+                            $('#tipo_servicio').addClass('is-invalid');
+                            $('#error_tipoServicio').css('display', 'block');
+                        }
+
+                        if ($('.incidencias_robo').val() == "") {
+                            $('.incidencias_robo').addClass('is-invalid');
+                            $('.error_archivoActa').css('display', 'block');
+                        }
+
+                        return false;
+                    }
+                }
+
+                $("#guardaIncidencia").click(function () {
+                    var tInci = ["Recoleccion","Entrega","Acuses","Mal Estado","Extraviadas","Robadas"];
+                    var id = $("#id_incidencia").val() != '' ? $("#id_incidencia").val() : 0;
+                    var categoria = $("#categoria").val();
+                    var fechaProgramada = $("#fecha_programada").val() != '' ? $("#fecha_programada").val() : '1990-01-01';
+                    var fechaEfectiva = $("#fecha_efectiva").val() != '' ? $("#fecha_efectiva").val() : '1990-01-01';
+                    var codigoRastreo = $("#codigo_rastreo").val() != '' ? $("#codigo_rastreo").val()+"" : 0;
+                    var numeroGuia = $("#numero_guia").val() != '' ? $("#numero_guia").val(): "";
+                    var tipoServicio = $("#tipo_servicio").val() != '' ? $("#tipo_servicio").val() : "";
+                    var sobrepeso = $("#total_sobrepeso").val() != '' ? $("#total_sobrepeso").val() : "";
+                    var totalAcuses = $("#acuses_faltantes").val() != '' ? $("#acuses_faltantes").val() : 0;
+
+                    if (sobrepeso == "") {
+                        sobrepeso = parseFloat(0);
+                    } else {
+                        sobrepeso = parseFloat(sobrepeso);
+                    }
+
+                    if (totalAcuses  == "") {
+                        totalAcuses = parseInt(0);
+                    } else {
+                        totalAcuses = parseInt(totalAcuses);
+                    }
+
+                    var pregunta = tInci.indexOf(categoria) + 1;
+
+                    if (categoria == "") {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Mensajeria Acelerada',
+                            'html': 'Seleccione una categoria para la captura de incidencias'
+                        });
+                        return false;
+                    }
+
+                    if (categoria != "Robadas" && categoria != "Extraviadas") {
+                        if (validaCampos() == true) {
+                            if (id == 0) {
+                                axios.post('/mensajeria/incidencias', {
+                                    CedulaMensajeriaId: parseInt(model.id), Pregunta: parseInt(pregunta),
+                                    Tipo: categoria, FechaProgramada: fechaProgramada, Sobrepeso: sobrepeso,
+                                    FechaEfectiva: fechaEfectiva, CodigoRastreo: parseInt(codigoRastreo), NumeroGuia: numeroGuia,
+                                    TipoServicio: tipoServicio, TotalAcuses: totalAcuses
+                                }).then(res => {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia fue agregada de forma correcta.'
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia no fue agregada de forma correcta.'
+                                    });
+                                });
+                            }
+                            else if (id != 0) {
+                                axios.post('/mensajeria/actualiza/incidencia', {
+                                    ID: parseInt(id),
+                                    CedulaMensajeriaId: parseInt(model.id), Pregunta: parseInt(pregunta),
+                                    Tipo: categoria, FechaProgramada: fechaProgramada, Sobrepeso: sobrepeso,
+                                    FechaEfectiva: fechaEfectiva, CodigoRastreo: parseInt(codigoRastreo), NumeroGuia: numeroGuia,
+                                    TipoServicio: tipoServicio, TotalAcuses: parseInt(totalAcuses)
+                                }).then(res => {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia fue actualizada de forma correcta.'
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia no fue agregada de forma correcta.'
+                                    });
+                                });
+                            }
+                        }
+                    }
+                });
+
+                //Boton para Incidencias Robadas
+                $("#guardaIncidenciaRobada").click(function () {
+                    var tInci = ["Recoleccion","Entrega","Acuses","Mal Estado","Extraviadas","Robadas"];
+                    var id = $("#id_incidencia").val() != '' ? $("#id_incidencia").val() : 0;
+                    var categoria = $("#categoria").val();
+                    var fechaProgramada = $("#fecha_programada").val() != '' ? $("#fecha_programada").val() : '1990-01-01';
+                    var fechaEfectiva = $("#fecha_efectiva").val() != '' ? $("#fecha_efectiva").val() : '1990-01-01';
+                    var codigoRastreo = $("#codigo_rastreo").val() != '' ? $("#codigo_rastreo").val() + "" : "";
+                    var numeroGuia = $("#numero_guia").val() != '' ? $("#numero_guia").val() : "";
+                    var tipoServicio = $("#tipo_servicio").val() != '' ? $("#tipo_servicio").val() : "";
+                    var acuse = $("#tiene_acuse").val() != '' ? $("#tiene_acuse").val() : "";
+                    var totalAcuses = $("#acuses_faltantes").val() != '' ? $("#acuses_faltantes").val() : 0;
+                    var formData = new FormData();
+                    var file = document.getElementById('fileActa').files[0];
+
+                    var pregunta = tInci.indexOf(categoria)+1;
+
+                    if (categoria == "") {
+                        Swal.fire({
+                            'icon': 'error',
+                            'title': 'Servicio de Mensajeria Acelerada',
+                            'html': 'Seleccione una categoria para la captura de incidencias'
+                        });
+                        return false;
+                    }
+
+                    if (categoria == "Robadas" || categoria == "Extraviadas") {
+                        formData.append("Id", id);
+                        formData.append("CedulaMensajeriaId", model.id);
+                        formData.append("Pregunta", pregunta);
+                        formData.append("Folio", model.folio);
+                        formData.append("ActaRobo", file);
+                        formData.append("TipoServicio", tipoServicio);
+                        formData.append("Tipo", categoria);
+                        formData.append("CodigoRastreo", codigoRastreo);
+                        formData.append("NumeroGuia", numeroGuia);
+                        formData.append("FechaProgramada", fechaProgramada);
+                        formData.append("FechaEfectiva", fechaEfectiva);
+                        formData.append("Acuse", acuse);
+                        formData.append("TotalAcuses", parseInt(totalAcuses));
+
+                        if (validaCampos() == true) {
+                            if (id == 0) {
+                                axios.post('/mensajeria/incidencias/robadas', formData).then(res => {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia fue agregada de forma correcta.'
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia no fue agregada de forma correcta.'
+                                    });
+                                });
+                            }
+                            else if (id != 0) {
+                                axios.post('/mensajeria/actualiza/robadas', formData).then(res => {
+                                    Swal.fire({
+                                        'icon': "success",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia fue actualizada de forma correcta.'
+                                    }).then(function () {
+                                        window.location.reload();
+                                    });
+                                }).catch(e => {
+                                    Swal.fire({
+                                        'icon': "error",
+                                        'title': "Mensajería Acelerada",
+                                        'html': 'La incidencia no fue agregada de forma correcta.'
+                                    });
+                                });
+                            }
+
+                        }
+                    }
+                });
+
+                $(".update_incidencia").click(function () {
+                    var id = $(this).data("id");
+                    var categoria = $(this).data("tipo");
+                    var sobrepeso = $(this).data("sobrepeso");
+                    var fechaProgramada = $(this).data("fechap");
+                    var fechaEfectiva = $(this).data("fechae");
+                    var codigoRastreo = $(this).data("codigo");
+                    var numeroGuia = $(this).data("numero");
+                    var tipoServicio = $(this).data("tipose");
+                    $("#categoria").val(categoria).change();
+                    $("#categoria").prop('disabled', true);
+                    $("#id_incidencia").val(parseInt(id));
+                    $("#fecha_programada").val(fechaProgramada);
+                    $("#fecha_efectiva").val(fechaEfectiva);
+                    $("#codigo_rastreo").val(codigoRastreo);
+                    $("#numero_guia").val(numeroGuia);
+                    $("#numero_guia").val(numeroGuia);
+                    $("#tipo_servicio").val(tipoServicio).change();
+
+                    if (categoria == "Robadas") {
+                        $(".nameFile").text($(this).data("file"));
+                    } else if (categoria != "Acuses") {
+                        if ($("#tipo_servicio").val() == "Nacional Sobrepeso" || $("#tipo_servicio").val() == "Internacional Sobrepeso") {
+                            $("#divSobrepeso").css("display","block");
+                            $("#total_sobrepeso").val(sobrepeso);
+                        }
+                    }
+
+
+                    $("#modal-incidencias").modal('show');
+
+                });
+
+                $(".delete_incidencia").click(function(){
+                    var id = $(this).data("id");
+                    var categoria = $(this).data("tipo");
+                    var tipo = $("#categoria option[value='"+categoria+"']").text();
+                    var numeroGuia = $(this).data("numero");
+
+                    Swal.fire({
+                            'icon': 'warning',
+                            'title': 'Mensajería Acelerada',
+                            'html': '¿Estás seguro de eliminar la incidencia de <strong>'+tipo+'</strong> con número de guía <strong>'+numeroGuia+'</strong>?',
+                            'confirmButtonColor': '#3085d6',
+                            'cancelButtonColor': '#d33',
+                            'confirmButtonText': 'Si, Eliminar Incidencia',
+                            'cancelButtonText': 'Cancelar',
+                            'showCancelButton': true
+                        }).then(response => {
+                            if (response.isConfirmed) {
+                                axios.get("/mensajeria/incidencia/eliminar/"+id).then(response => {
+                                    if (response.status == 200) {
+                                        Swal.fire(
+                                            'Mensajería Acelerada',
+                                            'La incidencia fue eliminada con éxito.',
+                                            'success'
+                                        ).then(function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                                }).catch(error => {
+                                    Swal.fire(
+                                        'Mensajería Acelerada',
+                                        'No se pudo eliminar la incidencia del servicio de mensajería. Contacta a tu Administrador.',
+                                        'error'
+                                    );
+                                });
+                            }
+                        });
+
+                });
+            /****************** Fin de Capturar Incidencias*********************/
+
+            /****************** Validaciones al Capturar Incidencias*********************/
+
+                $("#tipo_categoria").change(function(){
+                    if ($('#tipo_categoria').hasClass('is-invalid')) {
+                        $('#tipo_categoria').removeClass('is-invalid');
+                        $('#tipo_categoria').addClass('is-valid');
+                        $('#error_tipoCate').css('display', 'none');
+                    }
+                });
+
+                $("#fecha_programada").change(function(){
+                    if ($('#fecha_programada').hasClass('is-invalid')) {
+                        $('#fecha_programada').removeClass('is-invalid');
+                        $('#fecha_programada').addClass('is-valid');
+                        $('#error_fechaProgramada').css('display', 'none');
+                    }
+                });
+
+                $("#fecha_efectiva").change(function(){
+                    if ($('#fecha_efectiva').hasClass('is-invalid')) {
+                        $('#fecha_efectiva').removeClass('is-invalid');
+                        $('#fecha_efectiva').addClass('is-valid');
+                        $('#error_fechaEfectiva').css('display', 'none');
+                    }
+                });
+
+                $("#codigo_rastreo").change(function(){
+                    if ($('#codigo_rastreo').hasClass('is-invalid')) {
+                        $('#codigo_rastreo').removeClass('is-invalid');
+                        $('#codigo_rastreo').addClass('is-valid');
+                        $('#error_codigoRastreo').css('display', 'none');
+                    }
+                });
+
+                $("#numero_guia").change(function(){
+                     if ($('#numero_guia').hasClass('is-invalid')) {
+                         $('#numero_guia').removeClass('is-invalid');
+                         $('#numero_guia').addClass('is-valid');
+                        $('#error_numeroGuia').css('display', 'none');
+                    }
+                 });
+
+                $("#tipo_servicio").change(function(){
+                    if ($('#tipo_servicio').hasClass('is-invalid')) {
+                        $('#tipo_servicio').removeClass('is-invalid');
+                        $('#tipo_servicio').addClass('is-valid');
+                        $('#error_tipoServicio').css('display', 'none');
+                    }
+                });
+
+                $("#acuses_faltantes").change(function () {
+                    if ($('#acuses_faltantes').hasClass('is-invalid')) {
+                        $('#acuses_faltantes').removeClass('is-invalid');
+                        $('#acuses_faltantes').addClass('is-valid');
+                        $('#error_totalAcuses').css('display', 'none');
+                    }
+                });
+            /**************** Fin Validaciones al Capturar Incidencias ******************/
+
+        }
+    </script>
+}
+

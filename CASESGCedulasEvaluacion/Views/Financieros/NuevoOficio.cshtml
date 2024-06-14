@@ -1,0 +1,441 @@
+﻿@model CedulasEvaluacion.Entities.MFinancieros.Oficio;
+@{
+    ViewData["Title"] = "Envío de Cédulas a DGPPT";
+    var c = 0;
+    var f = 0;
+    var i = 0;
+}
+
+<div class="container-fluid">
+    <a href="/financieros/detalle/@Model.Servicio?Anio=@Model.Anio" type='button' class='btn-sm btn-warning float-right mr-2 mb-2' data-toggle="tooltip" title="Regresar al Detalle de Cédulas de @Model.Servicio" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+    <div class="row col-lg-12 mt-5">
+        <table class="table">
+            <tr>
+                <td data-toggle="tooltip" title="Folio del oficio para trámite de pago del servicio" data-placement="top"><strong>Número de Oficio: </strong> @Model.NumeroOficio/@Model.Anio</td>
+                <td data-toggle="tooltip" title="Año del oficio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
+                <td><strong data-toggle="tooltip" title="Servicio evaluado" data-placement="top">Servicio: </strong>@Model.Servicio</td>
+                <td data-toggle="tooltip" title="Estatus del oficio para trámite" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
+                <td data-toggle="tooltip" title='Monto total del oficio "@Model.NumeroOficio"' data-placement="top"><strong>Monto total del Oficio: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalOficio)</td>
+            </tr>
+            <tr>
+                <td data-toggle="tooltip" title='Monto total de facturas del oficio "@Model.NumeroOficio"' data-placement="top">
+                    <strong>Monto total de la(s) factura(s): </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.ImporteFacturado)
+                </td>
+                <td data-toggle="tooltip" title='Monto facturado de nota(s) de crédito en el oficio "@Model.NumeroOficio"' data-placement="top">
+                    <strong>Monto total de la(s) Nota(s) de Crédito: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.ImporteNC)
+                </td>
+                <td data-toggle="tooltip" title="Monto total a pagar al prestador del servicio" data-placement="top" colspan="3">
+                    <strong>Monto total a pagar: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (Model.ImporteFacturado - Model.ImporteNC - Model.ImportePenas))
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card mt-3">
+        <div class="card-header bg-joke text-white">
+            <h5 class="mt-2">Trámite de Oficio</h5>
+        </div>
+        <div class="card-body">
+            <p class="font-weight-bold">Seleccione una factura o el mes correspondiente para agilizar tu búsqueda: </p>
+            <form class="row">
+                <div class="col-auto mt-3" style="width: 400px">
+                    <div class="form-outline">
+                        <div class="select2-purple">
+                            <label for="elegirArchivo">Seleccione una Factura: </label>
+                            <select id="facturasPago" class="form-control select2bs4"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto mt-3">
+                    <div class="form-outline">
+                        <label for="elegirArchivo">Seleccione el Mes: </label>
+                        <select id="mesesPago" class="form-control">
+                        </select>
+                    </div>
+                </div>
+                <div class="col-auto mt-5">
+                    <button type="button" class="btn btn-sm btn-primary btnBuscar">Buscar Factura en la Cédula</button>
+                    <button type="button" class="btn btn-sm btn-danger btnLimpiar">Limpiar Filtros</button>
+                </div>
+            </form>
+            <div class="row mt-4">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        @if (@Model.Estatus.Equals("En Proceso"))
+                        {
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active text-cjf font-weight-bold" id="profile-tab" data-toggle="tab" href="#pregunta_1" role="tab" aria-controls="profile" aria-selected="false">
+                                    Cédulas en Trámite de Pago - @Model.detalleCedulas.Count Cédula(s)
+                                </a>
+                            </li>
+                        }
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-dgppt font-weight-bold" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">
+                                Cédulas para Enviar a DGPPT - @Model.cedulasOficio.Count Cédula(s)
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        @if (@Model.Estatus.Equals("En Proceso"))
+                        {
+                            @* Cédulas en Trámite de Pago *@
+                            <div class="tab-pane fade mt-2 ml-3 show active" id="pregunta_1" role="tabpanel" aria-labelledby="profile-tab">
+                                <p class="text-black h5">Cédulas pendientes de enviar a "DGPPT"</p>
+                                <div class="col-lg-12 mt-3" id="accordionExample">
+                                    <table class="table" border="0">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Servicio</th>
+                                                <th>Mes</th>
+                                                <th>Folio</th>
+                                                <th>Estatus</th>
+                                                <th class="text-center">Ver Facturas</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var ced in @Model.detalleCedulas)
+                                            {
+                                                c++;
+                                                f = 0;
+                                                <tr class="@((c % 2) == 0 ? "bg-oficios text-white":"")">
+                                                    <td>@c</td>
+                                                    <td>@ced.Servicio</td>
+                                                    <td>@ced.Mes</td>
+                                                    <td>@ced.Folio</td>
+                                                    @if (@ced.EstatusCedula.Equals("Trámite de Pago"))
+                                                    {
+                                                        <td class="@((c % 2) == 0 ? "":"text-tramitePago")" style="font-weight: bold">@Html.DisplayFor(modelItem => @ced.EstatusCedula)</td>
+                                                    }
+                                                    else if (@ced.EstatusCedula.Equals("Enviada a DGPPT"))
+                                                    {
+                                                        <td class="text-dgppt" style="font-weight: bold">@Html.DisplayFor(modelItem => @ced.EstatusCedula)</td>
+                                                    }
+                                                    <td class="text-center">
+                                                        <button class="accordion-toggle btn btn-sm btnCollapse @((c % 2) == 0 ? "btn-light text-black":"btn-primary text-white")" data-toggle="collapse"
+                                                                href="#@ced.Folio" type="button" data-id="@ced.Id" id="btn_@ced.Id">
+                                                            <i class="fas fa-plus"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" class="text-center">
+                                                        <div id="@ced.Folio" class="accordion-body collapse in">
+                                                            <div class="accordion-inner">
+                                                                <h3>Facturas Asginadas a la Cédula con Folio: @ced.Folio</h3>
+                                                                <table id="@ced.Folio" style="width: 90%" class="tblFacturas mt-3 float-right">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>#</th>
+                                                                            <th>Estatus</th>
+                                                                            <th>Folio de la Cédula</th>
+                                                                            <th>Folio de la Factura</th>
+                                                                            <th>Subtotal</th>
+                                                                            <th>IVA</th>
+                                                                            <th>Total</th>
+                                                                            <th>¿Asignar a Oficio?</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var fac in @Model.facturas)
+                                                                        {
+                                                                            if (@fac.Id == @ced.Id)
+                                                                            {
+                                                                                f++;
+                                                                                <tr>
+                                                                                    <td>@f</td>
+                                                                                    <td>@fac.EstatusFactura</td>
+                                                                                    <td>@fac.Folio</td>
+                                                                                    <td>@fac.FolioFactura</td>
+                                                                                    <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @fac.Subtotal)</td>
+                                                                                    <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (Convert.ToDouble(@fac.Subtotal) * 0.16))</td>
+                                                                                    <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @fac.Total)</td>
+                                                                                    <td>
+                                                                                        <div class="form-check-inline i-checks mt-3 enviarDGPPT2" data-id="@fac.FacturaId">
+                                                                                            <input class="enviarDGPPT" id="chk_@fac.FacturaId" type="checkbox" data-size="small" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                                                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@fac.FacturaId" name="tramitar[]" data-id="@fac.Id">
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            }
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @* Fin Cédulas en Trámite de Pago*@
+                        }
+                        @* Cédulas Asignadas en el Oficio *@
+                        <div class="tab-pane fade mt-2 ml-3" id="pregunta_2" role="tabpanel" aria-labelledby="profile-tab">
+                            <p class="text-black h5">Cédulas asignadas en el oficio para pago</p>
+                            <div class="col-lg-12 mt-3">
+                                @{ i = 0;}
+                                <table class="table" width="100%" id="tblOficio">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>#</th>
+                                            <th>Servicio</th>
+                                            <th>Folio</th>
+                                            <th>Serie</th>
+                                            <th>Folio Factura</th>
+                                            <th>Subtotal</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Estatus</th>
+                                            @if (@Model.Estatus.Equals("En Proceso"))
+                                            {
+                                                <th>Acciones</th>
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblTrmaite">
+                                        @foreach (var ced in @Model.cedulasOficio)
+                                        {
+                                            i++;
+                                            <tr class="text-center">
+                                                <td>@i</td>
+                                                <td>@ced.Servicio</td>
+                                                <td>@ced.Folio</td>
+                                                <td>@ced.Serie</td>
+                                                <td>@ced.FolioFactura</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @ced.Subtotal)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Convert.ToDouble(@ced.Subtotal)*0.16)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @ced.Total)</td>
+                                                <td>@ced.EstatusCedula</td>
+                                                @if (@Model.Estatus.Equals("En Proceso"))
+                                                {
+                                                    <td>
+                                                        <button class="btn btn-sm btn-danger eliminaCedula" data-toggle="tooltip" title="Eliminar Cédula del Oficio"
+                                                                data-cedula="@ced.Id" data-factura="@ced.FacturaId" data-folio="@ced.Folio" data-mes="@ced.Mes">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @* Cédulas Asignadas en el Oficio*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                <button type="button" class="btn btn-primary float-right ml-3 btnTramitar">Tramitar</button>
+                <button type="button" class="btn btn-success float-right btnGuardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var inmueblesPago = "<option value=''>Seleccione una Factura</option>";
+            var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".select2").select2();
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            let optionsMes = "<option value=''>Seleccione el Mes</option>";
+            meses.forEach(function (mes) {
+                optionsMes += "<option value=" + mes + ">" + mes + "</option>"
+            });
+            $("#mesesPago").html(optionsMes);
+
+            axios.get('/facturas/getFacturasPago/' + model.servicioId).then(response => {
+                response = response.data;
+                response.forEach(function (fac) {
+                    inmueblesPago += "<option value=" + fac.id + ">" + fac.folioFactura + "</option>"
+                });
+                $("#facturasPago").html(inmueblesPago);
+            });
+
+
+            $(".btnBuscar").click(function () {
+                let factura = $("#facturasPago").val();
+                let mes = $("#mesesPago").val();
+                let cedulas = new Array();
+
+                table.$("input[type='checkbox']").each(function () {
+                    var activo = $(this).parent().hasClass("off");
+                    if (activo == false) {
+                        cedulas.push({ OficioId: model.id, FacturaId: $(this).val(), CedulaId: parseInt($(this).data('id')), ServicioId: model.servicioId });
+                    }
+                });
+
+                if (cedulas.length > 0) {
+                    Swal.fire({
+                        'icon': "warning",
+                        'title': 'Trámite de Oficio',
+                        'html': "<p style='text-align:justify'>Usted seleccionó factura(s) para asignar al oficio y aún no se han guardado los cambios. ¿Está seguro que desea continuar (se perderán los cambios)?.</p>",
+                        'confirmButtonColor': '#3085d6',
+                        'cancelButtonColor': '#d33',
+                        'confirmButtonText': 'Continuar',
+                        'cancelButtonText': 'Cancelar',
+                        'showCancelButton': true
+                    }).then(confirm => {
+                        if (confirm.isConfirmed) {
+                            if (factura != "" && mes != "") {
+                                window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id + '?idc=' + factura + '&mes=' + mes;
+                            } else if (factura != "" && mes == "") {
+                                window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id + '?idc=' + factura;
+                            }
+                            else if (factura == "" && mes != "") {
+                                window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id + '?mes=' + mes;
+                            }
+                        } else {
+                            return false;
+                        }
+                    });
+                } else {
+                    if (factura != "" && mes != "") {
+                        window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id + '?idc=' + factura + '&mes=' + mes;
+                    } else if (factura != "" && mes == "") {
+                        window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id + '?idc=' + factura;
+                    }
+                    else if (factura == "" && mes != "") {
+                        window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id + '?mes=' + mes;
+                    }
+                }
+            });
+
+            $(".btnLimpiar").click(function () {
+                window.location.href = "/financieros/oficio/" + model.servicioId + '/' + model.id;
+            });
+
+            var table = $(".tblFacturas").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $("#tblOficio").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".btnGuardar").click(function () {
+                var cedulas = new Array();
+                
+                table.$("input[type='checkbox']").each(function () {
+                    var activo = $(this).parent().hasClass("off");
+                    if (activo == false) {
+                        cedulas.push({ OficioId: model.id, FacturaId: $(this).val(),CedulaId: parseInt($(this).data('id')), ServicioId: model.servicioId });
+                    }
+                });
+               
+                axios.post("/financieros/inserta/cedulasOficio", cedulas).then(response => {
+                   Swal.fire({
+                       'icon': "success",
+                       'title': 'Trámite de Oficio',
+                        'html': "Se guardó el oficio para pago correctamente."
+                   }).then(function () {
+                       window.location.reload(true);
+                   });
+                });
+            });
+
+            $(".eliminaCedula").click(function () {
+                var factura = $(this).data('factura');
+                var folio = $(this).data('folio');
+                var mes = $(this).data('mes');
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Trámite de Oficio',
+                    'html': '¿Está seguro de eliminar la cédula con el folio <b>' + folio + '</b> correspondiente al mes <b>' + mes + '</b>?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, deseo continuar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(confirm => {
+                    if (confirm.isConfirmed) {
+                        axios.get('/financieros/elimina/cedulasOficio/' + model.id + '/' + model.servicioId + '/' + factura).then(response => {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Trámite de Oficio',
+                                'html': "Se eliminó la cédula del oficio a DGPPT correctamente."
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });           
+
+            function guardarEnviar() {
+                var cedulas = new Array();
+
+                $("[name='tramitar[]']:checked").each(function () {
+                    if ($(this).attr("checked")) {
+                        cedulas.push({ OficioId: model.id, CedulaId: $(this).val(), ServicioId: model.servicioId });
+                    }
+                });
+                axios.post("/financieros/inserta/cedulasOficio", cedulas);
+            }
+
+            $(".btnTramitar").click(function () {
+                guardarEnviar();
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Trámite de Oficio',
+                    'html': '¿Está seguro que desea <b>tramitar el oficio con el número: ' + model.numeroOficio + '/' + model.anio + '?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, tramitar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(confirm => {
+                    if (confirm.isConfirmed) {
+                        axios.get("/financieros/envia/oficio/" + model.id+'/'+model.servicioId).then(response => {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Trámite de Oficio',
+                                'html': "Se envió el oficio a DGPPT correctamente."
+                            }).then(function () {
+                                window.location.href = "/financieros/detalle/" + model.servicio;
+                            });
+                        });
+                    }
+                });
+            });
+
+            $(".btnCollapse").click(function () {
+                if ($("#btn_" + $(this).data('id') + " > i ").hasClass("fas fa-minus")) {
+                    $("#btn_" + $(this).data('id') + " > i ").removeClass("fas fa-minus");
+                    $("#btn_" + $(this).data('id') + " >i ").addClass("fas fa-plus");
+                } else {
+                    $("#btn_" + $(this).data('id') + " >i ").removeClass("fas fa-plus");
+                    $("#btn_" + $(this).data('id') + " >i ").addClass("fas fa-minus");
+                }
+            });
+        });
+    </script>
+}
+
+

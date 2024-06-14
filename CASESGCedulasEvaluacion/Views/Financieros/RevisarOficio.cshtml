@@ -1,0 +1,142 @@
+﻿@model CedulasEvaluacion.Entities.MFinancieros.Oficio;
+@{
+    ViewData["Title"] = "Detalle del Oficio - "+@Model.NumeroOficio+"/"+Model.Anio+" del Servicio de "+Model.Servicio;
+    var i = 0;
+}
+
+<div class="container-fluid">
+    <a href="/financieros/detalle/@Model.Servicio?Anio=@Model.Anio" type='button' class='btn-sm btn-warning float-right mr-2 mb-2' data-toggle="tooltip" title="Regresar al Detalle de Cédulas de @Model.Servicio" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+    <div class="row col-lg-12 mt-5">
+        <table class="table">
+            <tr>
+                <td data-toggle="tooltip" title="Folio del oficio para trámite de pago del servicio" data-placement="top"><strong>Número de Oficio: </strong> @Model.NumeroOficio/@Model.Anio</td>
+                <td data-toggle="tooltip" title="Año del oficio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
+                <td><strong data-toggle="tooltip" title="Servicio evaluado" data-placement="top">Servicio: </strong>@Model.Servicio</td>
+                <td data-toggle="tooltip" title="Estatus del oficio para trámite" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
+            </tr>
+            <tr>
+                <td data-toggle="tooltip" title='Monto total de facturas del oficio "@Model.NumeroOficio"' data-placement="top">
+                    <strong class="text-success">Monto total de la(s) factura(s): </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.ImporteFacturado)
+                </td>
+                <td data-toggle="tooltip" title='Monto facturado de nota(s) de crédito en el oficio "@Model.NumeroOficio"' data-placement="top">
+                    <strong class="text-danger">Monto total de la(s) Nota(s) de Crédito: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.ImporteNC)
+                </td>
+                <td data-toggle="tooltip" title='Penas y Deductivas en el oficio "@Model.NumeroOficio"' data-placement="top">
+                    <strong class="text-danger">Penas y Deductivas: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.ImportePenas)
+                </td>
+                <td data-toggle="tooltip" title="Monto total a pagar al prestador del servicio" data-placement="top">
+                    <strong class="text-success">Monto total a pagar: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (Model.ImporteFacturado - Model.ImporteNC - Model.ImportePenas))
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card">
+        <div class="card-header bg-joke text-white">
+            <h5 class="mt-2">Trámite de Oficio</h5>
+        </div>
+        <div class="card-body">
+            <div class="row ">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">Cédulas Asignadas al Ofico</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        @* Pregunta 2 *@
+                        <div class="tab-pane fade mt-2 ml-3 show active" id="pregunta_2" role="tabpanel" aria-labelledby="profile-tab">
+                            <p class="text-black h4 mt-3">Cédulas asignadas al oficio "@Model.NumeroOficio/@Model.Anio"</p>
+                            <div class="col-lg-12 mt-3">
+                                @{ i = 0;}
+                                <table class="table" width="100%" id="tblOficio">
+                                    <thead>
+                                        <tr class="text-center">
+                                            <th>#</th>
+                                            <th>Servicio</th>
+                                            <th>Tipo</th>
+                                            <th>Folio</th>
+                                            <th>Subtotal</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Estatus</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblTrmaite">
+                                        @foreach (var ced in @Model.cedulasOficio)
+                                        {
+                                            i++;
+                                            <tr class="text-center">
+                                                <td>@i</td>
+                                                <td>@ced.Servicio</td>
+                                                <td>@ced.Tipo</td>
+                                                <td>@ced.Serie - @ced.FolioFactura</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @ced.Subtotal)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @ced.IVA)</td>
+                                                <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @ced.Total)</td>
+                                                <td>@ced.EstatusFactura</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        @* Fin de la Pregunta 2 *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#tblPendientes").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $("#tblOficio").DataTable({
+                dom: 'lBfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Detalle del Oficio ' + model.numeroOficio,
+                        className: "bg-cjf mr-1",
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Detalle del Oficio ' + model.numeroOficio,
+                        className: "bg-cjf mr-1"
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Detalle del Oficio ' + model.numeroOficio,
+                        text: 'Imprimir',
+                        className: "bg-cjf mr-1"
+                    },
+                    /*{
+                        extend: 'colvis',
+                        text: 'Ocultar Columnas',
+                        className: "bg-cjf"
+                    }*/],
+                autoWidth: false,
+                responsive: true,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+            });
+        });
+    </script>
+}
+
+

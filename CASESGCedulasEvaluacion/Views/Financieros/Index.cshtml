@@ -1,0 +1,205 @@
+﻿@model IEnumerable<CedulasEvaluacion.Entities.MFinancieros.DashboardFinancieros>
+@{
+    ViewData["Title"] = "Cédulas Generadas por Servicio";
+    var anio = 2023;
+}
+<div class="container-fluid" id="Prrueba">
+    <a href="#" type='button' id="btnReportePAT" class='btn-sm btn-danger float-right mr-2 mb-3' data-toggle="tooltip" title="Generar Reporte Mensual PAT" data-placement="top">
+        <i class="fa-light fa-file-pdf"></i>
+    </a>
+    <div class="row col-lg-12 text-right"></div>
+    <div class="border-top mb-3"></div>
+    <div class="row mt-1">
+        @foreach (var ds in Model)
+        {
+            <div class="col-lg-3 col-6 font-weight-bold">
+                <!-- small box -->
+                <div class="small-box @ds.Fondo">
+                    <div class="inner">
+                        <h5>Servicio de @ds.Servicio</h5>
+                        <p><h6 class="font-weight-bold">@ds.Total - Cédula(s) Generadas</h6></p>
+                        <div class="icon">
+                            @Html.Raw(@ds.Icono)<br />
+                        </div>
+                    </div>
+                    <a href="/financieros/detalle/@ds.Servicio" class="small-box-footer">Ver detallles<i class="fas fa-arrow-circle-right ml-2"></i></a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@*Modal para Capturar Oficios*@
+<div class="modal fade" id="modal-pat">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Reportes Financieros</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-row col-md-3" id="divTipoReporte">
+                        <label for="Anio">Tipo de Reporte: </label>
+                        <select id="selectTipoReporte" class="form-control">
+                            <option value="">Seleccione una opción</option>
+                            <option value="PAT">Reporte PAT</option>
+                            <option value="Pagos">Reporte de Avance de Trámite de Pago</option>
+                        </select>
+                        <div class="col-sm-12" id="error_reportes">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el tipo de reporte a generar
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divReporteMes">
+                        <label for="Anio">Mes: </label>
+                        <select id="selectMes" class="form-control">
+                            <option value="">Seleccione una opción</option>
+                            <option value="January">Enero</option>
+                            <option value="February">Febrero</option>
+                            <option value="March">Marzo</option>
+                            <option value="April">Abril</option>
+                            <option value="May">Mayo</option>
+                            <option value="June">Junio</option>
+                            <option value="July">Julio</option>
+                            <option value="August">Agosto</option>
+                            <option value="September">Septiembre</option>
+                            <option value="October">Octubre</option>
+                            <option value="November">Noviembre</option>
+                            <option value="December">Diciembre</option>
+                        </select>
+                        <div class="col-sm-12" id="error_mes">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor capture el mes del oficio a consultar
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-row col-md-3" id="divReporteAnio">
+                        <label for="Anio">Año del Oficio: </label>
+                        <select id="selectAnio" class="form-control">
+                            <option value="">Seleccione una opción</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                        </select>
+                        <div class="col-sm-12" id="error_anio">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el año a consultar
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-primary" id="generarReporte">Generar Reporte</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin del Modal para Capturar Oficios*@
+
+@section Scripts{
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $("#error_mes").css('display','none');
+            $("#error_reportes").css('display','none');
+            $("#error_anio").css('display','none');
+
+            $("#btnReportePAT").click(function () {
+                $("#modal-pat").modal("show");
+            });
+
+            $("#generarReporte").click(function () {
+                var tipo = $("#selectTipoReporte").val();
+                if (validaCampos()) {
+                    if (tipo == "Pagos") {
+                        window.open('/financieros/reportePagos/' + $("#selectMes").val() + '/' + $("#selectAnio").val(), '_blank');
+                    } else {
+                        window.open('/financieros/reportePAT/' + $("#selectMes").val() + '/' + $("#selectAnio").val(), '_blank');
+                    }
+                }
+            });
+
+            function validaCampos() {
+                if ($("#selectMes").val() != "" && $("#selectAnio").val() != "" && $("#selectTipoReporte").val() != "") {
+                    return true;
+                }
+
+                if ($("#selectTipoReporte").val() == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Reportes Financieros',
+                        'html': '<p style="text-align: justify;">Por favor seleccione el tipo de reporte a consultar.</p>'
+                    });
+                    $("#selectTipoReporte").addClass("is-invalid");
+                    $("#error_reportes").css('display', 'block');
+                }
+
+                if ($("#selectMes").val() == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Reportes Financieros',
+                        'html': '<p style="text-align: justify;">Por favor seleccione el mes a consultar antes de generar el reporte</p>'
+                    });
+                    $("#selectMes").addClass("is-invalid");
+                    $("#error_mes").css('display', 'block');
+                }
+
+                if ($("#selectAnio").val() == "") {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Reportes Financieros',
+                        'html': '<p style="text-align: justify;">Por favor seleccione el año a consultar antes de generar el reporte</p>'
+                    });
+                    $("#selectAnio").addClass("is-invalid");
+                    $("#error_anio").css('display', 'block');
+                }
+                return false;
+            }
+
+            $("#selectMes").change(function () {
+                if ($(this).val() != "") {
+                    $("#error_mes").css('display', 'none');
+                    $("#selectMes").removeClass("is-invalid");
+                    $("#selectMes").addClass("is-valid");
+                } else if ($(this).val() == "") {
+                    $("#error_mes").css('display', 'block');
+                    $("#selectMes").removeClass("is-valid");
+                    $("#selectMes").addClass("is-invalid");
+                }
+            });
+
+            $("#selectAnio").change(function () {
+                if ($(this).val() != "") {
+                    $("#error_anio").css('display', 'none');
+                    $("#selectAnio").removeClass("is-invalid");
+                    $("#selectAnio").addClass("is-valid");
+                } else if ($(this).val() == "") {
+                    $("#error_anio").css('display', 'block');
+                    $("#selectAnio").removeClass("is-valid");
+                    $("#selectAnio").addClass("is-invalid");
+                }
+            });
+
+            $("#selectTipoReporte").change(function () {
+                if ($(this).val() != "") {
+                    $("#error_reportes").css('display', 'none');
+                    $("#selectTipoReporte").removeClass("is-invalid");
+                    $("#selectTipoReporte").addClass("is-valid");
+                } else if ($(this).val() == "") {
+                    $("#error_reportes").css('display', 'block');
+                    $("#selectTipoReporte").removeClass("is-valid");
+                    $("#selectTipoReporte").addClass("is-invalid");
+                }
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,409 @@
+﻿@model CedulasEvaluacion.Entities.MAvisos.AvisosCASESG;
+@{
+    ViewData["Title"] = "Aviso de CASESG";
+    int i = 0;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="col-lg-12">
+                <a href="/avisos/index" type='button' class="btn btn-sm btn-warning float-right"
+                   data-toggle="tooltip" title="Regresar al Listado de Servicios" data-placement="top">
+                    <i class="fal fa-arrow-left"></i>
+                </a>
+            </div>
+            <div class="row col-lg-12">
+                <div class="form-group col-lg-4">
+                    <label for="name">Título del Aviso: *</label>
+                    <input type="text" class="form-control" id="titulo" value="@Model.Titulo" />
+                    <div class="col-sm-12" id="error_titulo">
+                        <small id="dateHelp" class="text-danger">
+                            Por favor capture el titulo del aviso
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group col-lg-2">
+                    <label for="name">Vigente desde: *</label>
+                    <input type="date" class="form-control" id="fechaInicio" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" />
+                    <div class="col-sm-12" id="error_fechaInicio">
+                        <small id="dateHelp" class="text-danger">
+                            Por favor capture la fecha de inicio del aviso
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group col-lg-2">
+                    <label for="name">Vigente hasta: *</label>
+                    <input type="date" class="form-control" id="fechaFin" value="@Model.FechaFin.ToString("yyyy-MM-dd")" />
+                    <div class="col-sm-12" id="error_fechafin">
+                        <small id="dateHelp" class="text-danger">
+                            Por favor capture la fecha de fin del aviso
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group col-lg-2 mt-2">
+                    <div class="form-check-inline i-checks mt-3">
+                        <strong class="text-black mr-3">¿Activo?</strong>
+                        @if (Model.Activo)
+                        {
+                            <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios" checked>
+                        }
+                        else
+                        {
+                            <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                   data-onstyle="success" data-offstyle="danger" data-style="ios">
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label for="name">Mensaje del Aviso: *</label>
+                    <textarea class="form-control" id="comentarios" style="height:100px">@Model.Comentarios</textarea>
+                    <div class="col-sm-12" id="error_comentarios">
+                        <small id="dateHelp" class="text-danger">
+                            Por favor capture los comentarios del aviso
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class=" col-lg-12">
+            <button type="button" class="btn btn-danger float-right ml-3" data-toggle="tooltip" title='Cancelar cambios y regresar' data-placement="top">Cancelar</button>
+            <button type="button" class="btn btn-primary float-right saveAviso" data-toggle="tooltip" title='Guardar la información capturada' data-placement="top">Guardar</button>
+        </div>
+    </div>
+    <div class="card mt-3">
+        <div class="card-header bg-joke text-white">
+            <h5>Perfiles Asignados</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-lg-12 mt-3">
+                    <h5 class="font-weight-bold">Perfiles de CASESG</h5>
+                    Aviso asignado a los siguientes perfiles del sistema
+                    <a href="#" type='button' class='btn-sm btn-success mr-2 float-right addPerfil' data-toggle="tooltip" title="Agregar Perfil" data-placement="top">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+                <div class="row col-lg-12 mt-3">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Perfil</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.avisoP.Count != 0)
+                            {
+                                @foreach (var perfil in Model.avisoP)
+                                {
+                                    i++;
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@perfil.perfil.Nombre</td>
+                                        <td class="text-center">
+                                            <a href="#" class="text-center eliminaPerfil" data-perfil="@perfil.PerfilId">
+                                                <i class="fad fa-times text-center text-danger"></i>
+                                            </a>    
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr class="text-center">
+                                    <td colspan="3">No hay <strong>Perfiles</strong> asignados a este perfil</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Modal para la asignación de perfiles*@
+<div class="modal fade" id="modal-perfiles">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-joke">
+                <h4 class="modal-title text-white">Asignar Perfil(es)</h4>
+                <button type="button" class="close close-incidencias text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="form-row">
+                            <input type="hidden" id="usuarioId" />
+                            <div class="form-group col-md-6">
+                                <label for="administracionId">Perfiles: </label>
+                                <select class="form-control select2bs4 perfiles" id="perfiles" multiple="multiple"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-primary" id="asignaPerfiles">Asignar Perfil(es)</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@*Fin Modal para la asignación de perfiles*@
+
+@section Scripts{
+    <script>
+    $(function () {
+        var model = @Html.Raw(Json.Serialize(@Model));
+
+        $("#error_titulo").css("display","none");
+        $("#error_fechaInicio").css("display","none");
+        $("#error_fechafin").css("display","none");
+        $("#error_comentarios").css("display","none");
+
+
+        if (model.proyecto != null) {
+            $("#tipoProyecto").val(model.proyecto.tipo);
+        }
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+        /*Inicialización del Select2*/
+        $('.select2').select2()
+
+        //Initialize Select2 Elements
+        $('.select2bs4').select2({
+            theme: 'bootstrap4'
+        });
+
+        $('.addPerfil').click(function () {
+            var options = "<option value='' disabled>Seleccione una opción</option>";
+            axios.get('/perfiles/getperfiles').then(response => {
+                response = response.data;
+                for (var i = 0; i < response.length; i++) {
+                    options +=
+                        "<option value='" + response[i].id + "'>" + response[i].nombre + "</option>";
+                }
+                $('#perfiles').html(options);
+            });
+            $('#modal-perfiles').modal('show');
+        });
+
+        $('#asignaPerfiles').click(function () {
+            guardarAviso();
+        });
+
+        $(".eliminaPerfil").click(function () {
+            Swal.fire({
+                'icon': 'warning',
+                'title': 'Avisos CASESG',
+                'html': '<strong>Advertencia:</strong>¿Está seguro de eliminar el perfil de este aviso?',
+                'confirmButtonColor': '#3085d6',
+                'cancelButtonColor': '#d33',
+                'confirmButtonText': 'Si, eliminar',
+                'cancelButtonText': 'Cancelar',
+                'showCancelButton': true
+            }).then(elimina => {
+                if (elimina.isConfirmed) {
+                    axios.get('/avisos/eliminaPerfilAviso/' + model.id + '/' + $(this).data('perfil')).then(avisos => {
+                        Swal.fire({
+                            'icon': 'success',
+                            'title': 'Avisos CASESG',
+                            'html': 'Se eliminó el perfil correctamente.'
+                        }).then(function () {
+                            window.location.reload();
+                        });
+                    });
+                }
+            });
+        });
+
+        /************** Validaciones para Guardar **********************************/
+            function validaCampos() {
+                if ($("#titulo").val() != "" && $("#comentarios").val() != "" && $("#fechaInicio").val() != "" && $("#fechaFin").val() != "") {
+                    return true;
+                }
+
+                if ($("#titulo").val() == "") {
+                    $('#titulo').addClass('is-invalid');
+                    $('#error_titulo').css('display', 'block');
+                }
+
+                if ($("#comentarios").val() == "") {
+                    $('#comentarios').addClass('is-invalid');
+                    $('#error_comentarios').css('display', 'block');
+                }
+
+                if ($("#fechaInicio").val() == "") {
+                    $('#fechaInicio').addClass('is-invalid');
+                    $('#error_fechaInicio').css('display', 'block');
+                }
+
+                if ($("#fechaFin").val() == "") {
+                    $('#fechaFin').addClass('is-invalid');
+                    $('#error_fechaFin').css('display', 'block');
+                }
+
+                return false;
+            }
+
+            $('#titulo').change(function () {
+                if ($("#titulo").val() == "") {
+                    $('#titulo').addClass('is-invalid');
+                    $('#error_titulo').css('display', 'block');
+                } else {
+                    $('#titulo').addClass('is-valid');
+                    $('#error_titulo').css('display', 'none');
+                }
+            });
+
+            $('#comentarios').change(function () {
+                if ($("#comentarios").val() == "") {
+                    $('#comentarios').addClass('is-invalid');
+                    $('#error_comentarios').css('display', 'block');
+                } else {
+                    $('#comentarios').addClass('is-valid');
+                    $('#error_comentarios').css('display', 'none');
+                }
+            });
+
+            $('#fechaInicio').change(function () {
+                if ($("#fechaInicio").val() == "") {
+                    $('#fechaInicio').removeClass('is-valid');
+                    $('#fechaInicio').addClass('is-invalid');
+                    $('#error_fechaInicio').css('display', 'block');
+                } else {
+                    $('#fechaInicio').removeClass('is-invalid');
+                    $('#fechaInicio').addClass('is-valid');
+                    $('#error_fechaInicio').css('display', 'none');
+                }
+            });
+
+            $('#fechaFin').change(function () {
+                if ($("#fechaFin").val() == "") {
+                    $('#fechaFin').removeClass('is-valid');
+                    $('#fechaFin').addClass('is-invalid');
+                    $('#error_fechaFin').css('display', 'block');
+                } else {
+                    $('#fechaFin').removeClass('is-invalid');
+                    $('#fechaFin').addClass('is-valid');
+                    $('#error_fechaFin').css('display', 'none');
+                }
+            });
+        /************** Fin Validaciones para Guardar ******************************/
+
+        /**************************** Guardar **************************************/
+            $(".saveAviso").click(function () { 
+                var url = "inserta";
+                var msg = "guardó";
+                var id = parseInt(model.id);
+                var titulo = $("#titulo").val();
+                var comentarios = $("#comentarios").val();
+                var fechaInicio = $("#fechaInicio").val();
+                var fechaFin = $("#fechaFin").val();
+                var activo = true;
+
+                if (id != 0) {
+                    url = "actualiza";
+                    msg = "actualizó";
+                    activo = $(".selected_checkbox").prop('checked');
+                    for (var i = 0; i < model.avisoP.length; i++) {
+                        array.push({ PerfilId: parseInt(model.avisoP[i].perfilId) });
+                    }
+                }
+
+                if (validaCampos()) {
+                    axios.post('/avisos/' + url + 'Aviso', {
+                        Id: id, Titulo: titulo, Comentarios: comentarios, FechaInicio: fechaInicio, FechaFin: fechaFin, Activo: activo
+                    }).then(response => {
+                        Swal.fire({
+                            'icon': 'success',
+                            'title': 'Avisos CASESG',
+                            'html': 'Se ' + msg + ' la información correctamente.'
+                        }).then(function () {
+                            if (url == "actualiza")
+                            {
+                                window.location.reload();
+                            }
+                            else
+                            {
+                                window.location.href = '/avisos/index';
+                            }
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Avisos CASESG',
+                        'html': 'No se puede guardar la información ya que faltan campos por llenar. Favor de verificar.'
+                    });
+                    return false;
+                }
+            });
+
+            function guardarAviso(){
+                var url = "inserta";
+                var msg = "guardó";
+                var id = parseInt(model.id);
+                var titulo = $("#titulo").val();
+                var comentarios = $("#comentarios").val();
+                var fechaInicio = $("#fechaInicio").val();
+                var fechaFin = $("#fechaFin").val();
+                var activo = $(".selected_checkbox").prop('checked');
+                var array = new Array();
+
+                var perfiles = $('.perfiles').val();
+
+                if (id != 0) {
+                    url = "actualiza";
+                    msg = "actualizó";
+                    for (var i = 0; i < model.avisoP.length; i++) {
+                        array.push({ PerfilId: parseInt(model.avisoP[i].perfilId) });
+                    }
+                }
+
+                for (var i = 0; i < perfiles.length; i++) {
+                        array.push({ PerfilId: parseInt(perfiles[i]) });
+                }
+
+
+                if (validaCampos()) {
+                    axios.post('/avisos/'+url+'Aviso', {
+                        Id: id, Titulo: titulo, Comentarios: comentarios, FechaInicio: fechaInicio, FechaFin: fechaFin, Activo: activo,
+                        avisoP: array
+                    }).then(response => {
+                        Swal.fire({
+                            'icon': 'success',
+                            'title': 'Avisos CASESG',
+                            'html': 'Se '+msg+' la información correctamente.'
+                        }).then(function(){
+                            if (url == "actualiza") {
+                                window.location.reload();
+                            }
+                            else {
+                                window.location.href = '/avisos/index';
+                            }
+                        });
+                    });
+                } else {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Avisos CASESG',
+                        'html': 'No se puede guardar la información ya que faltan campos por llenar. Favor de verificar.'
+                    });
+                    return false;
+                }
+            }
+        /*********************** Fin para Guardar **********************************/
+    });
+    </script>
+}

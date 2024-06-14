@@ -1,0 +1,460 @@
+﻿@* Principal de Telefonia Convencional*@
+@model CedulasEvaluacion.Entities.MCedula.ModelsIndex
+@{
+    var i = 0;
+    var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
+    ViewData["Title"] = "Servicio de Telefonía Convencional y Servicios Adicionales";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <section class="col-xl-10 connectedSortable">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Cedulas de Evaluación
+                    </h3>
+                </div>
+                <div class="card-body" style="font-size: 14px;">
+                    <p class="text-justify"><b>NOTA: </b> Para el estatus <b class="text-danger">Rechazado</b> debe seleccionar el ícono <i class="fad fa-pencil text-primary"></i> para editar el cuestionario y volver a enviarlo a la DAS con las correcciones solicitadas para su revisión.</p>
+                    <table class="table table-responsive-xl tblIncidencias" id="tblIncidencias">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Estatus</th>
+                                <th>Servicio</th>
+                                <th>Inmueble</th>
+                                <th>Folio</th>
+                                <th>Mes</th>
+                                <th>Año</th>
+                                @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                {
+                                    <th>Validación OP</th>
+                                }
+                                <th>Última Actualización</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.cedulas)
+                            {
+                                i++;
+                                <tr>
+
+                                    <td>@i</td>
+                                    <td class="@(item.Fondo.Replace("bg","text"))" style="font-weight: bold">@Html.DisplayFor(modelItem => item.Estatus)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Servicio)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Folio)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Mes)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Anio)</td>
+                                    @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") &&
+                               (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
+                                    {
+                                        <td class="text-center">
+                                            @if (item.MemoValidado == true)
+                                            {
+                                                <i class="fa-regular fa-check text-success mr-2" data-toggle="tooltip" title="Memorándum validado" data-placement="top"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-clipboard-check text-danger mr-2" data-toggle="tooltip" title="Memorándum pendiente de validar" data-placement="top"></i>
+                                            }
+
+                                            @if (item.CedulaValidada == true)
+                                            {
+                                                <i class="fa-regular fa-check text-success mr-2" data-toggle="tooltip" title="Cédula validada" data-placement="top"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-clipboard-check text-danger mr-2" data-toggle="tooltip" title="Cédula pendiente de validar" data-placement="top"></i>
+                                            }
+
+                                            @if (item.ActaFirmada == true)
+                                            {
+                                                <i class="fa-regular fa-file-check text-success" data-toggle="tooltip" title="Acta Entrega - Recepción" data-placement="top"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-file-xmark text-danger" data-toggle="tooltip" title="Acta Entrega - Recepción pendiente de validar" data-placement="top"></i>
+                                            }
+                                        </td>
+                                    }
+                                    else if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") && !item.Estatus.Equals("En Trámite"))
+                                    {
+                                        @if (item.MemoValidado == true && item.CedulaValidada == true)
+                                        {
+                                            <td class="text-center">
+                                                <i class="fa-regular fa-check text-success"></i>
+                                                <i class="fa-regular fa-check text-success"></i>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-center">
+                                                <i class="fa-regular fa-user-clock text-primary"></i>
+                                            </td>
+                                        }
+                                    }
+                                    <td>@item.FechaActualizacion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                    <td>
+                                        @if (!item.Estatus.Equals("En Proceso") && !(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                        {
+                                            <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
+                                                <i class="fad fa-eye text-success"></i>
+                                            </a>
+                                        }
+                                        @if (item.Estatus.Equals("Rechazada") || item.Estatus.Equals("En Proceso") || !(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                        {
+                                            <a href="#" data-id="@item.Id" class="text-center ml-2 btnCuestionario" data-toggle="tooltip" title="Modificar Cédula" data-placement="top">
+                                                <i class="fad fa-pencil text-primary"></i>
+                                            </a>
+                                        }
+                                        @if (item.Estatus.Equals("En Proceso"))
+                                        {
+                                            <a href="#" class="text-center ml-2 delete_cedula" data-id="@item.Id" data-folio="@item.Folio" data-toggle="tooltip" title="Eliminar Cédula" data-placement="top">
+                                                <i class="fad fa-times text-danger"></i>
+                                            </a>
+                                        }
+                                        @if (!item.Estatus.Equals("En Proceso"))
+                                        {
+                                            <a href="#" data-id="@item.Id" data-estatus="@item.Estatus" data-servicio="@item.ServicioId" data-inmueble="@item.InmuebleId" class="text-center pdf ml-2 btn_pdf" data-toggle="tooltip" title="Generar Cédula" data-placement="top">
+                                                @if (item.Estatus.Equals("Autorizada") || item.Estatus.Equals("En Trámite"))
+                                                {
+                                                    <i class="fal fa-file-pdf text-success"></i>
+                                                }
+                                                else @if (item.Estatus.Equals("Rechazada"))
+                                           {
+                                            <i class="fal fa-file-pdf text-danger"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="fal fa-file-pdf text-primary"></i>
+                                        }
+                                            </a>
+                                        }
+                                        @if (!item.Estatus.Equals("En Proceso"))
+                                        {
+                                            <a href="#" data-id="@item.Id" class="text-center ml-2 btnSeguimiento" data-toggle="tooltip" title="Seguimiento a la Cédula" data-placement="top">
+                                                <i class="fas fa-file-import text-primary"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        <section class="col-xl-2 connectedSortable">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        Filtros de Búsqueda
+                    </h3>
+                </div>
+                <div class="card-body" style="font-size: 14px;">
+                    <div class="row col-lg-12">
+                        <div class="col-lg-12">
+                            Año:
+                            <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                        @foreach (var an in Model.anios)
+                        {
+                            <div class="col collapse ml-3" id="btnAnio">
+                                <label class="checkbox-inline">
+                                    @if (Model.filtroAnios.Contains(an.Valor))
+                                    {
+                                        <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
+                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
+                                        }
+                                        else
+                                        {
+                                            <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
+                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
+                                            }
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="row col-lg-12 mt-2">
+                        <div class="col-lg-12">
+                            Mes:
+                            <a class="btn-sm bg-primary btnMeses float-right" data-target="#btnMes" data-toggle="collapse">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                        @foreach (var an in Model.Meses)
+                        {
+                            <div class="col-lg-12 collapse ml-3" id="btnMes">
+                                <label class="checkbox-inline float-left">
+                                    @if (Model.filtroMeses.Contains(an.Mes))
+                                    {
+                                        <input class="selectMes" id="mes_@an.Mes" type="checkbox" data-toggle="toggle"
+                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Mes" checked> @an.Mes
+                                        }
+                                        else
+                                        {
+                                            <input class="selectMes" id="mes_@an.Mes" type="checkbox" data-toggle="toggle"
+                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Mes"> @an.Mes
+                                            }
+                                </label>
+                            </div>
+                        }
+                    </div>
+                    <div class="row col-lg-12 mt-2">
+                        <div class="col-lg-12">
+                            Estatus:
+                            <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
+                                <i class="fas fa-plus"></i>
+                            </a>
+                        </div>
+                        @foreach (var an in Model.festatus)
+                        {
+                            <div class="col-lg-12 collapse ml-3" id="btnEstatus" style="font-size: 12px;">
+                                <label class="checkbox-inline">
+                                    @if (Model.filtroEstatus.Contains(an.Estatus))
+                                    {
+                                        <input class="selectEstatus" type="checkbox" data-toggle="toggle"
+                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Estatus" checked> @an.Estatus
+                                        }
+                                        else
+                                        {
+                                            <input class="selectEstatus" type="checkbox" data-toggle="toggle"
+                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Estatus"> @an.Estatus
+                                            }
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<style>
+    .dataTables_filter {
+        display: block;
+    }
+</style>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var idUsuario = @User.Claims.ElementAt(0).Value;
+            var anios = [];
+            var meses = [];
+            var est = [];
+            var admin = [];
+            var admin2 = [];
+            var inmuebles = [];
+
+            $('[data-toggle="tooltip"]').tooltip();
+            localStorage.clear();
+
+            $(document).on("click",".btnRevision",function () {
+                window.location.href = "/telConvencional/revision/" + $(this).data('id') + "?Anio=" + anios + "&Mes=" + meses
+                    + "&Estatus=" + est;
+            });
+
+            $(document).on("click",".btnSeguimiento",function () {
+                window.location.href = "/telConvencional/seguimiento/" + $(this).data('id') + "?Anio=" + anios + "&Mes=" + meses
+                    + "&Estatus=" + est;
+            });
+
+            $(document).on("click",".btnCuestionario",function () {
+                window.location.href = "/telConvencional/evaluacion/" + $(this).data('id') +"?Anio=" + anios + "&Mes=" + meses
+                    + "&Estatus=" + est;
+            });
+
+            function cuentaTramites() {
+                var c = 0;
+                for (var i = 0; i < model.length; i++) {
+                    if (model[i].estatus == "En Trámite") {
+                        return 1;
+                    }
+                }
+            }
+
+            $(document).on("click",'.btn_pdf',function () {
+                let id = $(this).data('id');
+                let servicio = $(this).data('servicio');
+                let estatus = $(this).data('estatus');
+                if (estatus == 'Autorizada') {
+                    Swal.fire({
+                        'icon': 'info',
+                        'title': 'Servicio de Telefonía Convencional y Servicios Adicionales',
+                        'html': '<p style="text-align: justify">La cédula de evaluación ya fue autorizada, no olvide firmarla electrónicamente y ' +
+                            'posteriormente <strong>subirla en el sistema CASESGV2 en el apartado de "Seguimiento a la Cédula"</strong>, si tiene alguna duda por favor ' +
+                            'comuníquese a la ext. 2574 o 2635. </p>'
+                    }).then(function () {
+                        window.open('/cedula/convencional/' + servicio + '/' + id, '_blank');
+                    });
+                } else {
+                    window.open('/cedula/convencional/' + servicio + '/' + id, '_blank');
+                }
+            });
+
+            /********************************** Filtros AJAX ***********************************/
+                $('#tblIncidencias').DataTable({
+                    dom: 'lBfrtip',
+                    buttons: [
+                        {
+                            extend: 'excelHtml5',
+                            title: 'Servicio de Limpieza en Áreas Comunes - Listado de Oficios Capturadas',
+                            className: "btn-sm bg-cjf mr-1",
+                        },
+                        {
+                            extend: 'pdfHtml5',
+                            title: 'Servicio de Limpieza en Áreas Comunes - Listado de Oficios Capturadas',
+                            className: "btn-sm bg-cjf mr-1"
+                        },
+                        {
+                            extend: 'print',
+                            title: 'Servicio de Limpieza en Áreas Comunes - Listado de Oficios Capturadas',
+                            text: 'Imprimir',
+                            className: "btn-sm bg-cjf mr-1"
+                        },
+                        /*{
+                            extend: 'colvis',
+                            text: 'Ocultar Columnas',
+                            className: "bg-cjf"
+                        }*/],
+                    //"bFilter": false,
+                    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+                    responsive: true,
+                    language: {
+                        url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                    },
+                });
+
+                var table = $('#tblIncidencias').DataTable();
+
+                $('.selectAnio').on('change', function () {
+                    anios = [];
+                    $(".selectAnio").each(function () {
+                    var activo = $(this).parent().hasClass("off");
+                    if (activo == false) {
+                        anios.push($(this).val());
+                    }
+                });
+
+                    var mergedVal = anios.join('|');
+                    table.column(6).search(mergedVal, true).draw();
+                });
+
+                $('.selectMes').on('change', function () {
+                    meses = [];
+                    $(".selectMes").each(function () {
+                    var activo = $(this).parent().hasClass("off");
+                    if (activo == false) {
+                        meses.push($(this).val());
+                    }
+                });
+                    var mergedVal = meses.join('|');
+                    table.column(5).search(mergedVal, true).draw();
+                });
+
+                $('.selectEstatus').on('change', function () {
+                    est = [];
+                    $(".selectEstatus").each(function () {
+                    var activo = $(this).parent().hasClass("off");
+                    if (activo == false) {
+                        est.push($(this).val());
+                    }
+                });
+
+                    var mergedVal = est.join('|').replace("&", "\\&").replace(/\s/g, "\\s");
+                    table.column(1).search(mergedVal, true).draw();
+                });
+
+                $(".btnAnios").click(function () {
+                    if ($(".btnAnios > i").hasClass("fas fa-plus")) {
+                        $(".btnAnios > i").removeClass("fas fa-plus");
+                        $(".btnAnios > i").addClass("fas fa-minus");
+                    } else {
+                        $(".btnAnios > i").removeClass("fas fa-minus");
+                        $(".btnAnios > i").addClass("fas fa-plus");
+                    }
+                });
+
+                $(".btnMeses").click(function () {
+                    if ($(".btnMeses > i").hasClass("fas fa-plus")) {
+                        $(".btnMeses > i").removeClass("fas fa-plus");
+                        $(".btnMeses > i").addClass("fas fa-minus");
+                    } else {
+                        $(".btnMeses > i").removeClass("fas fa-minus");
+                        $(".btnMeses > i").addClass("fas fa-plus");
+                    }
+                });
+
+                $(".btnEstatuss").click(function () {
+                    if ($(".btnEstatuss > i").hasClass("fas fa-plus")) {
+                        $(".btnEstatuss > i").removeClass("fas fa-plus");
+                        $(".btnEstatuss > i").addClass("fas fa-minus");
+                    } else {
+                        $(".btnEstatuss > i").removeClass("fas fa-minus");
+                        $(".btnEstatuss > i").addClass("fas fa-plus");
+                    }
+                });
+
+                if (model.filtroAnios != "") {
+                    anios = [];
+                    $(".selectAnio").each(function () {
+                        var activo = $(this).parent().hasClass("off");
+                        if (activo == false) {
+                            anios.push($(this).val());
+                        }
+                    });
+
+                    var mergedVal = anios.join('|');
+                    table.column(6).search(mergedVal, true).draw();
+                }
+
+                if (model.filtroMeses!= "") {
+                    meses = [];
+                    $(".selectMes").each(function () {
+                        var activo = $(this).parent().hasClass("off");
+                        if (activo == false) {
+                            meses.push($(this).val());
+                        }
+                    });
+                    var mergedVal = meses.join('|');
+                    table.column(5).search(mergedVal, true).draw();
+                }
+
+                if (model.filtroEstatus != "") {
+                    est = [];
+                    $(".selectEstatus").each(function () {
+                        var activo = $(this).parent().hasClass("off");
+                        if (activo == false) {
+                            est.push($(this).val());
+                        }
+                    });
+                    console.log(est);
+                    var mergedVal = est.join('|').replace("&", "\\&").replace(/\s/g, "\\s");
+                    table.column(1).search(mergedVal, true).draw();
+                }
+            /********************************** FIN Filtro Ajax*********************************/
+        });
+    </script>
+}
+

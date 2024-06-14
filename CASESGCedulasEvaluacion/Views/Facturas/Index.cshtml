@@ -1,0 +1,1007 @@
+﻿@model CedulasEvaluacion.Entities.MFacturas.ModelsFacturas;
+@{
+    var totalFacturas = 0;
+    var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
+    ViewData["Title"] = "Facturas de los Servicios Generales";
+    @foreach (var mes in Model.facturasMes)
+    {
+        totalFacturas += mes.TotalFacturas;
+    }
+
+    var meses = new List<string>();
+    var fondos = new List<string>();
+
+    @if (@Model.detalle != null)
+    {
+        @foreach (var dt in @Model.detalle)
+        {
+            meses.Add(dt.Mes);
+        }
+
+        @foreach (var dt in @Model.detalle)
+        {
+            fondos.Add(dt.Fondo);
+        }
+    }
+
+    HashSet<string> quitaMeses = new HashSet<string>(meses);
+    List<string> lmeses = quitaMeses.ToList();
+
+    HashSet<string> quitaFondos = new HashSet<string>(fondos);
+    List<string> lFondos = quitaFondos.ToList();
+}
+
+<div class="container-fluid">
+    <div class="row col-lg-4">
+        <label for="facturasAnio">Consultar Información del Año: </label>
+        <div class="input-group mb-3">
+            <select class="form-control" id="anioActual">
+                <option value="">Seleccione el Año</option>
+                <option value="2021">2021</option>
+                <option value="2022">2022</option>
+                <option value="2023">2023</option>
+                <option value="2024">2024</option>
+            </select>
+            <div class="row">
+                <button class="btn btn-primary ml-3" id="consultarFacturas">Consultar Información</button>
+            </div>
+        </div>
+    </div>
+    @if (Model.Anio != 0)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card-header">
+                    <h4>Facturación General</h4>
+                </div>
+                <div class="card-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width:100%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <h5 class="mt-3">Facturas Cargadas: @totalFacturas</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="Prrueba">
+            <div class="col-lg-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Facturas por Servicio</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#facturasParciales" role="tab" aria-controls="contact" aria-selected="false">Cédulas parcialmente pagadas</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade mt-2 ml-3 show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <h4 class="mt-4">Facturas por Servicio</h4>
+                        <div class="row col-lg-12">
+                            @foreach (var servicio in Model.facturasServicio)
+                            {
+
+                                <div class="col-6 col-md-3 text-center">
+                                    <input type="text" class="knob" value="70" data-width="90" data-height="90" data-fgColor="#f56954">
+                                    <div class="knob-label">Bounce Rate</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="tab-pane fade mt-2 ml-3" id="facturasParciales" role="tabpanel" aria-labelledby="contact-tab">
+                        <h4 class="mt-4">Cédulas parcialmente pagadas</h4>
+                        @if (Model.facturasParciales.Count != 0)
+                        {
+                            <div class="row col-lg-12">
+                                @foreach (var parcial in Model.facturasParciales)
+                                {
+                                    <div class="col-1 text-center mt-3">
+                                        <input type="text" class="facturasParciales" value="@parcial.TotalFacturas" data-width="90" data-height="90" data-fgColor="@parcial.Fondo"
+                                               data-readonly="true" data-max="@parcial.TotalFacturas" />
+                                        <h6 class="font-weight-bold" style="color: @parcial.Fondo">@parcial.TotalFacturas - @parcial.Servicio</h6>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-lg-12">
+                                <div class="justify-content-center text-center">
+                                    <p class="text-success font-weight-bold">No hay facturas pagadas parcialmente</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+        @if (Model.desgloceServicio != null)
+        {
+            <hr class="col-xs-12 mt-4 mb-2" id="lnServicioRev">
+            <h4 class="mt-2" id="servicioRevisado"></h4>
+        }
+        <div class="row col-lg-12 mt-3 mb-3 justify-content-start" id="divDesgloce">
+            @if (Model.desgloceServicio != null)
+            {
+                <button class="btn btn-primary mr-3" id="btnDFacturas">Factura(s)</button>
+                <button class="btn btn-primary mr-3" id="btnDNC">Nota(s) de Crédito</button>
+                <button class="btn btn-primary mr-3" id="btnResumen">Resumen de Facturación</button>
+            }
+        </div>
+        <div class="row col-lg-12 mt-2 justify-content-center" id="divDesgloce2">
+            @if (Model.desgloceServicio != null)
+            {
+                <div class="row col-lg-12" id="divResumen">
+                    <div class="col-lg-12">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#total" role="tab" aria-controls="home" aria-selected="true">
+                                    Total General
+                                </a>
+                            </li>
+                            @for (var i = 0; i < lmeses.Count; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="mes-tab" data-toggle="tab" href="#@lmeses[i]" role="tab" aria-controls="mes" aria-selected="true">
+                                            @lmeses[i]
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="nav-item" role="presentation">
+                                        <a class="nav-link" id="mes-tab" data-toggle="tab" href="#@lmeses[i]" role="tab" aria-controls="mes" aria-selected="true">
+                                            @lmeses[i]
+                                        </a>
+                                    </li>
+                                }
+                            }
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="comparativo-tab" data-toggle="tab" href="#comparativoFacturas" role="tab" aria-controls="contact" aria-selected="false">Comparativo de Facturación</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="comparativo-tab" data-toggle="tab" href="#comparativoNC" role="tab" aria-controls="contact" aria-selected="false">Comparativo de Nota(s) de Crédito</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade mt-2 ml-3 show active" id="total" role="tabpanel" aria-labelledby="home-tab">
+                                @{
+                                    decimal totalFinal = 0;
+                                    decimal totalApagar = 0;
+                                    decimal totalFinalNC = 0;
+                                    decimal totalAplicar = 0;
+
+                                    int totalFac = 0;
+                                    int totalFacP = 0;//total de facturas pagadas
+                                    int totalNoc = 0;
+                                    int totalNocA = 0;//total de Notas Aplicadas
+                                }
+                                @foreach (var dt in Model.detalle)
+                                {
+                                    @if (dt.Tipo.Equals("Factura"))
+                                    {
+                                        @if (dt.Estatus.Equals("Pagada"))
+                                        {
+                                            totalFinal += dt.TotalFinal;
+                                            totalFac += dt.TotalFacturas;
+                                        }
+                                        totalApagar += dt.TotalFinal;
+                                        totalFacP += dt.TotalFacturas;
+                                    }
+                                    else if (dt.Tipo.Equals("NC"))
+                                    {
+                                        @if (dt.Estatus.Equals("Aplicada"))
+                                        {
+                                            totalFinalNC += dt.TotalFinal;
+                                            totalNocA += dt.TotalFacturas;
+                                        }
+                                        totalAplicar += dt.TotalFinal;
+                                        totalNoc += dt.TotalFacturas;
+                                    }
+                                }
+                                <div class="row col-lg-13 mt-3">
+                                    <div class="row col-lg-12">
+                                        <h4>Total General</h4>
+                                    </div>
+                                    <div class="col-md-10 mt-3">
+                                        <h5>Factura(s) Pagadas</h5>
+                                        <table class="table mt-3">
+                                            <thead>
+                                                <tr class="h6">
+                                                    <th>Facturas Recibidas</th>
+                                                    <th>Monto Facturado</th>
+                                                    <th>Facturas Pagadas</th>
+                                                    <th>Facturas Pendientes de Pago</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@totalFacP Factura(s)</td>
+                                                    <td>@totalFacP Factura(s) @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @totalApagar)</td>
+                                                    <td>@totalFac Factura(s) @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @totalFinal)</td>
+                                                    <td>@(@totalFacP - @totalFac) Factura(s) @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (@totalApagar - @totalFinal))</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <center class="">
+                                            <input type="text" class="resumenFacturas" value="@(@totalFinal != 0 ? (@totalFinal/@totalApagar)*100:0)" data-width="100" data-height="100"
+                                                   data-fgColor="#157614" data-readonly="true" /><br />
+                                            <p style="color:#157614; font-weight: bold;">Porcentaje total de Pago</p>
+                                        </center>
+                                    </div>
+                                    <div class="col-md-10 mt-1">
+                                        <h5>Nota(s) de Crédito Aplicadas</h5>
+                                        <table class="table mt-3">
+                                            <thead>
+                                                <tr class="h6">
+                                                    <th>Nota(s) Recibidas</th>
+                                                    <th>Monto Facturado</th>
+                                                    <th>Nota(s) Aplicadas</th>
+                                                    <th>Nota(s)Pendientes de Aplicar</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@totalNoc Nota(s)</td>
+                                                    <td>@totalNoc Nota(s) @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalAplicar)</td>
+                                                    <td>@totalNocA Nota(s) @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalFinalNC)</td>
+                                                    <td>@(@totalNoc - @totalNocA) Nota(s) @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", (totalAplicar - totalFinalNC))</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-2 mt-3">
+                                        <center>
+                                            <input type="text" class="resumenNC" value="@(totalFinalNC != 0 ? (totalFinalNC/totalAplicar)*100:0)" data-width="100" data-height="100" data-fgColor="red"
+                                                   data-readonly="true" /><br />
+                                            <p style="color: red; font-weight: bold;">Porcentaje de Aplicación</p>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                            @for (var m = 0; m < lmeses.Count; m++)
+                            {
+                                int totalF = 0;
+                                decimal total = 0;
+                                decimal totalPagado = 0;
+                                <div class="tab-pane fade mt-2 ml-3" id="@lmeses[m]">
+                                    <div class="row col-lg-13 mt-3">
+                                        <div class="col-md-4 mt-1">
+                                            <h4>Facturas de @lmeses[m]</h4>
+                                            <table class="table mt-3">
+                                                <thead>
+                                                    <tr class="h6">
+                                                        <th>Factura(s)</th>
+                                                        <th>Estatus</th>
+                                                        <th>Monto de la(s) Factura(s)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var dt in Model.detalle)
+                                                    {
+                                                        @if (dt.Tipo.Equals("Factura") && dt.Mes.Equals(lmeses[m]))
+                                                        {
+                                                            total += dt.TotalFinal;
+                                                            totalF += dt.TotalFacturas;
+                                                            @if (dt.Estatus.Equals("Pagada"))
+                                                            {
+                                                                totalPagado = dt.TotalFinal;
+                                                            }
+                                                            <tr>
+                                                                <td class="text-center">@dt.TotalFacturas</td>
+                                                                <td>
+                                                                    @(dt.Estatus.Equals("Proceso") ? "Pendientes" : dt.Estatus.Equals("Pendiente") ? "No Pagadas" : dt.Estatus)
+                                                                </td>
+                                                                <td class="text-right">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @dt.TotalFinal)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                                <tfooter>
+                                                    <tr class="font-weight-bold">
+                                                        <td>Total: @totalF Factura(s)</td>
+                                                        <td colspan="2" class="text-right">
+                                                            @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", total)
+                                                        </td>
+                                                    </tr>
+                                                </tfooter>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-2 mt-5">
+                                            <center class="">
+                                                <input type="text" class="resumenFacturas" value="@(totalPagado != 0 ? (@totalPagado/@total)*100:0)" data-width="100" data-height="100"
+                                                       data-fgColor="#157614" data-readonly="true" /><br />
+                                                <p style="color:#157614; font-weight: bold;">Porcentaje de Pago</p>
+                                            </center>
+                                        </div>
+                                        <div class="col-md-4 mt-1">
+                                            @{ total = 0; }
+                                            @{ totalF = 0; }
+                                            @{ totalPagado = 0; }
+                                            <h4>Nota(s) de Crédito (NC) de @lmeses[m]</h4>
+                                            <table class="table mt-3">
+                                                <thead>
+                                                    <tr class="h6">
+                                                        <th>Nota(s)</th>
+                                                        <th>Estatus</th>
+                                                        <th>Monto de la(s) Factura(s)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var dt in Model.detalle)
+                                                    {
+                                                        @if (dt.Tipo.Equals("NC") && dt.Mes.Equals(lmeses[m]))
+                                                        {
+                                                            total += dt.TotalFinal;
+                                                            totalF += dt.TotalFacturas;
+                                                            @if (dt.Estatus.Equals("Aplicada"))
+                                                            {
+                                                                totalPagado = dt.TotalFinal;
+                                                            }
+                                                            <tr>
+                                                                <td class="text-center">@dt.TotalFacturas</td>
+                                                                <td>
+                                                                    @(dt.Estatus.Equals("Aplicada") ? "Aplicada(s)": dt.Estatus.Equals("Aplicada") ? "Pendiente(s) de Aplicar": dt.Estatus)
+                                                                </td>
+                                                                <td class="text-right"> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @dt.TotalFinal)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                                <tfooter>
+                                                    <tr class="font-weight-bold">
+                                                        @if (total != 0)
+                                                        {
+                                                            <td>Total: @totalF Nota(s) de crédito</td>
+                                                            <td colspan="2" class="text-right">
+                                                                @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", total)
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td colspan="3" class="font-weight-bold text-center">No hay nota(s) de crédito para aplicar</td>
+                                                        }
+                                                    </tr>
+                                                </tfooter>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-2 mt-5">
+                                            <center>
+                                                <input type="text" class="resumenNC" value="@(totalPagado != 0 ? (@totalPagado/@total)*100:0)" data-width="100" data-height="100" data-fgColor="red"
+                                                       data-readonly="true" /><br />
+                                                <p style="color: red; font-weight: bold;">Porcentaje de Aplicación</p>
+                                            </center>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <div class="tab-pane fade mt-2 ml-3" id="comparativoFacturas" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="row col-lg-12">
+                                    <div class="col-lg-6">
+                                        <canvas id="graficaFacturas" width="400"></canvas>
+                                    </div>
+                                    <div class="col-lg-6" id="tableContainer"></div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade mt-2 ml-3" id="comparativoNC" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="row col-lg-12">
+                                    <div class="col-lg-6">
+                                        <canvas id="graficaNC" width="400"></canvas>
+                                    </div>
+                                    <div class="col-lg-6" id="tableContainerNC">
+                                        <div class="row col-lg-12">
+                                            <h5>Detalle de Aplicación de Nota(s) de Crédito</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mb-4" id="divFacturas">
+                    <h4>Factura(s) por Mes</h4>
+                    <div class="row col-lg-12 mt-3">
+                        @foreach (var servicio in Model.desgloceServicio)
+                        {
+                            @if (servicio.Tipo.Equals("Factura"))
+                            {
+                                var total = 0.0;
+
+                                if (@servicio.TotalFacturas != 0)
+                                {
+                                    total = (Convert.ToDouble(@servicio.TotalPagado) / Convert.ToDouble(@servicio.TotalFinal)) * 100.0;
+                                }
+                                <div class="col-md-2 text-center mt-3">
+                                    <p class="font-weight-bold" style="color: @servicio.Fondo">@servicio.Mes</p>
+                                    <input type="text" class="desgloceServicio" value="@(@total != 0 ? @total.ToString("n2"):"0")" data-width="100" data-height="100"
+                                           data-fgColor="@servicio.Fondo" data-readonly="true" data-max="100" data-pp="28" /><br />
+                                    <a href="#" class="font-weight-bold btnDetalle" style="color: @servicio.Fondo" data-tipo="@servicio.Tipo" data-mes="@servicio.Mes"
+                                       data-servicio="@servicio.Id">
+                                    </a>
+                                </div>
+                                <div class="text-justify col-md-4">
+                                    @if (servicio.FacturasDGPPT != 0 || servicio.FacturasPagadas != 0 || servicio.FacturasPendientes != 0)
+                                    {
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="h6">
+                                                    <th>Facturas</th>
+                                                    <th>Monto de la(s) Factura(s)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (@servicio.FacturasPagadas != 0)
+                                                {
+                                                    <tr class="h6">
+                                                        <td><i class="fas fa-check text-success"></i> @servicio.FacturasPagadas Factura(s) pagadas</td>
+                                                        <td><i class="fas fa-check text-success"></i> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @servicio.TotalPagado)</td>
+                                                    </tr>
+                                                }
+                                                @if (@servicio.FacturasPendientes != 0)
+                                                {
+                                                    <tr class="h6">
+                                                        <td><i class="fas fa-times text-danger"></i> @servicio.FacturasPendientes Facturas no pagadas</td>
+                                                        <td><i class="fas fa-times text-danger"></i> @servicio.TotalPendiente</td>
+                                                    </tr>
+                                                }
+                                                @if (@servicio.FacturasDGPPT != 0)
+                                                {
+                                                    <tr class="h6">
+                                                        <td><i class="fas fa-vault text-warning"></i> @servicio.FacturasDGPPT Enviada(s) a DGPPT</td>
+                                                        <td><i class="fas fa-vault text-warning"></i> @servicio.TotalDGPPT</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                            <tfooter>
+                                                <tr>
+                                                    <td>
+                                                        <b>Total: </b>@servicio.TotalFacturas Factura(s)
+                                                    </td>
+                                                    <td>
+                                                        @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @servicio.TotalFinal)
+                                                    </td>
+                                                </tr>
+                                            </tfooter>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <table class="table">
+                                            <thead>
+                                                <tr class="h6">
+                                                    <th>Facturas</th>
+                                                    <th>Monto de la(s) Factura(s)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="font-weight-bold text-center">
+                                                    <td colspan="3">No hay facturación por pagar</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-3 mb-4" id="divNC">
+                    <h4>Nota(s) de Crédito por Mes</h4>
+                    <div class="row col-lg-12 mt-3">
+                        @foreach (var servicio in Model.desgloceServicio)
+                        {
+                            @if (servicio.Tipo.Equals("NC"))
+                            {
+                                var total = 0.0;
+
+                                if (@servicio.TotalFacturas != 0)
+                                {
+                                    total = (@servicio.FacturasPagadas * 100.0) / @servicio.TotalFacturas;
+                                }
+
+                                <div class="col-md-2 text-center mt-3">
+                                    <p class="font-weight-bold" style="color: @servicio.Fondo">@servicio.Mes</p>
+                                    <input type="text" class="desgloceServicio" value="@(total != 0 ? @total.ToString("n2"): "100")" data-width="100" data-height="100" data-fgColor="@servicio.Fondo"
+                                           data-readonly="true" data-max="100" /><br />
+                                    <a href="#" class="font-weight-bold btnDetalle" style="color: @servicio.Fondo" data-tipo="@servicio.Tipo" mes="@servicio.Mes"
+                                       data-servicio="@servicio.Id">
+                                    </a>
+                                </div>
+                                <div class="text-justify col-md-4">
+                                    @if (servicio.FacturasDGPPT != 0 || servicio.FacturasPagadas != 0 || servicio.FacturasPendientes != 0)
+                                    {
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nota(s) de Crédito</th>
+                                                    <th>Monto de la(s) Nota(s) de Crédito</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (@servicio.FacturasPagadas != 0)
+                                                {
+                                                    <tr class="h6">
+                                                        <td><i class="fas fa-check text-success"></i> @servicio.FacturasPagadas Aplicadas</td>
+                                                        <td><i class="fas fa-check text-success"></i> @servicio.TotalPagado</td>
+                                                    </tr>
+                                                }
+                                                @if (@servicio.FacturasPendientes != 0)
+                                                {
+                                                    <tr class="h6">
+                                                        <td><i class="fas fa-times text-danger"></i> @servicio.FacturasPendientes No aplicadas</td>
+                                                        <td><i class="fas fa-times text-danger"></i> @servicio.TotalPendiente</td>
+                                                    </tr>
+                                                }
+                                                @if (@servicio.FacturasDGPPT != 0)
+                                                {
+                                                    <tr class="h6">
+                                                        <td><i class="fa-solid fa-piggy-bank text-warning"></i> @servicio.FacturasDGPPT Por aplicar</td>
+                                                        <td><i class="fa-solid fa-piggy-bank text-warning"></i>    @servicio.TotalDGPPT</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                            <tfooter>
+                                                <tr class="h6">
+                                                    <td>
+                                                        <b>Total: </b>@servicio.TotalFacturas Nota(s)
+                                                    </td>
+                                                    <td>
+                                                        @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @servicio.TotalFinal)
+                                                    </td>
+                                                </tr>
+                                            </tfooter>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nota(s) de Crédito</th>
+                                                    <th>Monto de la(s) Nota(s) de Crédito</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="h6 font-weight-bold text-center">
+                                                    <td colspan="2">No hay nota(s) de crédito por aplicar</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .swal2-icon.swal2-info {
+        color: #f27474 !important;
+        border-color: #f27474 !important;
+    }
+
+    .swal-wide {
+        width: 800px !important;
+    }
+
+    .swal-wide2 {
+        width: 900px !important;
+    }
+</style>
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            var totalFacturas = @totalFacturas;
+            /*Valores de la URL*/
+            var urlParams = new URLSearchParams(window.location.search);
+            var servicio = urlParams.get('Servicio');
+
+            for (var i = 0; i<model.facturasServicio.length; i++) {
+                if (model.facturasServicio[i].id == servicio) {
+                    $("#servicioRevisado").text("Servicio - "+model.facturasServicio[i].descripcion);
+                    break;
+                }
+            }
+
+            $("#divFacturas").css("display","none");
+            $("#divNC").css("display","none");
+
+            $("#anioActual").val(model.anio);
+
+            $("#consultarFacturas").click(function () {
+                window.location.href = "?Anio="+$("#anioActual").val();
+            });
+
+            /*Mostrar detalles*/
+                $('#btnDFacturas').click(function () {
+                    $("#divFacturas").css("display", "block");
+                    $("#divNC").css("display", "none");
+                    $("#divResumen").css("display", "none");
+                });
+
+                $('#btnDNC').click(function () {
+                    $("#divFacturas").css("display", "none");
+                    $("#divNC").css("display", "block");
+                    $("#divResumen").css("display", "none");
+                });
+
+                $('#btnResumen').click(function () {
+                    $("#divFacturas").css("display", "none");
+                    $("#divNC").css("display", "none");
+                    $("#divResumen").css("display", "block");
+                });
+            /*Fin de Mostrar detalles*/
+
+            $('.btnServicio').click(function () {
+                desgloceService = $(this).data('total');
+                window.location.href = '?Servicio=' + $(this).data('servicio') + "&Anio=" + $("#anioActual").val();
+            });
+
+            $('.totalFacturas').knob({
+                max: totalFacturas,
+                format: function (value) {
+                    return ((value * 100) / totalFacturas).toFixed(2) + '%';
+                },
+                draw: function () {
+                    $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                }
+            });
+
+            $('.facturasMes').knob({
+                format: function (value) {
+                    return ((value * 100) / totalFacturas).toFixed(2) + '%';
+                },
+                draw: function () {
+                    $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                }
+            });
+
+            $('.facturasServicio').knob({
+                max: totalFacturas,
+                format: function (value) {
+                    return ((value * 100) / totalFacturas).toFixed(2) + '%';
+                },
+                draw: function () {
+                    $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                }
+            });
+
+            $('.desgloceServicio').knob({
+                format: function (value) {
+                    return value+'%';
+                },
+                draw: function () {
+                    $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                }
+            });
+
+            $('.facturasParciales').knob({
+                format: function (value) {
+                    return ((value * 100) / totalFacturas).toFixed(2) + '%';
+                },
+                draw: function () {
+                    $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                }
+            });
+
+            /**************Resumen de Facturación***************/
+                $('.resumenFacturas').knob({
+                    format: function (value) {
+                        return value.toFixed(2) + '%';
+                    },
+                    draw: function () {
+                        $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                    }
+                });
+
+                $('.resumenNC').knob({
+                    format: function (value) {
+                        return value.toFixed(2) + '%';
+                    },
+                    draw: function () {
+                        $(this.i).css('transform', 'rotate(0deg)').css('font-size', '11pt');
+                    }
+                });
+            /**************Resumen de Facturación***************/
+
+            $('.btnDetalle').click(function () {
+                window.location.href = '?Servicio=' + $(this).data('servicio') + '&Mes=' + $(this).data('mes') + '&Tipo=' + $(this).data('tipo');
+            });
+
+            $("#tblDetalleFacturas").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+
+            $(".nav-link").click(function () {
+                if ($(this).attr("href") == "#facturasParciales") {
+                    $("#divDesgloce").css('display','none');
+                    $("#divDesgloce2").css('display','none');
+                    $("#lnServicioRev").css('display','none');
+                    $("#servicioRevisado").css('display','none');
+                }
+            });
+
+            /*Grafica Comparativa*/
+                var columnasF = new Array();
+                var columnasNC = new Array();
+
+                var coloresColumnasG = new Array();
+                var coloresContornosG = new Array();
+
+                var coloresColumnasO = new Array();
+                var coloresContornosO = new Array();
+
+                var coloresColumnasP = new Array();
+                var coloresContornosP = new Array();
+
+                var coloresColumnasPP = new Array();
+                var coloresContornosPP = new Array();
+
+                var coloresColumnasPDGPPT = new Array();
+                var coloresContornosPDGPPT = new Array();
+
+                var MTGF = new Array(); //Monto Total General de Facturas por Mes Pagado (MTGF)
+                var MTGNC = new Array(); //Monto Total General de Facturas por Mes Pagado (MTGF)
+
+                var MTFMP = new Array(); //Monto Total de Facturas por Mes Pagado (MTFMP)
+                var MTFMPP = new Array(); //Monto Total de Facturas por Mes Pendientes de Pago (MTFMP)
+
+                var MTNCA = new Array(); //Monto Total de Notas de Crédito Aplicadas (MTNCA)
+                var MTNCPA = new Array(); //Monto Total de Notas de Crédito Pendientes de Aplicar (MTNCA)
+
+                var meses = @Html.Raw(Json.Serialize(@lmeses));
+
+                //Columna General Facturas
+                for (var i = 0; i < meses.length ; i++) {
+                    for (var j = 0, c = 0, t = 0; j < model.desgloceServicio.length; j++) {
+                        if (model.desgloceServicio[j].tipo == "Factura" && model.desgloceServicio[j].mes == meses[i]) {
+                            c += model.desgloceServicio[j].totalFacturas;
+                            t += model.desgloceServicio[j].totalFinal;
+                        }
+                    }
+                    MTGF.push([c, t.toFixed(2),"General"]);
+                    coloresColumnasG.push('rgba(54, 162, 235, 0.2)');
+                    coloresContornosG.push('rgb(54, 162, 235)');
+                }
+
+                //Columna General NC
+                for (var i = 0; i < meses.length ; i++) {
+                    for (var j = 0, c = 0, t = 0; j < model.desgloceServicio.length; j++) {
+                        if (model.desgloceServicio[j].tipo == "NC" && model.desgloceServicio[j].mes == meses[i]) {
+                            c += model.desgloceServicio[j].totalFacturas;
+                            t += model.desgloceServicio[j].totalFinal;
+                        }
+                    }
+                    MTGNC.push([c, t.toFixed(2)]);
+                }
+
+                //Generamos el Arreglo con las Cantidades de facturas y Notas de Crédito
+                for (var i = 0; i < model.desgloceServicio.length; i++) {
+                    if (model.desgloceServicio[i].tipo == "Factura") {
+                        MTFMP.push([model.desgloceServicio[i].facturasPagadas, model.desgloceServicio[i].totalPagado,"Pagada"]);
+                        coloresColumnasP.push('rgba(75, 192, 192, 0.2)');
+                        coloresContornosP.push('rgba(75,192,192)');
+                        MTFMPP.push([model.desgloceServicio[i].facturasPendientes, model.desgloceServicio[i].totalPendiente,"Pendiente"]);
+                        coloresColumnasPP.push('rgba(255, 99, 132, 0.2)');
+                        coloresContornosPP.push('rgba(255, 99, 132, 1)');
+                    }
+
+                    if (model.detalle[i].tipo == "NC") {
+                        if (model.detalle[i].estatus == "Aplicada") {
+                            MTNCA.push([model.detalle[i].totalFacturas, model.detalle[i].totalFinal]);
+                        } else if (model.detalle[i].estatus != "Aplicada" && model.detalle[i].estatus != "Proceso") {
+                            MTNCPA.push([model.detalle[i].totalFacturas, model.detalle[i].totalFinal]);
+                        }
+                    }
+                }
+
+                
+
+                columnasF.push(
+                    {
+                        label: 'Monto Facturado', data: MTGF, backgroundColor: coloresColumnasG,
+                        borderColor: coloresContornosG, borderWidth: 1
+                    },
+                    {
+                        label: 'Monto Pagado', data: MTFMP, backgroundColor: coloresColumnasP,
+                        borderColor: coloresContornosP, borderWidth: 1
+                    },
+                    {
+                        label: 'Monto Pendiente de Pago', data: MTFMPP, backgroundColor: coloresColumnasPP,
+                        borderColor: coloresContornosPP, borderWidth: 1
+                    }
+                );
+
+                columnasNC.push(
+                    {
+                        label: 'Monto Facturado', data: MTGNC, backgroundColor: coloresColumnasG,
+                        borderColor: coloresContornosG, borderWidth: 1
+                    },
+                    /*{
+                        label: 'Monto Pagado', data: MTNCA, backgroundColor: coloresColumnasP,
+                        borderColor: coloresContornosP, borderWidth: 1
+                    },
+                    {
+                        label: 'Monto Pendiente de Pago', data: MTNCPA, backgroundColor: coloresColumnasPP,
+                        borderColor: coloresContornosPP, borderWidth: 1
+                    }*/
+                );    
+
+                const factura = document.getElementById('graficaFacturas').getContext('2d');
+
+                const graFacturas = new Chart(factura, {
+                    type: 'bar',
+                    data: {
+                        labels: @Html.Raw(Json.Serialize(@lmeses)),
+                        datasets: columnasF
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            fontStyle: 'bold',
+                            text: "Comparativo de Facturación del Servicio"
+                        },
+
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                    return value[0]+" Facturas - "+' $' + value[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            } // end callbacks:
+                        }, //end tooltips
+                        scales: {
+                            yAxes: [{
+                                gridLines: { display: false },
+                                ticks: {
+                                    beginAtZero: true,
+                                    //stepSize: 500000,
+                                    // Return an empty string to draw the tick line but hide the tick label
+                                    // Return `null` or `undefined` to hide the tick line entirely
+                                    userCallback: function (value, index, values) {
+                                        // Convert the number to a string and splite the string every 3 charaters from the end
+                                        value = value.toString();
+                                        value = value.split(/(?=(?:...)*$)/);
+                                        value = value.join(',');
+                                        return '$' + value;
+                                    }
+                                }
+                            }]
+                        },
+                        responsive: true,
+                    }
+                });
+
+                const ctx = document.getElementById('graficaNC').getContext('2d');
+
+                const graFacturasNC = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: @Html.Raw(Json.Serialize(@lmeses)),
+                        datasets: columnasNC
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            fontStyle: 'bold',
+                            text: "Comparativo de Aplicación de Nota(s) de Crédito (NC)"
+                        },
+                        
+                        legend: {
+                            display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function (tooltipItem, data) {
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                    return value[0]+" Nota(s) de Crédito - "+' $' + value[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            } // end callbacks:
+                        }, //end tooltips
+                        scales: {
+                            yAxes: [{
+                                gridLines: { display: false },
+                                ticks: {
+                                    beginAtZero: true,
+                                    //stepSize: 500000,
+                                    // Return an empty string to draw the tick line but hide the tick label
+                                    // Return `null` or `undefined` to hide the tick line entirely
+                                    userCallback: function (value, index, values) {
+                                        // Convert the number to a string and splite the string every 3 charaters from the end
+                                        value = value.toString();
+                                        value = value.split(/(?=(?:...)*$)/);
+                                        value = value.join(',');
+                                        return '$' + value;
+                                    }
+                                }
+                            }],
+                        },
+                        responsive: true,
+
+                    }
+                });
+
+
+            /*FIN Grafica Comparativa*/
+
+
+            /*Tabla Comparativa de Facturas*/
+            const tableContainer = document.getElementById('tableContainer');
+
+            const xAxis = graFacturas.data.labels;
+            const yAxis = graFacturas.data.datasets;
+            
+            const tableHeader = `<tr><th>Mes</th>${yAxis.reduce((memo, entry,value) => { memo += `<th class="${value == 0 ? "text-primary" : value == 1 ? "text-success" : "text-danger"}">${entry.label}</th>`; return memo; }, '<th></th>')}</tr>`;
+
+            function getRow(fila) {
+                const tableHeader = `<td></td>${yAxis.reduce((memo, entry,value) => {
+                    const row = entry.data[fila];
+                    if (row !== undefined && row[2] == "General") {
+                        memo += `<td class="text-primary">${row[0] != 0 ? row[0] + " Factura(s) - $" + row[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "N/A"}</td>`;
+                    } else if (row !== undefined && row[2] == "Pagada") {
+                        memo += `<td class="text-success">${row[0] != 0 ?row[0] + " Factura(s) - $" + row[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","): "N/A"}</td>`;
+                    } else if (row !== undefined && row[2] == "Pendiente") {
+                        memo += `<td class="text-danger">${row[0] != 0 ? row[0] + " Factura(s) - $" + row[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "N/A"}</td>`;
+                    } else {
+
+                    }
+                                       
+                    return memo;
+                }, '')}`;
+                return tableHeader;
+            }
+
+            const tableBody = xAxis.reduce((memo, entry, value) => {
+                memo += `<tr class="text-center"><td>${entry}</td>${getRow(value)}</tr>`;
+                return memo;
+            }, '');
+
+            const table = `<table class="table mt-2">${tableHeader}${tableBody}</table>`;
+
+            tableContainer.innerHTML = '<div class="row col-lg-12"><h5 class="font-weight-bold">Detalle de Facturación</h5></div>' + table;
+
+
+            /*Tabla Comparativa de Nota(s) de Credito*/
+            const tableContainerNC = document.getElementById('tableContainerNC');
+
+            const xAxisNC = graFacturasNC.data.labels;
+            const yAxisNC = graFacturasNC.data.datasets;
+
+            function getRowNC(fila) {
+                const tableHeader = `<td></td>${yAxisNC.reduce((memo, entry, value) => {
+                    const row = entry.data[fila];
+                    memo += `<td class="${value == 0 ? "text-primary" : value == 1 ? "text-success" : "text-danger"}">${row !== undefined ? row[0] + " Factura(s) - " + row[1].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "N/A"}</td>`;
+                    return memo;
+                }, '')}`;
+                return tableHeader;
+            }
+
+            const tableBodyNC = xAxisNC.reduce((memo, entry, value) => {
+                memo += `<tr class="text-center"><td>${entry}</td>${getRowNC(value)}</tr>`;
+                return memo;
+            }, '');
+
+            const tableNC = `<table class="table mt-2">${tableHeader}${tableBodyNC}</table>`;
+
+            tableContainerNC.innerHTML = '<div class="row col-lg-12"><h5 class="font-weight-bold">Detalle de Aplicación de Nota(s) de Crédito</h5></div>' + tableNC;
+
+
+
+        });
+    </script>
+}
+

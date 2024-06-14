@@ -1,0 +1,163 @@
+﻿@model CedulasEvaluacion.Entities.Models.Perfiles;
+@{
+    ViewData["Title"] = "Nuevo Perfil de Usuario";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group col-lg-3">
+            <label for="name">Nombre del Perfil: *</label>
+            <input type="text" class="form-control" name="nombre" id="perfil_nombre" value="@Model.Nombre"/>
+        </div>
+    </div>
+</div>
+
+@* Modulos con sus respectivas Operaciones *@
+<div class="row mt-4">
+    <div class="card col-lg-12">
+        <div class="card-header bg-joke text-white">
+            <h3>Módulos del Sistema</h3>
+        </div>
+        <div class="card-body">
+            <div class="row mt-3">
+                <div class="col-lg-12">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        @foreach (var modulo in Model.Modulos)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link detailUser" aria-current="page" data-toggle="tab" href="#op_@modulo.Nombre" role="tab">@modulo.Nombre.Replace("_"," ")</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                @for (int i = 0; i < Model.Modulos.Count; i++)
+                {
+                    <div class="tab-pane fade mt-2 ml-3 show" id="op_@Model.Modulos[i].Nombre" role="tabpanel" aria-labelledby="home-tab">
+                        <div class="col-lg-12 mb-5">
+                            <h4>@Model.Modulos[i].Nombre.Replace("_"," ")</h4>
+                        </div>
+                        @for (int j = 0; j < Model.Operaciones.Count; j++)
+                        {
+                            @if (Model.Modulos[i].Id == Model.Operaciones[j].ModuloId)
+                            {
+                                <div class="form-check-inline i-checks mt-3">
+                                    <strong class="text-black mr-3">@System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(@Model.Operaciones[j].Nombre)</strong>
+                                    <input class="selected_checkbox" type="checkbox" data-toggle="toggle" data-on="<i class='fa fa-check'></i>" data-off="<i class='fa fa-times'></i>"
+                                           data-onstyle="success" data-offstyle="danger" data-mod="@Model.Modulos[i].Nombre" data-op="@Model.Operaciones[j].Nombre"
+                                           data-style="ios" value="@Model.Operaciones[j].Id">
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                <a href="/perfiles/index" class="btn btn-danger float-right ml-3">Cancelar</a>
+                <button type="button" class="btn btn-success float-right btn_guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .toggle.ios, .toggle-on.ios, .toggle-off.ios {
+        border-radius: 20rem;
+    }
+
+        .toggle.ios .toggle-handle {
+            border-radius: 20rem;
+        }
+</style>
+
+@section Scripts{
+    <script>
+        window.onload = function () {
+
+            var opPerfil = @Html.Raw(Json.Serialize(@Model.opPerfil));
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            /************************************************ CARGA DE PERMISOS **********************************************************/                
+                $('.selected_checkbox').each(function () {
+                    if (buscaPermiso($(this).val()) == 1) {
+                        $(this).parent().removeClass('btn-danger off');
+                        $(this).parent().addClass('btn-green btn-success');
+                        $(this).prop('checked',true)
+                    }
+                });
+
+                function buscaPermiso(permiso) {
+                    for (var i = 0; i < opPerfil.length;i++) {
+                        if (opPerfil[i].operacionId == parseInt(permiso)) {
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+            /**************************************** FIN DE CARGA DE PERMISOS **********************************************************/
+
+
+            /**************************************** CAMBIO DE PERMISOS (ON/OFF) *******************************************************/
+            $('.selected_checkbox').change(function () {
+                    var module = $(this).data('mod');
+                    var op = $(this).data('op');
+                
+                    if ($('#op_' + op + '_' + module + ' .toggle').hasClass('btn-danger')) {
+                        $(this).parent().removeClass('btn-danger off');
+                        $(this).parent().addClass('btn-green btn-success');
+                    }
+
+                    if ($('#op_' + op + '_' + module + ' .toggle').hasClass('btn-green')) {
+                        $(this).parent().addClass('btn-danger off');
+                        $(this).parent().removeClass('btn-green btn-success');
+                    }
+                });
+            /**************************************** CAMBIO DE PERMISOS (ON/OFF) *******************************************************/
+
+            
+
+
+            $('.btn_guardar').click(async function () {
+                var id = parseInt(model.id);
+                var nombre = $('#perfil_nombre').val();
+                var success = 0;
+                
+                axios.get('/perfiles/borraOpPerfil/'+id);
+
+                await axios.post('/perfiles/actualizaPerfil', { Id: id, Nombre: nombre }).then();
+
+                $('.selected_checkbox').each(function () {
+                    if ($(this).prop('checked') == true) {
+                        axios.post('/operacionesPerfil/insertaOpPerfil', { PerfilId: parseInt(id), OperacionId: parseInt($(this).val()) }).then(op => {
+                            if (op.data == -1) {
+                                Swal.fire({
+                                    'icon': 'error',
+                                    'title': 'Perfil Creado',
+                                    'html': 'No se pudo creó el perfil "' + nombre + '" favor de contactar al administrador del sistema.'
+                                });
+                                return false;
+                            }
+                        });
+                    }
+                });
+
+
+                success = this.success;
+                if (success != -1) {
+                    Swal.fire({
+                        'icon': 'success',
+                        'title': 'Perfil Creado',
+                        'html': 'Se actualizó el perfil "' + nombre + '" y sus permisos.'
+                    }).then(function () {
+                        window.location.href = '/perfiles/index';
+                    });
+                }
+            });
+
+
+        };
+    </script>
+}

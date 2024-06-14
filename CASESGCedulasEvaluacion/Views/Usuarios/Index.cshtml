@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CedulasEvaluacion.Entities.Models.Usuarios>
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table" id="table_users">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Expediente</th>
+                    <th>Nombre</th>
+                    <th>Puesto</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in @Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(model => item.Id)</td>
+                        <td>@Html.DisplayFor(model => item.exp)</td>
+                        <td>@Html.DisplayFor(model => item.nombre_emp) @Html.DisplayFor(model => item.paterno_emp) @Html.DisplayFor(model => item.materno_emp)</td>
+                        <td>@Html.DisplayFor(model => item.cve_puesto)</td>
+                        <td>@Html.DisplayFor(model => item.correo_electronico)</td>
+                        <td>
+                            <a asp-action="DetalleUsuario" asp-controller="Usuarios" asp-route-id="@item.Id" class="text-center">
+                                <i class="fad fa-eye text-success mr-2"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(function () {
+            $("#table_users").DataTable({
+                paging: true,
+                bLengthChange: false,
+                pageLength: 10,
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
+                },
+            });
+        });
+    </script>
+}

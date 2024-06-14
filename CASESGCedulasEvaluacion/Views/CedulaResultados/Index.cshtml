@@ -1,0 +1,137 @@
+﻿@model CedulasEvaluacion.Entities.MCedulaR.ModelosCR;
+@{
+    var i = 0;
+    ViewData["Title"] = "Cédulas de Resultados de los Servicios Generales";
+}
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header bg-joke text-white">
+            <h4>Generar Cédula</h4>
+        </div>
+        <div class="card-body">
+            <div class="row col-lg-12">
+                <div class="col-lg-3">
+                    <label for="">Servicio:</label>
+                    <select class="form-control" id="selectServicio">
+                        <option value="">Seleccione un Servicio</option>
+                        @foreach (var ser in Model.servicios)
+                        {
+                            @if (!ser.ServicioBasico && !ser.Nombre.Equals("Pantallas"))
+                            {
+                                <option value="@ser.Id">@ser.Nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <label for="">Contrato:</label>
+                    <select class="form-control" id="selectContrato">
+                        <option value="">Seleccione un Contrato</option>
+                        @foreach (var ser in Model.contratos)
+                        {
+                            <option value="@ser.Id">@ser.NumeroContrato</option>
+                        }
+                    </select>
+                </div>
+                <div class=" col-lg-3">
+                    <label for="">Año:</label>
+                    <select class="form-control" id="selectAnio">
+                        <option value="">Seleccione el año a consultar</option>
+                        @foreach (var ser in Model.anios)
+                        {
+                            <option value="@ser.Valor">@ser.Valor</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3">
+                    <label for="">Mes Inicial:</label>
+                    <select class="form-control" id="selectMesInicial">
+                        <option value="">Seleccione el mes inicial</option>
+                        @foreach (var ser in Model.meses)
+                        {
+                            <option value="@ser.Id">@ser.Nombre</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3 mt-2">
+                    <label for="">Mes Final:</label>
+                    <select class="form-control" id="selectMesFinal">
+                        <option value="">Seleccione el mes final</option>
+                        @foreach (var ser in Model.meses)
+                        {
+                            <option value="@ser.Id">@ser.Nombre</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            @if (Model.ServicioId != 0 && Model.rubros.Count>0)
+            {
+                <div class="row col-lg-12 mt-3">
+                    <h5>Rubros a Evaluar</h5>
+                    <div class="col-lg-12">
+                        <div class="form-group clearfix">
+                            @foreach (var inc in Model.rubros)
+                            {
+                                <div class="icheck-success d-inline mr-3">
+                                    <input type="checkbox" id="@inc.Abreviacion" class="rubroServicio" name="rubrosServicio" value="@inc.Abreviacion">
+                                    <label for="@inc.Abreviacion" class="mt-3">@inc.Valor</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <div class=" col-lg-12">
+                <a href="/home" class="btn btn-danger float-right ml-2">Cancelar</a>
+                <button type="submit" class="btn btn-success float-right" id="generaCedula">Generar Cédula</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{ 
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $("#selectAnio").attr("disabled", true);
+            $("#selectMesInicial").attr("disabled", true);
+            $("#selectMesFinal").attr("disabled", true);
+
+
+            if (model.servicioId != 0) {
+                $("#selectServicio").val(model.servicioId);
+                $("#selectAnio").attr("disabled", false);
+                $("#selectMesInicial").attr("disabled", false);
+                $("#selectMesFinal").attr("disabled", false);
+            }
+
+            $("#selectServicio").change(function () {
+                window.location.href = "/cedResultados/index?Servicio=" + $(this).val();
+            });
+
+            $("#generaCedula").click(function () {
+                var servicio = model.servicioId;
+                var anio = $("#selectAnio").val();
+                var mesI = $("#selectMesInicial").val();
+                var mesF = $("#selectMesFinal").val();
+                var contrato = $("#selectContrato").val();
+                var rubros = "";
+
+                $(".rubroServicio").each(function () {
+                    if ($(this).prop("checked") == true) {
+                        rubros += $(this).val()+",";
+                    }
+                });
+
+                rubros = rubros.substr(0, rubros.length - 1);
+
+                window.open('/cedulaResultados/'+servicio+'/'+anio+'/'+parseInt(mesI)+'/'+parseInt(mesF)+'/'+rubros+'/'+parseInt(contrato), '_blank');
+            });
+        });
+    </script>
+}

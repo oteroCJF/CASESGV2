@@ -1,0 +1,286 @@
+﻿@inject CedulasEvaluacion.Services.ServiceModulos sModulo;
+@{
+    int user = Convert.ToInt32(@User.Claims.ElementAt(0).Value + "");
+    List<CedulasEvaluacion.Entities.Vistas.VModulosUsuario> modulos = await sModulo.GetVModulos(user);
+}
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar elevation-2" style="background-image: radial-gradient(circle at 5.99% 5.99%, #675770 0, #544468 16.67%, #3e3160 33.33%, #1f1f59 50%, #001052 66.67%, #00004c 83.33%, #000047 100%);">
+    <!-- Brand Logo -->
+    <a href="/home" class="brand-link ml-3">
+        <img src="~/dist/img/logos/logoCJFblanco.png" alt="AdminLTE Logo" class="brand-image-xl">
+    </a>
+    @if ((@User.Claims.ElementAt(2).Value).Contains("Administrador"))
+    {
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="font-size: 15px;">
+                    <li class="nav-item has-treeview" id="li_Inicio">
+                        <a href="/" class="nav-link text-white">
+                            <i class="fad fa-home mr-2"></i>
+                            <p>
+                                Inicio
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview" id="li_Inicio">
+                        <a href="/compilacion/index" class="nav-link text-white">
+                            <i class="fad fa-list-check mr-2"></i>
+                            <p>
+                                Marco Normativo
+                            </p>
+                        </a>
+                    </li>
+                    @foreach (var mod in modulos)
+                    {
+                        @if (@mod.Servicio.Equals(""))
+                        {
+                            <li class="nav-item has-treeview mt-1" id="li_Financieros">
+                                <a href="/@mod.URL/index" class="nav-link text-white">
+                                    @Html.Raw(@mod.Icono)
+                                    <p>
+                                        @mod.Modulo.Replace("_", " ")
+                                    </p>
+                                </a>
+                            </li>
+                        }
+                    }
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link text-white">
+                            <i class="fa-solid fa-shapes mr-2"></i>
+                            <p>
+                                Servicios Básicos
+                                <i class="right fas fa-angle-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview ml-3">
+                            @foreach (var mod in modulos)
+                            {
+                                @if (!@mod.Servicio.Equals("") && mod.ServicioBasico)
+                                {
+                                    <li class="nav-item has-treeview li_sub">
+                                        <a href="#" class="nav-link text-white">
+                                            @Html.Raw(@mod.Icono)
+                                            <p>
+                                                @mod.Servicio
+                                                <i class="right fas fa-angle-right"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="/@mod.URL/index/@mod.ServicioId" class="nav-link ml-2 text-white">
+                                                    <i class="fal fa-clipboard-check nav-icon"></i>
+                                                    <p>Facturas Registradas</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link text-white">
+                            <i class="fa-solid fa-person-dots-from-line mr-2"></i>
+                            <p>
+                                Servicios Generales
+                                <i class="right fas fa-angle-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview ml-3">
+                            @foreach (var mod in modulos)
+                            {
+                                @if (!@mod.Servicio.Equals("") && !mod.ServicioBasico)
+                                {
+                                    <li class="nav-item has-treeview li_sub">
+                                        <a href="#" class="nav-link text-white">
+                                            @Html.Raw(@mod.Icono)
+                                            <p>
+                                                @mod.Servicio
+                                                <i class="right fas fa-angle-right"></i>
+                                            </p>
+                                        </a>
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="/@mod.URL/nuevaCedula/@mod.ServicioId" class="nav-link ml-2 text-white">
+                                                    <i class="fal fa-file nav-icon"></i>
+                                                    <p>Generar Cédula</p>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a href="/@mod.URL/index/@mod.ServicioId" class="nav-link ml-2 text-white">
+                                                    <i class="fal fa-clipboard-check nav-icon"></i>
+                                                    <p>Listado de Cédulas</p>
+                                                </a>
+                                            </li>
+                                            @if (mod.ServicioId == 3)
+                                            {
+                                                <li class="nav-item">
+                                                    <a href="/@mod.URL/seguimientosEstafeta" class="nav-link ml-2 text-white">
+                                                        <i class="fa-regular fa-ballot-check nav-icon"></i>
+                                                        <p>Seguimientos Estafeta</p>
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link text-white">
+                            <i class="fa-solid fa-folder mr-2"></i>
+                            <p>
+                                Repositorios de Facturas
+                                <i class="right fas fa-angle-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview ml-3">
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2022&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-light fa-link mr-1"></i>
+                                    <p>Repositorio 2022</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2023&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-light fa-link mr-1"></i>
+                                    <p>Repositorio 2023</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2024&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-light fa-link mr-1"></i>
+                                    <p>Repositorio 2024</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+    }
+    else
+    {
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" style="font-size: 15px;">
+                    <li class="nav-item has-treeview" id="li_Inicio">
+                        <a href="/" class="nav-link text-white">
+                            <i class="fad fa-home mr-2"></i>
+                            <p>
+                                Inicio
+                            </p>
+                        </a>
+                    </li>
+                    @foreach (var mod in modulos)
+                    {
+                        @if (@mod.Servicio.Equals(""))
+                        {
+                            <li class="nav-item has-treeview mt-1" id="li_Financieros">
+                                <a href="/@mod.URL/index" class="nav-link text-white">
+                                    @Html.Raw(@mod.Icono)
+                                    <p>
+                                        @mod.Modulo.Replace("_", " ")
+                                    </p>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            if (mod.ServicioBasico)
+                            {
+                                <li class="nav-item has-treeview li_sub">
+                                    <a href="#" class="nav-link text-white">
+                                        @Html.Raw(@mod.Icono)
+                                        <p>
+                                            @mod.Servicio
+                                            <i class="right fas fa-angle-right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="/@mod.URL/index/@mod.ServicioId" class="nav-link ml-2 text-white">
+                                                <i class="fal fa-clipboard-check nav-icon"></i>
+                                                <p>Facturas Registradas</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item has-treeview" id="li_Limpieza">
+                                    <a href="#" class="nav-link text-white">
+                                        @Html.Raw(@mod.Icono)
+                                        <p>
+                                            @mod.Servicio
+                                            <i class="right fas fa-angle-right"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="/@mod.URL/nuevaCedula/@mod.ServicioId" class="nav-link ml-2 text-white">
+                                                <i class="fal fa-file nav-icon"></i>
+                                                <p>Generar Cédula</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="/@mod.URL/index/@mod.ServicioId" class="nav-link ml-2 text-white">
+                                                <i class="fal fa-clipboard-check nav-icon"></i>
+                                                <p>Listado de Cédulas</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    }
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link text-white">
+                            <i class="fa-solid fa-folder mr-2"></i>
+                            <p>
+                                Repositorios de Facturas
+                                <i class="right fas fa-angle-right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview ml-3">
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2022&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-light fa-link mr-1"></i>
+                                    <p>Repositorio 2022</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2023&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-light fa-link mr-1"></i>
+                                    <p>Repositorio 2023</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2024&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-light fa-link mr-1"></i>
+                                    <p>Repositorio 2024</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+    }
+</aside>

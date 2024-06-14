@@ -1,0 +1,93 @@
+﻿@model CedulasEvaluacion.Entities.MAvisos.AvisosCASESG;
+@{
+    var i = 0;
+    ViewData["Title"] = "Detalle de Aviso de CASESG";
+}
+
+<div class="container-fluid" id="limpieza">
+    <a href="#" type='button' class='btn-sm btn-warning float-right mr-2 mb-3 btn-regresar' data-toggle="tooltip" title="Regresar al Listado de avisos" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+    <div class="row col-lg-12 mt-2 mb-3">
+        <table class="table">
+            <tr>
+                <td colspan="4" data-toggle="tooltip" title="Titulo del Avsio" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;">
+                    <strong>Titulo: </strong> @Model.Titulo
+                </td>
+                <td data-toggle="tooltip" title="Comentarios del Aviso" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;">
+                    <strong>Comentarios: </strong> @Model.Comentarios
+                </td>
+                <td data-toggle="tooltip" title="Vigencia del Aviso" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;">
+                    <strong>Vigencia: </strong> @(String.Concat(Model.FechaInicio.ToString("dd/MM/yyyy")," al ", Model.FechaFin.ToString("dd/MM/yyyy")))
+                </td>
+                <td data-toggle="tooltip" title="Estatus del Aviso" data-placement="top" style="font-family: Tahoma; font-size: 13.5px; letter-spacing: 0.8px;">
+                    <strong>Estatus: </strong> @(Model.Activo ? "Activo":"Inactivo")
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="card">
+        <div class="card-header bg-joke text-white">
+            <h5 class="mt-2">Aviso asignado a los perfiles:</h5>
+        </div>
+        <div class="card-body">
+            <div class="row ">
+                <div class="col-lg-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Perfil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.avisoP.Count != 0)
+                            {
+                                @foreach (var perfil in Model.avisoP)
+                                {
+                                    i++;
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@perfil.perfil.Nombre</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr class="text-center">
+                                    <td colspan="3">No hay <strong>Perfiles</strong> asignados a este perfil</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .fields {
+        margin: 0 10px 0 0;
+    }
+
+        .fields:before {
+            content: "$";
+            text-align: center;
+            position: absolute;
+            margin-top: 7px;
+            left: -5px;
+        }
+</style>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".btn-regresar").click(function () {
+                window.location.href = "/avisos/index";
+            });
+        });
+    </script>
+}

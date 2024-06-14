@@ -1,0 +1,106 @@
+﻿@model CedulasEvaluacion.Entities.MAlcances.MAlcances;
+@{
+    var i = 0;
+    var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
+    ViewData["Title"] = "Activación de Alcances a Cédulas de Evaluación";
+}
+
+<div class="container-fluid">
+    <div class="row col-lg-12">
+        <p class="col-lg-12 h5">Seleccione un servicio.</p>
+        @foreach (var md in Model.catalogo)
+        {
+            <a class="btn btn-app-firmantes @md.Fondo text-white font-weight-bold btnServicio" data-servicio="@md.Id">
+                @Html.Raw(md.Icono)
+                @md.Nombre
+            </a>
+        }
+    </div>
+
+    <div class="row col-lg-12">
+        @if (Model.ServicioId != 0)
+        {
+            <p class="col-lg-12 h5">Seleccione un año.</p>
+            @foreach (var an in Model.anios)
+            {
+                <a class="btn btn-sm text-white font-weight-bold btnAnio bg-black mr-2 ml-2" data-anio="@an.Valor">
+                    @an.Valor
+                </a>
+            }
+        }
+    </div>
+
+    @if (Model.concentrado != null)
+    {
+        <div class="row mt-3">
+            <div class="row col-lg-12">
+                @foreach (var cd in Model.concentrado)
+                {
+                    <div class="col-lg-3 col-6">
+                        <div class="small-box @(cd.TotalAlcances != 0 ? "bg-danger":cd.Fondo)">
+                            <div class="inner">
+                                <h3>@cd.TotalCedulas</h3><h5>Cédulas de Evaluación</h5>
+                                <div class="form-row">
+                                    <strong>@cd.Mes</strong>
+                                </div>
+                            </div>
+                            <a href="#" class="small-box-footer activaAlcances" data-mes="@cd.Mes" data-total="@cd.TotalCedulas">
+                                @Html.Raw(cd.TotalAlcances != 0 ? "<b>"+ cd.TotalAlcances+" Pendientes de terminar </b>" : "<b>Activar Alcances <i class='fas fa-arrow-alt-circle-right ml-2'></i></b>")
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            var model = @Html.Raw(Json.Serialize(@Model));
+
+            $("#error_firmanteActual").css("display", "none");
+
+            $('[data-toggle="tooltip"]').tooltip();
+
+            $(".select2").select2();
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+
+            $(".btnServicio").click(function () {
+                window.location.href = "/alcances/index?Servicio="+$(this).data('servicio');
+            });
+
+            $(".btnAnio").click(function () {
+                window.location.href = "/alcances/index?Servicio=" + model.servicioId+"&Anio="+$(this).data('anio');
+            });
+
+            $(".activaAlcances").click(function () {
+                Swal.fire({
+                    'icon': 'warning',
+                    'title': 'Alcances a Cedulas de Evaluación',
+                    'html': '¿Está seguro que desea habilitar los alcances del mes '+$(this).data('mes')+'?',
+                    'confirmButtonColor': '#3085d6',
+                    'cancelButtonColor': '#d33',
+                    'confirmButtonText': 'Si, enviar',
+                    'cancelButtonText': 'Cancelar',
+                    'showCancelButton': true
+                }).then(resp => {
+                    if (resp.isConfirmed) {
+                        axios.post("/alcances/habilitar", { Mes: $(this).data('mes'), Anio: model.anio, ServicioId: model.servicioId }).then(response => {
+                            Swal.fire({
+                                'icon': 'success',
+                                'title': 'Alcances a Cedulas de Evaluación',
+                                'html': 'Se activaron los alcances para las cédulas del mes de ' + $(this).data('mes')
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

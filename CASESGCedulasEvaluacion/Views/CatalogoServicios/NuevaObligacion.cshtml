@@ -1,0 +1,379 @@
+﻿@model CedulasEvaluacion.Entities.MContratos.EntregablesContrato;
+
+@{
+    ViewData["title"] = "Nueva Obligación para el Contrato \"" + @Model.contrato.NumeroContrato + "\" del Servicio "+@Model.servicio.Nombre;
+}
+<div class="container-fluid" id="obligacion">
+    <div class="row mb-3">
+        <div class="col-lg-12">
+            <a href="/catalogo/detalleContrato/@Model.contrato.Id" type='button' class="btn btn-sm btn-warning float-right"
+               data-toggle="tooltip" title="Regresar al Listado de Servicios" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+        </div>
+    </div>
+        <div class="card">
+            <div class="card-header bg-joke text-white">
+                <h5 class="mt-2">Datos de Obligación</h5>
+            </div>
+            <div class="card-body">
+                <div class="row col-lg-12">
+                    <div class="col-lg-5">
+                        <label for="">Descripción:</label>
+                        <input class="form-control" type="text" id="descripcion" />
+                        <div class="col-sm-12 error_descripcion">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la descripción de la obligacion
+                            </small>
+                        </div>
+                    </div>
+                    <div class=" col-lg-4">
+                        <label for="">Obligación:</label>
+                        <select class="form-control" id="tipoObligacion" >
+                            <option value="">Seleccione una opción</option>
+                            <option value="Programa de Operación">Programa de Operación</option>
+                            <option value="Fianza de Cumplimiento">Fianza de Cumplimiento</option>
+                            <option value="Póliza de Responsabilidad">Póliza de Responsabilidad</option>
+                            <option value="Fianza de Obligaciones Obrero-Patronales">Fianza de Obligaciones Obrero-Patronales</option>
+                        </select>
+                        <div class="col-sm-12 error_tipoObligacion">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de obligacion a entregar
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <label for="">Tipo de Obligación:</label>
+                        <select class="form-control" id="tipoContrato">
+                            <option value="">Seleccione una opción</option>
+                            <option value="Anual">Anual</option>
+                            <option value="Plurianual">Plurianual</option>
+                            <option value="N/A">N/A</option>
+                        </select>
+                        <div class="col-sm-12 error_tipoContrato">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el tipo de contrato
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-4">
+                    <div class=" col-lg-3">
+                        <label for="">Inicio del Periodo:</label>
+                        <input class="form-control" type="date" id="inicioPeriodo" />
+                        <div class="col-sm-12 error_inicioPeriodo">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el inicio del periodo
+                            </small>
+                        </div>
+                    </div>
+                    <div class=" col-lg-3">
+                        <label for="">Fin del Periodo:</label>
+                        <input class="form-control" type="date" id="finPeriodo" />
+                        <div class="col-sm-12 error_finPeriodo">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el fin del periodo
+                            </small>
+                        </div>
+                    </div>
+                    <div class=" col-lg-3">
+                        <label for="">Fecha Programada:</label>
+                        <input class="form-control" type="date" id="fechaProgramada" />
+                        <div class="col-sm-12 error_fechaProgramada">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la fecha programada
+                            </small>
+                        </div>
+                    </div>
+                    <div class=" col-lg-3">
+                        <label for="">Fecha de Entrega:</label>
+                        <input class="form-control" type="date" id="fechaEntrega" />
+                        <div class="col-sm-12 error_fechaEntrega">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione la fecha de entrega
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="row col-lg-12 mt-4">
+                    <div class="col-lg-3">
+                        <label for="">Monto Garantía:</label>
+                        <input class="form-control" type="text" id="montoGarantia" />
+                        <div class="col-sm-12 error_garantia">
+                            <small id="dateHelp" class="text-danger">
+                                Por favor seleccione el monto de la garantía
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="elegirArchivo">Seleccionar Archivo: </label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf" />
+                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class=" col-lg-12">
+                    <a href="/catalogo/detalleContrato/@Model.ContratoId" class="btn btn-danger float-right ml-2">Cancelar</a>
+                    <button type="submit" class="btn btn-success float-right" id="guardarObligacion">Guardar Obligación</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(function () {
+
+            var model = @Html.Raw(Json.Serialize(@Model));
+            if (model.id == 0) {
+                $('#inicioPeriodo').val(null);
+                $('#finPeriodo').val(null);
+                $('#fechaProgramada').val(null);
+                $('#fechaEntrega').val(null);
+            } else {
+                var ip = @Html.Raw(Json.Serialize(@Model.InicioPeriodo.ToString("yyyy-MM-dd")));
+                var fp = @Html.Raw(Json.Serialize(@Model.FinPeriodo.ToString("yyyy-MM-dd")));
+                var pd = @Html.Raw(Json.Serialize(@Model.FechaProgramada.ToString("yyyy-MM-dd")));
+                var fe = @Html.Raw(Json.Serialize(@Model.FechaEntrega.ToString("yyyy-MM-dd")));
+                
+                $('#idEntregable').val(model.id);
+                $("#descripcion").val(model.descripcion);
+                $("#tipoObligacion").val(model.tipo);
+                $("#tipoContrato").val(model.tipoContrato);
+                $("#inicioPeriodo").val(ip);
+                $("#finPeriodo").val(fp);
+                $("#montoGarantia").val(model.montoGarantia);
+                $("#fechaProgramada").val(pd);
+                if (fe != "0001-01-01") {
+                    $("#fechaEntrega").val(fe);
+                } else {
+                    $("#fechaEntrega").val();
+                }
+                $(".custom-file-label").text(model.nombreArchivo);
+            }
+
+            $(".error_descripcion").css('display', 'none');
+            $(".error_tipoObligacion").css('display', 'none');
+            $(".error_tipoContrato").css('display', 'none');
+            $(".error_inicioPeriodo").css('display', 'none');
+            $(".error_finPeriodo").css('display', 'none');
+            $(".error_fechaProgramada").css('display', 'none');
+            $(".error_fechaEntrega").css('display', 'none');
+            $(".error_garantia").css('display', 'none');
+
+            $("#customFile").on("change", function () {
+                var fileName = $(this).val().split("\\").pop();
+                var ext = fileName.split('.').pop();
+                if (ext == "pdf") {
+                    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                    if ($('#customFile').hasClass('is-invalid')) {
+                        $('#customFile').removeClass('is-invalid');
+                        $('#customFile').addClass('is-valid');
+                        $('#error_customFile').css('display', 'none');
+                    } else {
+                        $('#customFile').addClass('is-valid');
+                    }
+                } else {
+                    Swal.fire({
+                        'icon': 'error',
+                        'title': 'Servicio de Fumigación',
+                        'text': 'El archivo que intentas adjuntar no es válido. Favor de solo seleccionar archivos "PDF"'
+                    });
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    document.getElementById('customFile').value = '';
+                        $('#customFile').removeClass('is-valid');
+                        $('#customFile').addClass('is-invalid');
+                        $('#error_customFile').css('display', 'block');
+                }
+
+            });
+
+            $("#guardarObligacion").click(function () {
+                var formData = new FormData();
+                var id = $('#idEntregable').val();
+                var descripcion = $("#descripcion").val();
+                var tipoObligacion = $("#tipoObligacion").val();
+                var tipoContrato = $("#tipoContrato").val();
+                var inicioPeriodo = $("#inicioPeriodo").val();
+                var finPeriodo = $("#finPeriodo").val();
+                var montoGarantia = $("#montoGarantia").val();
+                var fechaProgramada = $("#fechaProgramada").val();
+                var fechaEntrega = $("#fechaEntrega").val();
+                var customFile = document.getElementById('customFile').files[0];
+
+
+                if (descripcion != "" && tipoObligacion != "" && tipoContrato != "" && inicioPeriodo != "" && finPeriodo != "" && fechaProgramada != ""
+                    && montoGarantia != "")
+                {
+                    if (model.id != 0) {
+                        id = parseInt(id);
+                    } else {
+                        id = 0;
+                    }
+
+                    formData.append("Id", model.id);
+                    formData.append("ContratoId", model.contratoId);
+                    formData.append("Tipo", tipoObligacion);
+                    formData.append("Descripcion", descripcion);
+                    formData.append("TipoContrato", tipoContrato);
+                    if (customFile != "") {
+                        formData.append("Archivo", customFile);
+                    }
+                    formData.append("MontoGarantia", montoGarantia);
+                    formData.append("FechaProgramada", fechaProgramada);
+                    if (fechaEntrega != "") {
+                        formData.append("FechaEntrega", fechaEntrega);
+                    }
+                    formData.append("InicioPeriodo", inicioPeriodo);
+                    formData.append("FinPeriodo", finPeriodo);
+
+                    var msg = "actualizó";
+
+                    axios.post('/contrato/InsertarActualizarContrato', formData, { headers: { 'Content-Type': 'multipart/form-data' }
+                    }).then(response => {
+                        if (id == 0) {
+                            msg = "inserto";
+                        }
+                        Swal.fire({
+                            'icon': 'success',
+                            'title': 'Obligaciones PS',
+                            'html': 'La obligación del prestador de ser servicio se ' + msg + ' correctamente.'
+                        }).then(function () {
+                            window.location.href = "/catalogo/verObligacion/" + response.data;
+                        });
+                    });
+                    return true;
+                }
+
+                if (descripcion == "") {
+                    $('#descripcion').addClass('is-invalid');
+                    $('.error_descripcion').css('display', 'block');
+                }
+
+                if (tipoObligacion == "") {
+                    $('#tipoObligacion').addClass('is-invalid');
+                    $('.error_tipoObligacion').css('display', 'block');
+                }
+
+                if (tipoContrato == "") {
+                    $('#tipoContrato').addClass('is-invalid');
+                    $('.error_tipoContrato').css('display', 'block');
+                }
+
+                if (inicioPeriodo == ""){
+                    $('#inicioPeriodo').addClass('is-invalid');
+                    $('.error_inicioPeriodo').css('display', 'block');
+                }
+
+                if (finPeriodo == "") {
+                    $('#finPeriodo').addClass('is-invalid');
+                    $('.error_finPeriodo').css('display', 'block');
+                }
+
+                if (fechaProgramada == "") {
+                    $('#fechaProgramada').addClass('is-invalid');
+                    $('.error_fechaProgramada').css('display', 'block');
+                }
+
+                if (montoGarantia == "") {
+                    $('#montoGarantia').addClass('is-invalid');
+                    $('.error_garantia').css('display', 'block');
+                }
+
+                return false;
+            });
+
+            $('#descripcion').change(function () {
+                if ($('#descripcion').val() == "") {
+                    $('#descripcion').addClass('is-invalid');
+                    $('#error_descripcion').css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#descripcion').removeClass('is-invalid');
+                    $('#descripcion').addClass('is-valid');
+                    $('#error_descripcion').css('display', 'none');
+                }
+            });
+
+            $('#tipoObligacion').change(function () {
+                if ($('#tipoObligacion').val() == "") {
+                    $('#tipoObligacion').addClass('is-invalid');
+                    $('#error_tipoObligacion').css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#tipoObligacion').removeClass('is-invalid');
+                    $('#tipoObligacion').addClass('is-valid');
+                    $('#error_tipoObligacion').css('display', 'none');
+                }
+            });
+
+            $('#tipoContrato').change(function () {
+                if ($('#tipoContrato').val() == "") {
+                    $('#tipoContrato').addClass('is-invalid');
+                    $('#error_tipoContrato').css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#tipoContrato').removeClass('is-invalid');
+                    $('#tipoContrato').addClass('is-valid');
+                    $('#error_tipoContrato').css('display', 'none');
+                }
+            });
+
+            $('#inicioPeriodo').change(function () {
+                if ($('#inicioPeriodo').val() == "") {
+                    $('#inicioPeriodo').addClass('is-invalid');
+                    $('#error_inicioPeriodo').css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#inicioPeriodo').removeClass('is-invalid');
+                    $('#inicioPeriodo').addClass('is-valid');
+                    $('#error_inicioPeriodo').css('display', 'none');
+                }
+            });
+
+            $('#finPeriodo').change(function () {
+                if ($('#finPeriodo').val() == "") {
+                    $('#finPeriodo').addClass('is-invalid');
+                    $('#error_finPeriodo').css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#finPeriodo').removeClass('is-invalid');
+                    $('#finPeriodo').addClass('is-valid');
+                    $('#error_finPeriodo').css('display', 'none');
+                }
+            });
+
+            $('#fechaEntrega').change(function () {
+                if ($('#fechaEntrega').val() == "") {
+                    $('#fechaEntrega').addClass('is-invalid');
+                    $('#error_fechaEntrega').css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#fechaEntrega').removeClass('is-invalid');
+                    $('#fechaEntrega').addClass('is-valid');
+                    $('#error_fechaEntrega').css('display', 'none');
+                }
+            });
+
+            $('#montoGarantia').change(function () {
+                if ($('#montoGarantia').val() == "") {
+                    $('#montoGarantia').addClass('is-invalid');
+                    $(".error_garantia").css('display', 'block');
+
+                    return false;
+                } else {
+                    $('#montoGarantia').removeClass('is-invalid');
+                    $('#montoGarantia').addClass('is-valid');
+                    $(".error_garantia").css('display', 'none');
+                }
+            });
+        });
+    </script>
+}
