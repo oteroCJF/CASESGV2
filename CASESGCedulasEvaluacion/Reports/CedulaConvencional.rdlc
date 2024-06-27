@@ -1817,7 +1817,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>__________________________________</Value>
+                    <Value>____________________________</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -1828,7 +1828,8 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Sandra Leticia Mendoza Altamirano</Value>
+                    <Value>Lic. Sandra Leticia 
+Mendoza Altamirano</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -2205,7 +2206,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>__________________________________</Value>
+                    <Value>____________________________</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -2216,7 +2217,8 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Erika Rocio Hernández Hernández</Value>
+                    <Value>Lic. Erika Rocio 
+Hernández Hernández</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -2313,7 +2315,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>_________________________</Value>
+                    <Value>____________________________</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -2324,9 +2326,13 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Anabel Bernal Castillo</Value>
+                    <Value>Ing. Arq. Laura Ivonne 
+Arellano Sandoval</Value>
                     <Style>
+                      <FontStyle>Normal</FontStyle>
                       <FontWeight>Bold</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                      <Color>#000000</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
