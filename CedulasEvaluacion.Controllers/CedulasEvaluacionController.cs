@@ -1043,7 +1043,7 @@ namespace CedulasEvaluacion.Controllers
                 {
                     if (respuestas[i].Respuesta == false)
                     {
-                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "La ocupación promedio fue menor o igual al 50%, los comentarios son los siguientes: " +
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), 
                             respuestas[i].Detalles) });
                     }
                     else

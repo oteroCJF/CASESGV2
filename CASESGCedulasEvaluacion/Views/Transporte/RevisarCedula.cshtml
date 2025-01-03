@@ -297,7 +297,7 @@
             </div>
             <div class="tab-pane fade" id="ocupacion" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="col-lg-12 h3 mt-4">
-                    Ocupación Promedio
+                    Requisitos Mínimos
                 </div>
                 @if (@Model.RespuestasEncuesta[3].Respuesta == false)
                 {
@@ -305,7 +305,6 @@
                         <div class="row col-lg-12 mt-3">
                             <div class="col-lg-9 mt-3 ml-4">
                                 <p class="h5 text-justify text-danger ml-3">
-                                    La ocupación promedio registrada no fue mayor o igual al 50% de la capacidad de las unidades contratadas, los comentarios son los siguientes:
                                     @Model.RespuestasEncuesta[3].Detalles
                                 </p>
                             </div>
@@ -318,13 +317,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-12">
+                            <h5 class="text-danger ml-4">
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)
+                            </h5>
+                        </div>
+                    </div>
                 }
                 else
                 {
                     <div class="row mt-4">
                         <div class="row col-lg-12 mt-3">
                             <div class="col-lg-9 mt-3 ml-4">
-                                <p class="h3 text-justify text-success">La ocupación promedio registrada fue mayor o igual al 50% de la capacidad de las unidades contratadas.</p>
+                                <p class="h3 text-justify text-success">El prestador de servicios cumplió con los requisitos mínimos.</p>
                             </div>
                             <div class="col-lg-2" style="margin-top: -18px;">
                                 <div class="small-box bg-warning">
@@ -335,13 +341,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row mt-4">
+                    @*<div class="row mt-4">
                         <div class="col-lg-12">
                             <h5 class="text-success ml-4">
-                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)
                             </h5>
                         </div>
-                    </div>
+                    </div>*@
                 }
             </div>
             <div class="tab-pane fade" id="supervision" role="tabpanel" aria-labelledby="contact-tab">
@@ -389,7 +395,7 @@
                     <div class="row mt-4">
                         <div class="col-lg-12">
                             <h5 class="text-danger ml-4">
-                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[4].MontoPenalizacion)
                             </h5>
                         </div>
                     </div>
@@ -413,13 +419,13 @@
                     <div class="row mt-4">
                         <div class="col-lg-12">
                             <h5 class="text-success ml-4">
-                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[4].MontoPenalizacion)
                             </h5>
                         </div>
                     </div>
                 }
             </div>
-            <div class="tab-pane fade" id="supervision" role="tabpanel" aria-labelledby="contact-tab">
+            <div class="tab-pane fade" id="comportamiento" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="col-lg-12 h3 mt-4">
                     Comportamiento del Personal
                 </div>
@@ -440,7 +446,7 @@
                                     <tbody>
                                         @foreach (var inci in @Model.incidencias.transporte)
                                         {
-                                            if (inci.Pregunta.Equals(4 + ""))
+                                            if (inci.Pregunta.Equals(6 + ""))
                                             {
                                                 <tr>
                                                     <td>@inci.Tipo</td>
@@ -464,7 +470,7 @@
                     <div class="row mt-4">
                         <div class="col-lg-12">
                             <h5 class="text-danger ml-4">
-                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[5].MontoPenalizacion)
                             </h5>
                         </div>
                     </div>
@@ -474,7 +480,7 @@
                     <div class="row mt-4">
                         <div class="row col-lg-12 mt-3">
                             <div class="col-lg-9 mt-3 ml-4">
-                                <p class="h3 text-justify text-success">El prestador de servicios no fue amable, cortés y porto el uniforme con logotipo de la empresa para prestar el servicio, evitando la penalización correspondiente.</p>
+                                <p class="h3 text-justify text-success">El prestador de servicios fue amable, cortés y porto el uniforme con logotipo de la empresa para prestar el servicio, evitando la penalización correspondiente.</p>
                             </div>
                             <div class="col-lg-2" style="margin-top: -18px;">
                                 <div class="small-box bg-warning">
@@ -488,7 +494,7 @@
                     <div class="row mt-4">
                         <div class="col-lg-12">
                             <h5 class="text-success ml-4">
-                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                                <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[5].MontoPenalizacion)
                             </h5>
                         </div>
                     </div>

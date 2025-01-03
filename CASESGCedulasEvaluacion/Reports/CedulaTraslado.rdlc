@@ -255,7 +255,7 @@
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>DtGeneraCedulaByServicio</rd:DataSetName>
-        <rd:SchemaPath>D:\Proyectos\CASESGV2 (Desarrollo)\CASESGCedulasEvaluacion\DtGeneraCedulaByServicio.xsd</rd:SchemaPath>
+        <rd:SchemaPath>C:\Users\coterog\Documents\Proyectos GITHUB\CASESGV2 GIT\CASESGV2\CASESGCedulasEvaluacion\DtGeneraCedulaByServicio.xsd</rd:SchemaPath>
         <rd:TableName>sp_getFirmantesCedula</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
@@ -1663,7 +1663,7 @@
                   <Width>5.17966cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.7918cm</Width>
+                  <Width>6.08813cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -2016,23 +2016,11 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Mtra. Adriana Anaya Galván</Value>
+                                  <Value>Lic. Miriam Verónica Fragoso Zarazúa
+Coordinadora de Organización 
+de Archivos Judiciales</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>DIRECTOR DE ÁREA</Value>
-                                  <Style>
-                                    <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2082,7 +2070,7 @@
             <Top>11.40505cm</Top>
             <Left>1.825cm</Left>
             <Height>2.48425cm</Height>
-            <Width>16.2498cm</Width>
+            <Width>16.54613cm</Width>
             <ZIndex>13</ZIndex>
             <Visibility>
               <Hidden>=IIF(Fields!Reviso.Value.Equals(Fields!Superviso.Value), True, False)</Hidden>
@@ -2236,6 +2224,13 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
+                                  <Value>Lic. </Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                                <TextRun>
                                   <Value>=Fields!Superviso.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
@@ -2252,7 +2247,7 @@
                                 <TextRun>
                                   <Value>=Fields!PuestoReviso.Value</Value>
                                   <Style>
-                                    <FontSize>7pt</FontSize>
+                                    <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2313,7 +2308,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>________________________</Value>
+                                  <Value>_______________________________</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -2327,7 +2322,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Mtra. Adriana Anaya Galván</Value>
+                                  <Value>Lic. Miriam Verónica Fragoso Zarazúa</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -2341,9 +2336,10 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>DIRECTOR DE ÁREA</Value>
+                                  <Value>Coordinadora de Organización 
+de Archivos Judiciales</Value>
                                   <Style>
-                                    <FontSize>7pt</FontSize>
+                                    <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>

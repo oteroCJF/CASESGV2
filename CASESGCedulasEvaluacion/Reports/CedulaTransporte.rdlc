@@ -532,7 +532,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>El prestador de servicios no presentó incidencias.</Value>
+                    <Value>=Parameters!pregunta4.Value</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
