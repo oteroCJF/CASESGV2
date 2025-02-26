@@ -48,7 +48,7 @@
                                     <td>@Html.DisplayFor(modelItem => item.Mes)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Anio)</td>
                                     @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") &&
-                                  (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
+                                (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
                                     {
                                         <td class="text-center">
                                             @if (item.MemoValidado == true)
@@ -151,19 +151,23 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         Filtros de Búsqueda
+                        <button id="recargarPagina" class="btn btn-success" data-toggle="tooltip" title="Reiniciar Filtros">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
                     </h3>
                 </div>
                 <div class="card-body" style="font-size: 14px;">
                     <div class="row col-lg-12">
                         <div class="col-lg-12">
-                            Año:
+                            <b>Año:</b>
                             <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.anios)
                         {
-                            <div class="col collapse ml-3" id="btnAnio">
+                            <div class="col-lg-12 show ml-3" id="btnAnio">
+
                                 <label class="checkbox-inline">
                                     @if (Model.filtroAnios.Contains(an.Valor))
                                     {
@@ -185,14 +189,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Mes:
+                            <b>Mes:</b>
                             <a class="btn-sm bg-primary btnMeses float-right" data-target="#btnMes" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.Meses)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnMes">
+                            <div class="col-lg-12 show ml-3" id="btnMes" >
                                 <label class="checkbox-inline float-left">
                                     @if (Model.filtroMeses.Contains(an.Mes))
                                     {
@@ -214,14 +218,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Estatus:
+                            <b>Estatus:</b>
                             <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.festatus)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnEstatus" style="font-size: 12px;">
+                            <div class="col-lg-12 show ml-3" id="btnEstatus">
                                 <label class="checkbox-inline">
                                     @if (Model.filtroEstatus.Contains(an.Estatus))
                                     {
@@ -243,14 +247,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Tipo de Servicio:
+                            <b>Tipo de Servicio:</b>
                             <a class="btn-sm bg-primary btnTipoServicio float-right" data-target="#btnTipoServicio" data-toggle="collapse">
                                 <i class="fas fa-plus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.TipoServicio)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnTipoServicio">
+                            <div class="col-lg-12 collapse ml-3" id="btnTipoServicio" >
                                 <label class="checkbox-inline float-left">
                                     @if (Model.filtroTipoServicio.Contains(an.Valor))
                                     {
@@ -272,7 +276,7 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Administración:
+                            <b>Administración:</b>
                             <a class="btn-sm bg-primary btnAdmins float-right" data-target="#btnAdmin" data-toggle="collapse">
                                 <i class="fas fa-plus"></i>
                             </a>
@@ -301,7 +305,7 @@
                     </div>
                     <div class="row col-lg-12 mt-2" id="divInmuebles">
                         <div class="col-lg-12">
-                            Inmuebles:
+                            <b>Inmuebles:</b>
                             <a class="btn-sm bg-primary btnInmuebles float-right" data-target="#btnInmueble" data-toggle="collapse">
                                 <i class="fas fa-plus"></i>
                             </a>
@@ -338,10 +342,20 @@
     .dataTables_filter {
         display: block;
     }
-</style>
 
+    #recargarPagina {
+        cursor: pointer;
+        font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
+        padding: 3px 6px;
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
+    }
+
+</style>
+0
 @section Scripts{
     <script>
+
         $(function () {
             var model = @Html.Raw(Json.Serialize(@Model));
             var idUsuario = @User.Claims.ElementAt(0).Value;
@@ -351,7 +365,7 @@
             var tipoServ = [];
             var admin = [];
             var admin2 = [];
-            
+
             var inmuebles = [];
 
             $('[data-toggle="tooltip"]').tooltip();
@@ -370,6 +384,10 @@
             $(".btnCuestionario").click(function () {
                 window.location.href = "/analisis/evaluacion/" + $(this).data('id') + "?Anio=" + anios + "&Mes=" + meses + "&TipoServicio="+tipoServ
                     + "&Estatus=" + est + "&administracion=" + admin + "&Inmueble=" + inmuebles;
+            });
+
+            document.getElementById("recargarPagina").addEventListener("click", function () {
+                location.reload();
             });
 
             /********************************** Filtros AJAX ***********************************/
@@ -398,7 +416,7 @@
                             className: "bg-cjf"
                         }*/],
                     //"bFilter": false,
-                    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+                    lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
@@ -654,7 +672,6 @@
                     table.column(3).search(mergedVal, true).draw();
                 }
             /********************************** FIN Filtro Ajax*********************************/
-
 
             function cuentaTramites() {
                 var c = 0;

@@ -16,7 +16,7 @@
                 </div>
                 <div class="card-body" style="font-size: 14px;">
                     <p class="text-justify"><b>NOTA: </b> Para el estatus <b class="text-danger">Rechazado</b> debe seleccionar el ícono <i class="fad fa-pencil text-primary"></i> para editar el cuestionario y volver a enviarlo a la DAS con las correcciones solicitadas para su revisión.</p>
-                    <table class="table table-responsive-xl tblIncidencias" id="tblIncidencias">
+                    <table  id="tblIncidencias" class="row-border" width="100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -48,7 +48,7 @@
                                     <td>@Html.DisplayFor(modelItem => item.Mes)</td>
                                     <td>@Html.DisplayFor(modelItem => item.Anio)</td>
                                     @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") &&
-                                (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
+                               (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
                                     {
                                         <td class="text-center">
                                             @if (item.MemoValidado == true)
@@ -151,48 +151,52 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         Filtros de Búsqueda
+                        <button id="recargarPagina" class="btn btn-success" data-toggle="tooltip" title="Reiniciar Filtros">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
                     </h3>
                 </div>
                 <div class="card-body" style="font-size: 14px;">
                     <div class="row col-lg-12">
                         <div class="col-lg-12">
-                            Año:
+                            <b>Año:</b>
                             <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.anios)
                         {
-                            <div class="col collapse ml-3" id="btnAnio">
-                                <label class="checkbox-inline">
-                                    @if (Model.filtroAnios.Contains(an.Valor))
-                                    {
-                                        <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
-                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
-                                        }
-                                        else
+                            <div class="col-lg-12 show ml-3" id="btnAnio" >
+                                    <label class="checkbox-inline float-left">
+
+                                        @if (Model.filtroAnios.Contains(an.Valor))
                                         {
                                             <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
                                                    data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
                                                    data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
-                                            }
-                                </label>
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
+                                         }
+                                         else
+                                         {
+                                                <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
+                                                       data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                       data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                       data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
+                                         }
+                                    </label>
                             </div>
                         }
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Mes:
+                            <b>Mes:</b>
                             <a class="btn-sm bg-primary btnMeses float-right" data-target="#btnMes" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.Meses)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnMes">
+                            <div class="col-lg-12 show ml-3" id="btnMes">
                                 <label class="checkbox-inline float-left">
                                     @if (Model.filtroMeses.Contains(an.Mes))
                                     {
@@ -214,14 +218,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Estatus:
+                            <b>Estatus:</b>
                             <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.festatus)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnEstatus" style="font-size: 12px;">
+                            <div class="col-lg-12 show ml-3" id="btnEstatus" >
                                 <label class="checkbox-inline">
                                     @if (Model.filtroEstatus.Contains(an.Estatus))
                                     {
@@ -251,6 +255,14 @@
     .dataTables_filter {
         display: block;
     }
+    #recargarPagina {
+        cursor: pointer;
+        font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
+        padding: 3px 6px;
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
+    }
+
 </style>
 
 <style>
@@ -296,6 +308,10 @@
             $(document).on("click",".btnCuestionario",function () {
                 window.location.href = "/telCelular/evaluacion/" + $(this).data('id') + "?Anio=" + anios + "&Mes=" + meses
                     + "&Estatus=" + est;
+            });
+
+            document.getElementById("recargarPagina").addEventListener("click", function () {
+                location.reload();
             });
 
             function cuentaTramites() {
@@ -352,7 +368,7 @@
                             className: "bg-cjf"
                         }*/],
                     //"bFilter": false,
-                    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+                    lengthMenu: [[25, 50, 100,-1], [25, 50, 100, "Todos"]],
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"

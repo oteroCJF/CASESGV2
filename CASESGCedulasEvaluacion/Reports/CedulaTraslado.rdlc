@@ -1660,7 +1660,7 @@
                   <Width>5.27834cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.17966cm</Width>
+                  <Width>5.88217cm</Width>
                 </TablixColumn>
                 <TablixColumn>
                   <Width>6.08813cm</Width>
@@ -1820,7 +1820,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>________________________</Value>
+                                  <Value>______________________________</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -1833,6 +1833,13 @@
                             </Paragraph>
                             <Paragraph>
                               <TextRuns>
+                                <TextRun>
+                                  <Value>Lic. </Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
                                 <TextRun>
                                   <Value>=Fields!Reviso.Value</Value>
                                   <Style>
@@ -1911,7 +1918,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>________________________</Value>
+                                  <Value>______________________________</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -1924,6 +1931,13 @@
                             </Paragraph>
                             <Paragraph>
                               <TextRuns>
+                                <TextRun>
+                                  <Value>Lic. </Value>
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
                                 <TextRun>
                                   <Value>=Fields!Superviso.Value</Value>
                                   <Style>
@@ -2002,7 +2016,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>________________________</Value>
+                                  <Value>______________________________</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -2016,9 +2030,8 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Lic. Miriam Verónica Fragoso Zarazúa
-Coordinadora de Organización 
-de Archivos Judiciales</Value>
+                                  <Value>Mtro. Ricardo Antonio Millán Maya
+Coordinador de Archivos Judiciales</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -2070,7 +2083,7 @@ de Archivos Judiciales</Value>
             <Top>11.40505cm</Top>
             <Left>1.825cm</Left>
             <Height>2.48425cm</Height>
-            <Width>16.54613cm</Width>
+            <Width>17.24864cm</Width>
             <ZIndex>13</ZIndex>
             <Visibility>
               <Hidden>=IIF(Fields!Reviso.Value.Equals(Fields!Superviso.Value), True, False)</Hidden>
@@ -2322,22 +2335,8 @@ de Archivos Judiciales</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Lic. Miriam Verónica Fragoso Zarazúa</Value>
-                                  <Style>
-                                    <FontSize>8pt</FontSize>
-                                    <FontWeight>Bold</FontWeight>
-                                  </Style>
-                                </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                            <Paragraph>
-                              <TextRuns>
-                                <TextRun>
-                                  <Value>Coordinadora de Organización 
-de Archivos Judiciales</Value>
+                                  <Value>Mtro. Ricardo Antonio Millán Maya
+Coordinador de Archivos Judiciales</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -2404,7 +2403,7 @@ de Archivos Judiciales</Value>
         <Height>6.42405in</Height>
         <Style />
       </Body>
-      <Width>7.77728in</Width>
+      <Width>7.78561in</Width>
       <Page>
         <PageHeader>
           <Height>2.54cm</Height>

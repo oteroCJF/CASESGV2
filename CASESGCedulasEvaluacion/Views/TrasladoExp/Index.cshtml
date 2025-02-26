@@ -149,19 +149,22 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         Filtros de Búsqueda
+                        <button id="recargarPagina" class="btn btn-success" data-toggle="tooltip" title="Reiniciar Filtros">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
                     </h3>
                 </div>
                 <div class="card-body" style="font-size: 14px;">
                     <div class="row col-lg-12">
                         <div class="col-lg-12">
-                            Año:
+                            <b>Año:</b>
                             <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.anios)
                         {
-                            <div class="col collapse ml-3" id="btnAnio">
+                             <div class="col-lg-12 show ml-3"  id="btnAnio">
                                 <label class="checkbox-inline">
                                     @if (Model.filtroAnios.Contains(an.Valor))
                                     {
@@ -183,14 +186,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Mes:
+                            <b>Mes:</b>
                             <a class="btn-sm bg-primary btnMeses float-right" data-target="#btnMes" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.Meses)
                         {
-                            <div class="col-lg-6 collapse ml-3" id="btnMes">
+                            <div class="col-lg-12 show ml-3"  id="btnMes">
                                 <label class="checkbox-inline float-left">
                                     @if (Model.filtroMeses.Contains(an.Mes))
                                     {
@@ -212,14 +215,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Estatus:
+                            <b>Estatus:</b>
                             <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.festatus)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnEstatus" style="font-size: 12px;">
+                             <div class="col-lg-12 show ml-3"  id="btnEstatus">
                                 <label class="checkbox-inline">
                                     @if (Model.filtroEstatus.Contains(an.Estatus))
                                     {
@@ -248,6 +251,13 @@
 <style>
     .dataTables_filter {
         display: block;
+    }
+    #recargarPagina {
+        cursor: pointer;
+        font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
+        padding: 3px 6px;
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
     }
 </style>
 
@@ -281,6 +291,9 @@
                     + "&Estatus=" + est + "&Inmueble=" + inmuebles;
             });
 
+            document.getElementById("recargarPagina").addEventListener("click", function () {
+                location.reload();
+            });
             /********************************** Filtros AJAX ***********************************/
                 $('#tblIncidencias').DataTable({
                     dom: 'lBfrtip',
@@ -307,7 +320,7 @@
                             className: "bg-cjf"
                         }*/],
                     //"bFilter": false,
-                    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+                    lengthMenu: [[25, 50, 100, -1], [25, 50, 100,"Todos"]],
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"

@@ -4,7 +4,7 @@
     List<CedulasEvaluacion.Entities.Vistas.VModulosUsuario> modulos = await sModulo.GetVModulos(user);
 }
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar elevation-2" style="background-image: radial-gradient(circle at 5.99% 5.99%, #675770 0, #544468 16.67%, #3e3160 33.33%, #1f1f59 50%, #001052 66.67%, #00004c 83.33%, #000047 100%);">
+<aside class="main-sidebar elevation-2" style="background-image: radial-gradient(circle at 5.99% 5.99%, #24135f 0, #24135f 16.67%, #24135f 33.33%, #24135f 50%, #24135f 66.67%, #24135f 83.33%, #24135f 100%); ">
     <!-- Brand Logo -->
     <a href="/home" class="brand-link ml-3">
         <img src="~/dist/img/logos/logoCJFblanco.png" alt="AdminLTE Logo" class="brand-image-xl">
@@ -25,7 +25,9 @@
                         </a>
                     </li>
                     <li class="nav-item has-treeview" id="li_Inicio">
-                        <a href="/compilacion/index" class="nav-link text-white">
+                        @*<a href="/compilacion/index" class="nav-link text-white">*@
+                        <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/SitePages/Marco%20Jur%C3%ADdico.aspx" class="nav-link text-white" target="_blank">
+
                             <i class="fad fa-list-check mr-2"></i>
                             <p>
                                 Marco Normativo
@@ -131,7 +133,7 @@
                     </li>
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link text-white">
-                            <i class="fa-solid fa-folder mr-2"></i>
+                            <i class="fa-regular fa-folder-open mr-2"></i>
                             <p>
                                 Repositorios de Facturas
                                 <i class="right fas fa-angle-right"></i>
@@ -139,24 +141,25 @@
                         </a>
                         <ul class="nav nav-treeview ml-3">
                             <li class="nav-item">
-                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2022&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2025&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
                                    class="nav-link text-white" target="_blank">
-                                    <i class="fa-light fa-link mr-1"></i>
-                                    <p>Repositorio 2022</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2023&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
-                                   class="nav-link text-white" target="_blank">
-                                    <i class="fa-light fa-link mr-1"></i>
-                                    <p>Repositorio 2023</p>
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                                    <p class="font-weight-bold">Repositorio 2025</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2024&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
                                    class="nav-link text-white" target="_blank">
-                                    <i class="fa-light fa-link mr-1"></i>
+                                    @*<i class="fa-light fa-link mr-1"></i>*@
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
                                     <p>Repositorio 2024</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2023&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                                    <p>Repositorio 2023</p>
                                 </a>
                             </li>
                         </ul>
@@ -179,6 +182,16 @@
                             <i class="fad fa-home mr-2"></i>
                             <p>
                                 Inicio
+                            </p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview" id="li_Inicio">
+                        @*<a href="/compilacion/index" class="nav-link text-white">*@
+                        <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/SitePages/Marco%20Jur%C3%ADdico.aspx" class="nav-link text-white" target="_blank">
+
+                            <i class="fad fa-list-check mr-2"></i>
+                            <p>
+                                Marco Normativo
                             </p>
                         </a>
                     </li>
@@ -247,7 +260,7 @@
                     }
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link text-white">
-                            <i class="fa-solid fa-folder mr-2"></i>
+                            <i class="fa-regular fa-folder-open mr-2"></i>
                             <p>
                                 Repositorios de Facturas
                                 <i class="right fas fa-angle-right"></i>
@@ -255,24 +268,25 @@
                         </a>
                         <ul class="nav nav-treeview ml-3">
                             <li class="nav-item">
-                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2022&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2025&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
                                    class="nav-link text-white" target="_blank">
-                                    <i class="fa-light fa-link mr-1"></i>
-                                    <p>Repositorio 2022</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2023&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
-                                   class="nav-link text-white" target="_blank">
-                                    <i class="fa-light fa-link mr-1"></i>
-                                    <p>Repositorio 2023</p>
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                                    <p class="font-weight-bold">Repositorio 2025</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2024&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
                                    class="nav-link text-white" target="_blank">
-                                    <i class="fa-light fa-link mr-1"></i>
+                                    @*<i class="fa-light fa-link mr-1"></i>*@
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
                                     <p>Repositorio 2024</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="http://cjfspweb/dgsg/DAS2020/_layouts/15/start.aspx#/Documentos%20compartidos/Forms/AllItems.aspx?RootFolder=%2Fdgsg%2FDAS2020%2FDocumentos%20compartidos%2FDocumentos%2FRepositorio%20Unico%2D2023&FolderCTID=0x012000372DE03C2EF1594C8DA32FFC0F413C49&View=%7B7B88645C%2DD69E%2D4684%2DBC28%2D8CBD248837E7%7D"
+                                   class="nav-link text-white" target="_blank">
+                                    <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
+                                    <p>Repositorio 2023</p>
                                 </a>
                             </li>
                         </ul>

@@ -151,48 +151,52 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         Filtros de Búsqueda
+                        <button id="recargarPagina" class="btn btn-success" data-toggle="tooltip" title="Reiniciar Filtros">
+                            <i class="fa-regular fa-arrows-rotate"></i>
+                        </button>
                     </h3>
                 </div>
                 <div class="card-body" style="font-size: 14px;">
                     <div class="row col-lg-12">
                         <div class="col-lg-12">
-                            Año:
+                            <b>Año:</b>
                             <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.anios)
                         {
-                            <div class="col collapse" id="btnAnio">
-                                <label class="checkbox-inline">
-                                    @if (Model.filtroAnios.Contains(an.Valor))
+                        <div class="col-lg-12 show ml-3" id="btnAnio">
+
+                            <label class="checkbox-inline">
+                                @if (Model.filtroAnios.Contains(an.Valor))
+                                {
+                                    <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
+                                           data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                           data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                           data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
+                                    }
+                                    else
                                     {
                                         <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
                                                data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
                                                data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
+                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
                                         }
-                                        else
-                                        {
-                                            <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
-                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
-                                            }
-                                </label>
-                            </div>
+                            </label>
+                        </div>
                         }
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Mes:
-                            <a class="btn-sm bg-primary btnMeses float-right" data-target="#btnMes" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                            <b>Mes:</b>
+                            <a class="btn-sm bg-primary btnMeses float-right show" data-target="#btnMes" data-toggle="collapse">
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.Meses)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnMes">
+                            <div class="col-lg-12 show ml-3" id="btnMes">
                                 <label class="checkbox-inline float-left">
                                     @if (Model.filtroMeses.Contains(an.Mes))
                                     {
@@ -214,14 +218,14 @@
                     </div>
                     <div class="row col-lg-12 mt-2">
                         <div class="col-lg-12">
-                            Estatus:
+                            <b>Estatus:</b>
                             <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
                         @foreach (var an in Model.festatus)
                         {
-                            <div class="col-lg-12 collapse ml-3" id="btnEstatus" style="font-size: 12px;">
+                            <div class="col-lg-12 show ml-3" id="btnEstatus">
                                 <label class="checkbox-inline">
                                     @if (Model.filtroEstatus.Contains(an.Estatus))
                                     {
@@ -243,12 +247,12 @@
                     </div>
                     <div class="row col-lg-12 mt-2" id="divInmuebles">
                         <div class="col-lg-12">
-                            Inmuebles:
+                            <b>Inmuebles:</b>
                             <a class="btn-sm bg-primary btnInmuebles float-right" data-target="#btnInmueble" data-toggle="collapse">
-                                <i class="fas fa-plus"></i>
+                                <i class="fas fa-minus"></i>
                             </a>
                         </div>
-                        <div class="col-lg-12 example-1 scrollbar-deep-purple mt-2">
+                        <div class="col-lg-12 example-1 scrollbar-deep-purple mt-2 ">
                             <div class="row col-lg-12 mb-2 mt-2">
                                 <div class="form-group">
                                     <label for="inputsm">Buscar: </label>
@@ -257,8 +261,8 @@
                             </div>
                             @foreach (var an in Model.inmuebles)
                             {
-                                <div class="col-lg-12 collapse inmuebles inm_@an.AdministracionId inmu_@an.Nombre ml-3" id="btnInmueble" style="font-size: 12px;">
-                                    <label class="checkbox-inline">
+                                <div class="show col-lg-12  inmuebles inm_@an.AdministracionId inmu_@an.Nombre ml-3" id="btnInmueble" style="font-size: 12px;">
+                                    <label class="checkbox-inline ">
                                         @if (Model.filtroInmuebles.Contains(an.Nombre))
                                         {
                                             <input class="selectInmueble" id="inm_@an.Id" type="checkbox" data-toggle="toggle" data-abre="@an.Id"
@@ -288,7 +292,13 @@
     .dataTables_filter {
         display: block;
     }
-
+    #recargarPagina {
+        cursor: pointer;
+        font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
+        padding: 3px 6px;
+        border-radius: 50px;
+        transition: background-color 0.3s ease;
+    }
     .example-1 {
         position: relative;
         overflow-y: scroll;
@@ -349,6 +359,9 @@
                     + "&Estatus=" + est + "&administracion=" + admin + "&Inmueble=" + inmuebles;
             });
 
+            document.getElementById("recargarPagina").addEventListener("click", function () {
+                location.reload();
+            });
              /********************************** Filtros AJAX ***********************************/
                 $('#tblIncidencias').DataTable({
                     dom: 'lBfrtip',
@@ -375,7 +388,7 @@
                             className: "bg-cjf"
                         }*/],
                     //"bFilter": false,
-                    lengthMenu: [[15, 25, 50, -1], [15, 25, 50, "Todos"]],
+                    lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"

@@ -13,22 +13,38 @@
             <img src="~/img/logo_color.png" alt="" height="80" class="ml-5">
         </div>
         <div class="col-lg-8 mt-5 ml-5 text-right">
-            <strong>@DateTime.Now.ToString("D", @System.Globalization.CultureInfo.CreateSpecificCulture("es")) <i class="fal fa-clock-desk"></i></strong>
+            <div class="fecha-hora">
+                <span class="fecha">@DateTime.Now.ToString("D", @System.Globalization.CultureInfo.CreateSpecificCulture("es"))</span>
+                <span class="hora"><i class="fal fa-clock-desk ml-2"></i> <span id="reloj"></span></span>
+            </div>
         </div>
     </div>
-    <hr style="background-color: #24135F; font-weight: bold;" />
-    <div class="container">
-        <div class="col-lg-12 mt-2">
-            <h3 class="font-weight-bold text-center" style="color:#21006A;">Sistema para el Registro de Cédulas Automatizadas de Supervisión y Evaluación de Servicios Generales (CASESG)</h3>
-        </div>
+    <hr style="background-color: #24135f; font-weight: bold;" />
+    
+
+    <div class="col-lg-12 mt-1 contenedorTitulo">
+        @*NOMBRE DEL SISTEMA EFECTO*@
+
+        <button class="button" data-text="Awesome" disabled>
+            <span class="actual-text">&nbsp;CASESG&nbsp;</span>
+
+            <span aria-hidden="true" class="hover-text">&nbsp;CASESG&nbsp;</span>
+
+        </button>
+        @*NOMBRE DEL SISTEMA EFECTO FIN*@
+
+        <h5 class="font-weight-bold text-center" style="color: #24135f;">Sistema para el Registro de Cédulas Automatizadas de Supervisión y Evaluación de Servicios Generales</h5>
     </div>
-    <div class="row mt-5">
-        <div class="col-lg-12">
-            <h3 class="ml-5">Inicio del Sistema</h3>
-        </div>
-    </div>
-    <div class="row col-lg-12">
+
+
+    <div class="row col-lg-12 contenedorUsuario">
         <div class="col-lg-6 mt-5">
+            <div class="row mb-3 ml-4 col-lg-12 float-left">
+                @if (!string.IsNullOrEmpty(error))
+                {
+                    <h5 class="text-danger" style="padding: 20px;">@error</h5>
+                }
+            </div>
             <form action="/login?ReturnUrl=@System.Net.WebUtility.UrlEncode(returnUrl)" method="post">
                 <div class="input-group mr-1 mb-3 col-lg-8 float-right">
                     <input type="text" class="form-control" name="username" placeholder="u + número de expediente" id="usr_expediente">
@@ -47,19 +63,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="row col-lg-12"></div>
-                <div class="row mb-3 ml-4 col-lg-12 float-left">
-                    @if (!string.IsNullOrEmpty(error))
-                    {
-                        <h5 class="text-danger" style="padding: 20px;">@error</h5>
-                    }
-                </div>
+
                 <div class="row mb-3 mr-1 col-lg-4 float-right">
                     <button type="submit" class="btn btn-cjf btn-block" id="iniciar_sesion">Iniciar Sesión</button>
                 </div>
             </form>
         </div>
-        <div class="col-lg-6 mt-5 text-justify">
+        <div class="col-lg-6 mt-5 text-justify contenedorInfo">
             Para capturar el usuario, recuerde colocar la letra “u” antes de su número de expediente.<BR />
             Ejemplo: u + 56, el usuario será: u56
             <div class="mt-2">
@@ -77,33 +87,34 @@
     </div>
 </aside>
 <!-- Footer -->
-<footer class="page-footer font-small teal pt-4" style="background-color:#21006A; color: white;">
+<footer class="page-footer font-small teal pt-4" style="background-color: #24135f; color: white; ">
     <!-- Footer Text -->
     <div class="container-fluid text-center text-md-left">
         <!-- Grid row -->
         <div class="row">
             <!-- Grid column -->
-            <div class="col-md-6 mt-md-0 mt-3" style="background-color:#21006A; color: white;">
+            <div class="col-md-6 mt-md-0 mt-3" style="background-color: #24135f; color: white;">
                 <!-- Content -->
                 <h5 class="font-weight-bold">Edificio Sede</h5>
-                <p class="ml-3">
+                <p class="contact-info">
                     <i class="fad fa-building"></i>
                     &nbsp;&nbsp;Edificio Sede Insurgentes Sur 2417
                     San Ángel. Álvaro Obregón <br />
                 </p>
-                <p class="ml-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C.P. 01000, Ciudad de México</p>
-                <p class="ml-3"><i class="fad fa-phone"></i>&nbsp; +52 (55) 5490-8000</p>
+                <p class="contact-info">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C.P. 01000, Ciudad de México</p>
+                <p class="contact-info"><i class="fad fa-phone"></i>&nbsp; +52 (55) 5490-8000</p>
 
             </div>
             <!-- Grid column -->
 
             <hr class="clearfix w-100 d-md-none pb-3">
             <!-- Grid column -->
-            <div class="col-md-6 mb-md-0 mb-3" style="background-color:#21006A; color: white;">
+            <div class="col-md-6 mb-md-0 mb-3" style="background-color: #24135f; color: white; ">
                 <!-- Content -->
                 <h5 class="font-weight-bold">¿Problemas con el sistema?</h5>
-                <p><i class="fad fa-phone"></i>&nbsp;&nbsp;&nbsp;Ext. 2574, Red nacional #318-2574</p>
-                <p><i class="fad fa-envelope-open-text"></i> &nbsp;&nbsp;juan.miranda.alatriste@correo.cjf.gob.mx</p>
+                <p class="contact-info"><i class="fad fa-user"></i>&nbsp; Ing. Christian Otero García</p>
+                <p class="contact-info"><i class="fad fa-envelope-open-text"></i>&nbsp; coterog@cjf.gob.mx</p>
+                <p class="contact-info"><i class="fad fa-phone"></i>&nbsp; Ext. 2574, Red nacional #318-2574</p>
             </div>
             <!-- Grid column -->
 
@@ -113,8 +124,18 @@
     </div>
     <!-- Footer Text -->
     <!-- Copyright -->
-    <div class="page-footer text-center py-3" style="background-color:#21006A; color: white; font-weight: bold;">
-        ©2021 - CASESG - Consejo de la Judicatura Federal
+    <div class="page-footer text-center py-3" style="background-color: #24135f; color: white; font-weight: bold; ">
+        <div class="footer d-flex justify-content-between align-items-center">
+            <div class="text-center">
+                <p>Poder Judicial de la Federación</p>
+            </div>
+            <div class="text-center">
+                <p>Consejo de la Judicatura Federal - Dirección General de Servicios Generales</p>
+            </div>
+            <div class="text-center">
+                <p>Versión 2.5 - 2025</p>
+            </div>
+        </div>
     </div>
     <!-- Copyright -->
 
@@ -172,12 +193,170 @@
 @*Fin Modal para ver Adjuntos*@
 
 <style>
+    
+      .contenedorTitulo {
+            transform: translate(0%, -25%)
+        }
+      
+    .contenedorUsuario {
+        transform: translate(0%, -35%)
+    }
+    .contenedorInfo {
+        transform: translate(0%, 7%)
+    }
+    .contact-info {
+        margin-top: -6px; /* Ajusta el valor según sea necesario */
+    }
+
+    .contact-info2 {
+        margin-top: -100px; /* Ajusta el valor según sea necesario */
+    }
+
+    .text-center1 {
+        transform: translate(20%, 0%);
+    }
+
+    .footer {
+        margin-top: auto;
+    }
     footer {
         position: absolute;
         bottom: 0;
         height: 60px;
         width: 100%;
     }
+
+    .fecha-hora {
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        color: #24135f;
+    }
+
+    .fecha {
+        font-weight: bold;
+    }
+
+    .hora {
+        color: #24135f;
+        font-size: 20px;
+    }
+    .button {
+        margin: 0;
+        height: auto;
+        background: transparent;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* button styling */
+    .button {
+        position: relative;
+        top: 20%;
+        left: 50%;
+        transform: translate(-50%, 10%);
+        --border-right: 0px;
+        --text-stroke-color: #24135f;
+        --animation-color: #24135f;
+        --fs-size: 8em;
+        letter-spacing: 0px;
+        text-decoration: none;
+        font-size: var(--fs-size);
+        font-family: Georgia;
+        position: relative;
+        text-transform: uppercase;
+        color: transparent;
+        -webkit-text-stroke: 1px var(--text-stroke-color);
+    }
+    /* this is the text, when you hover on button */
+    .hover-text {
+        position: absolute;
+        box-sizing: border-box;
+        content: attr(data-text);
+        color: var(--animation-color);
+        width: 0%;
+        inset: 0;
+        border-right: var(--border-right) solid var(--animation-color);
+        overflow: hidden;
+        transition: 0.8s;
+        -webkit-text-stroke: 1px var(--animation-color);
+    }
+    /* hover */
+    .button:hover .hover-text {
+        width: 100%;
+        filter: drop-shadow(0 0 23px var(--animation-color))
+    }
+    .form-control {
+        outline: none;
+        font-size: 16px;
+        border-radius: 5px;
+        padding-left: 15px;
+        border: 1px solid #ccc;
+        border-bottom-width: 2px;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .form-control:valid {
+            border-color: #24135f;
+            box-shadow: 0.2px 0.2px 1px -10px #ff7700;
+        }
+
+        .form-control:invalid {
+            border-color: rgb(0 0 0);
+            color: rgb(0 0 0);
+            box-shadow: 1px 1px 1px -10px #000000;
+            /* translate: -8px 8px 0px 0px; */
+        }
+
+    .text {
+        margin-top: 10px;
+        color: black;
+    }
+
+
+    .loader {
+        position: relative;
+        pointer-events: none;
+    }
+
+        .loader span {
+            position: absolute;
+            color: #fff;
+            font-size: 100px;
+            font-family: "Leelawadee UI";
+            letter-spacing: 0px;
+        }
+
+            .loader span:nth-child(1) {
+                color: transparent;
+                -webkit-text-stroke: 1px rgb(0 38 255);
+            }
+
+            .loader span:nth-child(2) {
+                color: #0d23a1;
+                -webkit-text-stroke: 1px rgb(0 0 0);
+                animation: uiverse723 4s ease-in-out infinite;
+            }
+
+    @@keyframes uiverse723 {
+        0%, 100% {
+            clip-path: polygon(0% 45%, 15% 44%, 32% 50%, 54% 60%, 70% 61%, 84% 59%, 100% 52%, 100% 100%, 0% 100%);
+        }
+
+        50% {
+            clip-path: polygon(0% 60%, 16% 65%, 34% 66%, 51% 62%, 67% 50%, 84% 45%, 100% 46%, 100% 100%, 0% 100%);
+        }
+    }
+
+
+    .text {
+        margin-top: 10px;
+        color: black;
+    }
+
+
+
 </style>
 
 @section Scripts{
@@ -224,5 +403,17 @@
                 }
             });
         });
+
+
+        function actualizarHora() {
+            const ahora = new Date();
+            const opciones = { hour: 'numeric', minute: '2-digit', second: '2-digit' };
+            const horaFormateada = ahora.toLocaleTimeString('es-ES', opciones);
+            document.getElementById('reloj').textContent = horaFormateada;
+        }
+
+        setInterval(actualizarHora, 1000); // Actualiza cada segundo
+        actualizarHora(); // Inicializa el reloj
+
     </script>
 }
