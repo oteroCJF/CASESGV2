@@ -66,6 +66,10 @@ namespace CedulasEvaluacion.Controllers
                     {
                         tipo = "Nota de Crédito";
                     }
+                    else if (entregable.Tipo.Equals("Cedula_Firmada"))
+                    {
+                        tipo = "Cédula Firmada (FIREL)";
+                    }
                     else
                     {
                         tipo = entregable.Tipo;

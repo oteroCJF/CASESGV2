@@ -2812,7 +2812,7 @@
                                 <TextRun>
                                   <Value>=Fields!PuestoSuperviso.Value</Value>
                                   <Style>
-                                    <FontSize>8pt</FontSize>
+                                    <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -2898,6 +2898,20 @@
                                 <TextAlign>Center</TextAlign>
                               </Style>
                             </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontSize>7pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Autoriza</rd:DefaultName>
                           <Style>
@@ -2936,7 +2950,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>Firmantes</DataSetName>
-            <Top>21.02637cm</Top>
+            <Top>20.70887cm</Top>
             <Left>1.77194cm</Left>
             <Height>2.32549cm</Height>
             <Width>16.2498cm</Width>
@@ -3109,7 +3123,7 @@
                                 <TextRun>
                                   <Value>=Fields!PuestoReviso.Value</Value>
                                   <Style>
-                                    <FontSize>8pt</FontSize>
+                                    <FontSize>7pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
@@ -3185,6 +3199,7 @@
                               <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!Autoriza.Value</Value>
+                                  <MarkupType>HTML</MarkupType>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -3232,7 +3247,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>Firmantes</DataSetName>
-            <Top>23.42241cm</Top>
+            <Top>23.10491cm</Top>
             <Left>4.68058cm</Left>
             <Height>2.64299cm</Height>
             <Width>10.88723cm</Width>
@@ -3264,7 +3279,7 @@
           </RightBorder>
         </Style>
       </Body>
-      <Width>7.71193in</Width>
+      <Width>7.88141in</Width>
       <Page>
         <PageHeader>
           <Height>2.36361cm</Height>
@@ -3341,7 +3356,7 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>2.54cm</Height>
+          <Height>1.5cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -3404,14 +3419,14 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>Elaboró: </Value>
+                      <Value>ELABORÓ: </Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                         <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
                     <TextRun>
-                      <Value>=Parameters!elaboro.Value</Value>
+                      <Value>=UCase(Parameters!elaboro.Value)</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                         <FontWeight>Bold</FontWeight>
@@ -3422,7 +3437,7 @@
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox34</rd:DefaultName>
-              <Top>0.335cm</Top>
+              <Top>0.8526cm</Top>
               <Left>0.42016cm</Left>
               <Height>0.6cm</Height>
               <Width>6.61935cm</Width>

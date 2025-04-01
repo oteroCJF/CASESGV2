@@ -1500,6 +1500,9 @@
                     $('.btn_addFile').click(function () {
                         $('#tipo_entregable').prop('disabled', false);
                         var option = '<option value="">Seleccione un Entregable</option>';
+                        option += "<option value='ActaER'>Acta Entrega - Recepción</option>";
+                        option += "<option value='Cedula_Firmada'>Cédula Firmada (FIREL)</option>";
+
                         axios.get('/variables/getEntregables/' + model.servicioId + '/' + model.id).then(entre => {
                             entre = entre.data;
                             for (var i = 0; i < entre.length; i++) {
@@ -1563,111 +1566,167 @@
 
                     });
 
-                    $('#adjuntarArchivo').click(function () {
-                        var formData = new FormData();
-                        var folio = model.folio;
-                        var file = document.getElementById('customFile').files[0];
-                        var id = $('#file_id').val();
-                        var tipo = $('#tipo_entregable').val();
-                        var comentarios = $('#comentarios_entregable').val();
+            $('#adjuntarArchivo').click(function () {
+                var formData = new FormData();
+                var folio = model.folio;
+                var file = document.getElementById('customFile').files[0];
+                var id = $('#file_id').val();
+                var tipo = $('#tipo_entregable').val();
+                var comentarios = $('#comentarios_entregable').val();
 
-                        if (id.length > 0) {
-                            id = parseInt(id);
-                        } else {
-                            id = 0;
+                if (id.length > 0) {
+                    id = parseInt(id);
+                } else {
+                    id = 0;
+                }
+
+                formData.append("Id", id);
+                formData.append("CedulaEvaluacionId", model.id);
+                if (file != null)
+                    formData.append("Archivo", file);
+                formData.append("Folio", folio);
+                formData.append("Tipo", tipo);
+                formData.append("Comentarios", comentarios);
+
+                if (validaCamposArchivo()) {
+                    axios.post('/transporte/adjuntaEntregable', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    }).then(response => {
+                        $('#cerrar_modal_sua').trigger('click');
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Servicio de Transporte',
+                                'text': 'Se adjuntó el entregable de forma correcta.'
+                            }).then(function () {
+                                window.location.reload();
+                            });
+                            $('#customFile').removeClass('is-valid');
+                            $('#comentarios_entregable').removeClass('is-valid');
+                            $('#tipo_entregable').removeClass('is-valid');
                         }
-
-                        formData.append("Id", id);
-                        formData.append("CedulaEvaluacionId", model.id);
-                        if(file != null)
-                            formData.append("Archivo", file);
-                        formData.append("Folio", folio);
-                        formData.append("Tipo", tipo);
-                        formData.append("Comentarios", comentarios);
-
-                        if (validaCamposArchivo()) {
-                            if (id != 0) {
-                                axios.post('/transporte/adjuntaEntregable', formData, {
-                                    headers: { 'Content-Type': 'multipart/form-data' }
-
-                                }).then(response => {
-                                    $('#cerrar_modal_sua').trigger('click');
-                                    /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
-                                    if (response.status == 200) {
-                                        Swal.fire({
-                                            'icon': "success",
-                                            'title': 'Servicio de Transporte',
-                                            'text': 'Se adjuntó el entregable de forma correcta.'
-                                        }).then(function () {
-                                            window.location.reload();
-                                        });
-                                        $('#customFile').removeClass('is-valid');
-                                        $('#comentarios_entregable').removeClass('is-valid');
-                                        $('#tipo_entregable').removeClass('is-valid');
-                                    }
-                                }).catch(error => {
-                                    Swal.fire({
-                                        'icon': "error",
-                                        'title': 'Servicio de Transporte',
-                                        'text': 'Se presento un error al intentar adjuntar el archivo.'
-                                    });
-                                });
-                                document.getElementById('customFile').value = '';
-                                $('#file_id').val("");
-                                $(".custom-file-label").text("Seleccionar Archivo");
-                                $('#tipo_entregable').val('');
-                                $('#comentarios_entregable').val('');
-                            } else {
-                                axios.get('/transporte/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
-                                    if (exist.data == 0) {
-                                        axios.post('/transporte/adjuntaEntregable', formData, {
-                                            headers: { 'Content-Type': 'multipart/form-data' }
-
-                                        }).then(response => {
-                                            $('#cerrar_modal_sua').trigger('click');
-                                            /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
-                                            if (response.status == 200) {
-                                                Swal.fire({
-                                                    'icon': "success",
-                                                    'title': 'Servicio de Transporte',
-                                                    'text': 'Se adjuntó el entregable de forma correcta.'
-                                                }).then(function () {
-                                                    window.location.reload();
-                                                });
-                                                $('#customFile').removeClass('is-valid');
-                                                $('#comentarios_entregable').removeClass('is-valid');
-                                                $('#tipo_entregable').removeClass('is-valid');
-                                            }
-                                        }).catch(error => {
-                                            Swal.fire({
-                                                'icon': "error",
-                                                'title': 'Servicio de Transporte',
-                                                'text': 'Se presento un error al intentar adjuntar el entregable.'
-                                            });
-                                        });
-
-                                        document.getElementById('customFile').value = '';
-                                        $('#file_id').val("");
-                                        $(".custom-file-label").text("Seleccionar Archivo");
-                                        $('#tipo_entregable').val('');
-                                        $('#comentarios_entregable').val('');
-                                    } else {
-                                        Swal.fire({
-                                            'icon': "error",
-                                            'title': 'Servicio de Transporte',
-                                            'text': 'Ya fue adjuntado un entregable con el tipo ' + tipo
-                                        });
-                                    }
-                                }).catch(e => {
-                                    Swal.fire({
-                                        'icon': "error",
-                                        'title': 'Servicio de Transporte',
-                                        'text': 'Ocurrío un error al válidar el entregable.'
-                                    });
-                                });
-                            }
-                        }
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Servicio de Transporte',
+                            'text': 'Se presentó un error al intentar adjuntar el archivo.'
+                        });
                     });
+
+                    document.getElementById('customFile').value = '';
+                    $('#file_id').val("");
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    $('#tipo_entregable').val('');
+                    $('#comentarios_entregable').val('');
+                }
+            });
+
+
+                    //$('#adjuntarArchivo').click(function () {
+                    //    var formData = new FormData();
+                    //    var folio = model.folio;
+                    //    var file = document.getElementById('customFile').files[0];
+                    //    var id = $('#file_id').val();
+                    //    var tipo = $('#tipo_entregable').val();
+                    //    var comentarios = $('#comentarios_entregable').val();
+
+                    //    if (id.length > 0) {
+                    //        id = parseInt(id);
+                    //    } else {
+                    //        id = 0;
+                    //    }
+
+                    //    formData.append("Id", id);
+                    //    formData.append("CedulaEvaluacionId", model.id);
+                    //    if(file != null)
+                    //        formData.append("Archivo", file);
+                    //    formData.append("Folio", folio);
+                    //    formData.append("Tipo", tipo);
+                    //    formData.append("Comentarios", comentarios);
+
+                    //    if (validaCamposArchivo()) {
+                    //        if (id != 0) {
+                    //            axios.post('/transporte/adjuntaEntregable', formData, {
+                    //                headers: { 'Content-Type': 'multipart/form-data' }
+
+                    //            }).then(response => {
+                    //                $('#cerrar_modal_sua').trigger('click');
+                    //                /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                    //                if (response.status == 200) {
+                    //                    Swal.fire({
+                    //                        'icon': "success",
+                    //                        'title': 'Servicio de Transporte',
+                    //                        'text': 'Se adjuntó el entregable de forma correcta.'
+                    //                    }).then(function () {
+                    //                        window.location.reload();
+                    //                    });
+                    //                    $('#customFile').removeClass('is-valid');
+                    //                    $('#comentarios_entregable').removeClass('is-valid');
+                    //                    $('#tipo_entregable').removeClass('is-valid');
+                    //                }
+                    //            }).catch(error => {
+                    //                Swal.fire({
+                    //                    'icon': "error",
+                    //                    'title': 'Servicio de Transporte',
+                    //                    'text': 'Se presento un error al intentar adjuntar el archivo.'
+                    //                });
+                    //            });
+                    //            document.getElementById('customFile').value = '';
+                    //            $('#file_id').val("");
+                    //            $(".custom-file-label").text("Seleccionar Archivo");
+                    //            $('#tipo_entregable').val('');
+                    //            $('#comentarios_entregable').val('');
+                    //        } else {
+                    //            axios.get('/transporte/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
+                    //                if (exist.data == 0) {
+                    //                    axios.post('/transporte/adjuntaEntregable', formData, {
+                    //                        headers: { 'Content-Type': 'multipart/form-data' }
+
+                    //                    }).then(response => {
+                    //                        $('#cerrar_modal_sua').trigger('click');
+                    //                        /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                    //                        if (response.status == 200) {
+                    //                            Swal.fire({
+                    //                                'icon': "success",
+                    //                                'title': 'Servicio de Transporte',
+                    //                                'text': 'Se adjuntó el entregable de forma correcta.'
+                    //                            }).then(function () {
+                    //                                window.location.reload();
+                    //                            });
+                    //                            $('#customFile').removeClass('is-valid');
+                    //                            $('#comentarios_entregable').removeClass('is-valid');
+                    //                            $('#tipo_entregable').removeClass('is-valid');
+                    //                        }
+                    //                    }).catch(error => {
+                    //                        Swal.fire({
+                    //                            'icon': "error",
+                    //                            'title': 'Servicio de Transporte',
+                    //                            'text': 'Se presento un error al intentar adjuntar el entregable.'
+                    //                        });
+                    //                    });
+
+                    //                    document.getElementById('customFile').value = '';
+                    //                    $('#file_id').val("");
+                    //                    $(".custom-file-label").text("Seleccionar Archivo");
+                    //                    $('#tipo_entregable').val('');
+                    //                    $('#comentarios_entregable').val('');
+                    //                } else {
+                    //                    Swal.fire({
+                    //                        'icon': "error",
+                    //                        'title': 'Servicio de Transporte',
+                    //                        'text': 'Ya fue adjuntado un entregable con el tipo ' + tipo
+                    //                    });
+                    //                }
+                    //            }).catch(e => {
+                    //                Swal.fire({
+                    //                    'icon': "error",
+                    //                    'title': 'Servicio de Transporte',
+                    //                    'text': 'Ocurrío un error al válidar el entregable.'
+                    //                });
+                    //            });
+                    //        }
+                    //    }
+                    //});
 
                 /*FIN Adjunta Entregables*/
 

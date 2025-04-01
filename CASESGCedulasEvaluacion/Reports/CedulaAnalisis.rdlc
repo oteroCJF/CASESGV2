@@ -199,7 +199,8 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Cédula Automatizada para la Supervisión y Evaluación del Servicio de Análisis Microbiológicos</Value>
+                    <Value>Cédula Automatizada para la Supervisión y Evaluación 
+del Servicio de Análisis Microbiológicos</Value>
                     <Style>
                       <FontSize>11pt</FontSize>
                       <FontWeight>Bold</FontWeight>
@@ -213,9 +214,8 @@
             </Paragraphs>
             <rd:DefaultName>Textbox3</rd:DefaultName>
             <Top>0.0157cm</Top>
-            <Left>2.73991cm</Left>
             <Height>0.6cm</Height>
-            <Width>15.00667cm</Width>
+            <Width>19.39131cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -245,7 +245,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox36</rd:DefaultName>
-            <Top>3.88316cm</Top>
+            <Top>3.96352cm</Top>
             <Left>6.51457cm</Left>
             <Height>0.6cm</Height>
             <Width>6.38938cm</Width>
@@ -278,9 +278,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>4.5988cm</Top>
-            <Left>1.53254cm</Left>
+            <Left>0.96245cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.53991cm</Width>
             <ZIndex>2</ZIndex>
             <Style>
               <Border>
@@ -308,9 +308,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>5.23407cm</Top>
-            <Left>1.54001cm</Left>
+            <Left>0.96992cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.53991cm</Width>
             <ZIndex>3</ZIndex>
             <Style>
               <Border>
@@ -340,9 +340,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>6.07413cm</Top>
-            <Left>1.54539cm</Left>
+            <Left>1.00168cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.51353cm</Width>
             <ZIndex>4</ZIndex>
             <Style>
               <Border>
@@ -370,9 +370,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>6.7094cm</Top>
-            <Left>1.55286cm</Left>
+            <Left>1.00915cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.51353cm</Width>
             <ZIndex>5</ZIndex>
             <Style>
               <Border>
@@ -402,9 +402,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>7.49265cm</Top>
-            <Left>1.51363cm</Left>
+            <Left>0.96992cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.51353cm</Width>
             <ZIndex>6</ZIndex>
             <Style>
               <Border>
@@ -432,9 +432,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>8.15615cm</Top>
-            <Left>1.54227cm</Left>
+            <Left>0.99856cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.51353cm</Width>
             <ZIndex>7</ZIndex>
             <Style>
               <Border>
@@ -462,9 +462,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>10.94855cm</Top>
-            <Left>1.55286cm</Left>
+            <Left>1.02721cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>8</ZIndex>
             <Style>
               <Border>
@@ -494,9 +494,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>10.18275cm</Top>
-            <Left>1.57714cm</Left>
+            <Left>1.05149cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>9</ZIndex>
             <Style>
               <Border>
@@ -524,9 +524,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>12.48764cm</Top>
-            <Left>1.56344cm</Left>
+            <Left>1.03779cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>10</ZIndex>
             <Style>
               <Border>
@@ -556,9 +556,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>11.68656cm</Top>
-            <Left>1.59519cm</Left>
+            <Left>1.06954cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>11</ZIndex>
             <Style>
               <Border>
@@ -586,9 +586,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>14.0474cm</Top>
-            <Left>1.59519cm</Left>
+            <Left>1.06954cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>12</ZIndex>
             <Style>
               <Border>
@@ -618,9 +618,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>13.35215cm</Top>
-            <Left>1.5348cm</Left>
+            <Left>1.00915cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>13</ZIndex>
             <Style>
               <Border>
@@ -648,9 +648,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox59</rd:DefaultName>
             <Top>15.60516cm</Top>
-            <Left>1.62694cm</Left>
+            <Left>1.10129cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>14</ZIndex>
             <Style>
               <Border>
@@ -680,9 +680,9 @@
             </Paragraphs>
             <rd:DefaultName>Textbox37</rd:DefaultName>
             <Top>14.84641cm</Top>
-            <Left>1.56655cm</Left>
+            <Left>1.0409cm</Left>
             <Height>0.6cm</Height>
-            <Width>16.39578cm</Width>
+            <Width>18.38216cm</Width>
             <ZIndex>15</ZIndex>
             <Style>
               <Border>
@@ -698,13 +698,13 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>5.11639cm</Width>
+                  <Width>6.18425cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.11639cm</Width>
+                  <Width>6.18425cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.11639cm</Width>
+                  <Width>6.18425cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -955,9 +955,9 @@
             <KeepTogether>true</KeepTogether>
             <DataSetName>IncidenciasAnalisis</DataSetName>
             <Top>8.82926cm</Top>
-            <Left>1.81843cm</Left>
+            <Left>0.96992cm</Left>
             <Height>1.2cm</Height>
-            <Width>15.34917cm</Width>
+            <Width>18.55276cm</Width>
             <ZIndex>16</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -972,16 +972,16 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>4.04314cm</Width>
+                  <Width>4.16404cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>7.6608cm</Width>
+                  <Width>9.32687cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.7996cm</Width>
+                  <Width>2.9205cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.7996cm</Width>
+                  <Width>1.69283cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1129,9 +1129,9 @@
             </TablixRowHierarchy>
             <DataSetName>CedulaAnalisis</DataSetName>
             <Top>1.32348cm</Top>
-            <Left>1.77065cm</Left>
+            <Left>1.41845cm</Left>
             <Height>0.6cm</Height>
-            <Width>17.30314cm</Width>
+            <Width>18.10423cm</Width>
             <ZIndex>17</ZIndex>
             <Style>
               <Border>
@@ -1143,22 +1143,22 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>3.32021cm</Width>
+                  <Width>3.45373cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.63352cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>1.97083cm</Width>
+                  <Width>2.10435cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>4.96063cm</Width>
+                  <Width>5.09415cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.63352cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>2.5cm</Width>
+                  <Width>2.63352cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1556,9 +1556,9 @@
             </TablixRowHierarchy>
             <DataSetName>CedulaAnalisis</DataSetName>
             <Top>2.01627cm</Top>
-            <Left>1.32212cm</Left>
+            <Left>0.96992cm</Left>
             <Height>1.8cm</Height>
-            <Width>17.75167cm</Width>
+            <Width>18.55278cm</Width>
             <ZIndex>18</ZIndex>
             <Style>
               <Border>
@@ -1662,13 +1662,13 @@
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>5.27834cm</Width>
+                  <Width>5.39574cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.17966cm</Width>
+                  <Width>5.29706cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.7918cm</Width>
+                  <Width>5.9092cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -1825,19 +1825,13 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>________________________</Value>
+                                  <Value>________________________
+ </Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
-                              </TextRuns>
-                              <Style>
-                                <TextAlign>Center</TextAlign>
-                              </Style>
-                            </Paragraph>
-                            <Paragraph>
-                              <TextRuns>
                                 <TextRun>
                                   <Value>=Fields!Reviso.Value</Value>
                                   <Style>
@@ -2091,10 +2085,10 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>Firmantes</DataSetName>
-            <Top>16.36163cm</Top>
-            <Left>1.56344cm</Left>
+            <Top>16.67913cm</Top>
+            <Left>1.21124cm</Left>
             <Height>2.32549cm</Height>
-            <Width>16.2498cm</Width>
+            <Width>16.602cm</Width>
             <ZIndex>20</ZIndex>
             <Visibility>
               <Hidden>=IIF(Fields!Reviso.Value.Equals(Fields!Superviso.Value), True, False)</Hidden>
@@ -2187,7 +2181,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>CedulaAnalisis</DataSetName>
-            <Top>21.49876cm</Top>
+            <Top>19.27626cm</Top>
             <Left>1.67245cm</Left>
             <Height>0.6cm</Height>
             <Width>16.10474cm</Width>
@@ -2479,7 +2473,7 @@
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>Firmantes</DataSetName>
-            <Top>18.75767cm</Top>
+            <Top>16.85267cm</Top>
             <Left>4.47208cm</Left>
             <Height>2.64299cm</Height>
             <Width>10.88723cm</Width>
@@ -2495,10 +2489,10 @@
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>8.76487in</Height>
+        <Height>7.9003in</Height>
         <Style />
       </Body>
-      <Width>7.52481in</Width>
+      <Width>7.83437in</Width>
       <Page>
         <PageHeader>
           <Height>2.54cm</Height>
@@ -2530,7 +2524,9 @@
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
                 <Paragraph>
                   <TextRuns>
@@ -2539,7 +2535,9 @@
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
                 <Paragraph>
                   <TextRuns>
@@ -2548,14 +2546,15 @@
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
               <Top>0.67733cm</Top>
-              <Left>2.43134cm</Left>
               <Height>1.30845cm</Height>
-              <Width>12.9775cm</Width>
+              <Width>19.39131cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -2640,14 +2639,14 @@
                     <TextRun>
                       <Value>Elaboró: </Value>
                       <Style>
-                        <FontSize>8pt</FontSize>
+                        <FontSize>9pt</FontSize>
                         <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
                     <TextRun>
                       <Value>=Parameters!elaboro.Value</Value>
                       <Style>
-                        <FontSize>8pt</FontSize>
+                        <FontSize>9pt</FontSize>
                         <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
@@ -2659,7 +2658,7 @@
               <Top>0.54667cm</Top>
               <Left>0.40217cm</Left>
               <Height>0.6cm</Height>
-              <Width>6.61935cm</Width>
+              <Width>18.40651cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>

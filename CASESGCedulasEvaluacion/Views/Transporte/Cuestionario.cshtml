@@ -157,7 +157,11 @@
                         <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
                             <div class="col-lg-12 mt-3">
                                 <h3>Adjuntar Entregables</h3>
-                                Favor de Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
+                                <p>
+                                    <span style="color: red; font-weight: bold;">Cédula en Proceso o Rechazada:</span> Adjuntar ÚNICAMENTE Factura, Validación del SAT y Reporte(s).<br>
+                                    <span style="color: green; font-weight: bold;">Cédula Autorizada:</span> Adjuntar Acta-Entrega, Cédula Firmada y Nota de Crédito.
+                                </p>
+                              
                                 <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
                             </div>
                             <div class="row col-lg-12 mt-3">
@@ -429,7 +433,7 @@
                             <option value="ActaER">Acta Entrega - Recepción</option>
                             <option value="Factura">Factura</option>
                             <option value="SAT">Validación del SAT</option>
-                            <option value="NotaCredito">Nota de Crédito</option>
+                            <option value="NotaCredito">Nota de Crédito</option>                       
                         </select>
                         <div class="col-sm-12" id="error_tipoEntre">
                             <small id="dateHelp" class="text-danger">
@@ -1331,7 +1335,12 @@
                   /*Modal para Adjuntar Archivos*/
                      $('.btn_addFile').click(function () {
                         $('#tipo_entregable').prop('disabled', false);
-                        var option = '<option value="">Seleccione un Entregable</option>';
+                         var option = '<option value="">Seleccione un Entregable</option>';
+
+                         option += "<option value='ActaER'>Acta Entrega - Recepción</option>";
+                         option += "<option value='Cedula_Firmada'>Cédula Firmada (FIREL)</option>";
+
+
                         axios.get('/variables/getEntregables/' + model.servicioId + '/' + model.id).then(entre => {
                             entre = entre.data;
                             for (var i = 0; i < entre.length; i++) {
@@ -1396,121 +1405,181 @@
 
                     });
 
-                    $('#adjuntarArchivo').click(function () {
-                        var formData = new FormData();
-                        var folio = model.folio;
-                        var file = document.getElementById('customFile').files[0];
-                        var id = $('#file_id').val();
-                        var tipo = $('#tipo_entregable').val();
-                        var comentarios = $('#comentarios_entregable').val();
+            //SE MODIFICÓ ESTE METODO PARA PERMITIR LA CARGA DE DOBLES ARCHIVOS PARA TRANSPORTE DE PERSONAL
+            $('#adjuntarArchivo').click(function () {
+                var formData = new FormData();
+                var folio = model.folio;
+                var file = document.getElementById('customFile').files[0];
+                var id = $('#file_id').val();
+                var tipo = $('#tipo_entregable').val();
+                var comentarios = $('#comentarios_entregable').val();
 
-                        if (id.length > 0) {
-                            id = parseInt(id);
-                        } else {
-                            id = 0;
+                if (id.length > 0) {
+                    id = parseInt(id);
+                } else {
+                    id = 0;
+                }
+
+                formData.append("Id", id);
+                formData.append("CedulaEvaluacionId", model.id);
+                if (file != null)
+                    formData.append("Archivo", file);
+
+                formData.append("Folio", folio);
+                formData.append("Tipo", tipo);
+                formData.append("Comentarios", comentarios);
+
+                if (validaCamposArchivo()) {
+                    axios.post('/transporte/adjuntaEntregable', formData, {
+                        headers: { 'Content-Type': 'multipart/form-data' }
+                    }).then(response => {
+                        $('#cerrar_modal_sua').trigger('click');
+                        if (response.status == 200) {
+                            Swal.fire({
+                                'icon': "success",
+                                'title': 'Servicio de Transporte de Personal',
+                                'text': 'Se adjuntó el archivo correctamente.'
+                            }).then(() => {
+                                // Recarga la página después de que el usuario hace clic en "Ok"
+                                location.reload();
+                            });
+                            $('#customFile').removeClass('is-valid');
+                            $('#comentarios_entregable').removeClass('is-valid');
+                            $('#tipo_entregable').removeClass('is-valid');
                         }
-
-                        formData.append("Id", id);
-                        formData.append("CedulaEvaluacionId", model.id);
-                        if(file != null)
-                            formData.append("Archivo", file);
-
-                        formData.append("Folio", folio);
-                        formData.append("Tipo", tipo);
-                        formData.append("Comentarios", comentarios);
-
-                        if (validaCamposArchivo()) {
-                            if (id != 0) {
-                                axios.post('/transporte/adjuntaEntregable', formData, {
-                                    headers: { 'Content-Type': 'multipart/form-data' }
-
-                                }).then(response => {
-                                    $('#cerrar_modal_sua').trigger('click');
-                                    /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
-                                    if (response.status == 200) {
-                                        Swal.fire({
-                                            'icon': "success",
-                                            'title': 'Servicio de Transporte de Personal',
-                                            'text': 'Se adjuntó el archivo correctamente.'
-                                        });
-                                        $('#customFile').removeClass('is-valid');
-                                        $('#comentarios_entregable').removeClass('is-valid');
-                                        $('#tipo_entregable').removeClass('is-valid');
-                                    }
-                                    axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId+"/" + model.id).then(success => {
-                                        if (success.data == null || success.data == "") {
-                                            $('#tEntregables').html(success.data);
-                                        }
-                                        $('#tEntregables').html(success.data);
-                                    });
-                                }).catch(error => {
-                                    Swal.fire({
-                                        'icon': "error",
-                                        'title': 'Servicio de Transporte de Personal',
-                                        'text': 'Se presento un error al intentar adjuntar el archivo.'
-                                    });
-                                });
-
-                                document.getElementById('customFile').value = '';
-                                $('#file_id').val("");
-                                $(".custom-file-label").text("Seleccionar Archivo");
-                                $('#tipo_entregable').val('');
-                                $('#comentarios_entregable').val('');
-                            } else {
-                                axios.get('/transporte/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
-                                    if (exist.data == 0) {
-                                        axios.post('/transporte/adjuntaEntregable', formData, {
-                                            headers: { 'Content-Type': 'multipart/form-data' }
-
-                                        }).then(response => {
-                                            $('#cerrar_modal_sua').trigger('click');
-                                            /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
-                                            if (response.status == 200) {
-                                                Swal.fire({
-                                                    'icon': "success",
-                                                    'title': 'Servicio de Transporte de Personal',
-                                                    'text': 'Se adjuntó el archivo correctamente.'
-                                                });
-                                                $('#customFile').removeClass('is-valid');
-                                                $('#comentarios_entregable').removeClass('is-valid');
-                                                $('#tipo_entregable').removeClass('is-valid');
-                                            }
-                                            axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId+"/" + model.id).then(success => {
-                                                if (success.data == null || success.data == "") {
-                                                    $('#tEntregables').html(success.data);
-                                                }
-                                                $('#tEntregables').html(success.data);
-                                            });
-                                        }).catch(error => {
-                                            Swal.fire({
-                                                'icon': "error",
-                                                'title': 'Servicio de Transporte de Personal',
-                                                'text': 'Se presento un error al adjuntar el archivo.'
-                                            });
-                                        });
-
-                                        document.getElementById('customFile').value = '';
-                                        $('#file_id').val("");
-                                        $(".custom-file-label").text("Seleccionar Archivo");
-                                        $('#tipo_entregable').val('');
-                                        $('#comentarios_entregable').val('');
-                                    } else {
-                                        Swal.fire({
-                                            'icon': "error",
-                                            'title': 'Servicio de Transporte de Personal',
-                                            'text': 'Ya existe un mismo entregable con el tipo ' + tipo
-                                        });
-                                    }
-                                }).catch(e => {
-                                    Swal.fire({
-                                        'icon': "error",
-                                        'title': 'Servicio de Transporte de Personal',
-                                        'text': 'Ocurrío un error al válidar el entregable.'
-                                    });
-                                });
-                            }
-                        }
+                        axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId + "/" + model.id).then(success => {
+                            $('#tEntregables').html(success.data);
+                        });
+                    }).catch(error => {
+                        Swal.fire({
+                            'icon': "error",
+                            'title': 'Servicio de Transporte de Personal',
+                            'text': 'Se presentó un error al intentar adjuntar el archivo.'
+                        });
                     });
+
+                    document.getElementById('customFile').value = '';
+                    $('#file_id').val("");
+                    $(".custom-file-label").text("Seleccionar Archivo");
+                    $('#tipo_entregable').val('');
+                    $('#comentarios_entregable').val('');
+                }
+            });
+                    //$('#adjuntarArchivo').click(function () {
+                    //    var formData = new FormData();
+                    //    var folio = model.folio;
+                    //    var file = document.getElementById('customFile').files[0];
+                    //    var id = $('#file_id').val();
+                    //    var tipo = $('#tipo_entregable').val();
+                    //    var comentarios = $('#comentarios_entregable').val();
+
+                    //    if (id.length > 0) {
+                    //        id = parseInt(id);
+                    //    } else {
+                    //        id = 0;
+                    //    }
+
+                    //    formData.append("Id", id);
+                    //    formData.append("CedulaEvaluacionId", model.id);
+                    //    if(file != null)
+                    //        formData.append("Archivo", file);
+
+                    //    formData.append("Folio", folio);
+                    //    formData.append("Tipo", tipo);
+                    //    formData.append("Comentarios", comentarios);
+
+                    //    if (validaCamposArchivo()) {
+                    //        if (id != 0) {
+                    //            axios.post('/transporte/adjuntaEntregable', formData, {
+                    //                headers: { 'Content-Type': 'multipart/form-data' }
+
+                    //            }).then(response => {
+                    //                $('#cerrar_modal_sua').trigger('click');
+                    //                /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                    //                if (response.status == 200) {
+                    //                    Swal.fire({
+                    //                        'icon': "success",
+                    //                        'title': 'Servicio de Transporte de Personal',
+                    //                        'text': 'Se adjuntó el archivo correctamente.'
+                    //                    });
+                    //                    $('#customFile').removeClass('is-valid');
+                    //                    $('#comentarios_entregable').removeClass('is-valid');
+                    //                    $('#tipo_entregable').removeClass('is-valid');
+                    //                }
+                    //                axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId+"/" + model.id).then(success => {
+                    //                    if (success.data == null || success.data == "") {
+                    //                        $('#tEntregables').html(success.data);
+                    //                    }
+                    //                    $('#tEntregables').html(success.data);
+                    //                });
+                    //            }).catch(error => {
+                    //                Swal.fire({
+                    //                    'icon': "error",
+                    //                    'title': 'Servicio de Transporte de Personal',
+                    //                    'text': 'Se presento un error al intentar adjuntar el archivo.'
+                    //                });
+                    //            });
+
+                    //            document.getElementById('customFile').value = '';
+                    //            $('#file_id').val("");
+                    //            $(".custom-file-label").text("Seleccionar Archivo");
+                    //            $('#tipo_entregable').val('');
+                    //            $('#comentarios_entregable').val('');
+                    //        } else {
+                    //            axios.get('/transporte/buscaEntregable/' + model.id + '/' + tipo).then(exist => {
+                    //                if (exist.data == 0) {
+                    //                    axios.post('/transporte/adjuntaEntregable', formData, {
+                    //                        headers: { 'Content-Type': 'multipart/form-data' }
+
+                    //                    }).then(response => {
+                    //                        $('#cerrar_modal_sua').trigger('click');
+                    //                        /*Validamos la pregunta a la que se realizo el anexo de evidencia*/
+                    //                        if (response.status == 200) {
+                    //                            Swal.fire({
+                    //                                'icon': "success",
+                    //                                'title': 'Servicio de Transporte de Personal',
+                    //                                'text': 'Se adjuntó el archivo correctamente.'
+                    //                            });
+                    //                            $('#customFile').removeClass('is-valid');
+                    //                            $('#comentarios_entregable').removeClass('is-valid');
+                    //                            $('#tipo_entregable').removeClass('is-valid');
+                    //                        }
+                    //                        axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId+"/" + model.id).then(success => {
+                    //                            if (success.data == null || success.data == "") {
+                    //                                $('#tEntregables').html(success.data);
+                    //                            }
+                    //                            $('#tEntregables').html(success.data);
+                    //                        });
+                    //                    }).catch(error => {
+                    //                        Swal.fire({
+                    //                            'icon': "error",
+                    //                            'title': 'Servicio de Transporte de Personal',
+                    //                            'text': 'Se presento un error al adjuntar el archivo.'
+                    //                        });
+                    //                    });
+
+                    //                    document.getElementById('customFile').value = '';
+                    //                    $('#file_id').val("");
+                    //                    $(".custom-file-label").text("Seleccionar Archivo");
+                    //                    $('#tipo_entregable').val('');
+                    //                    $('#comentarios_entregable').val('');
+                    //                } else {
+                    //                    Swal.fire({
+                    //                        'icon': "error",
+                    //                        'title': 'Servicio de Transporte de Personal',
+                    //                        'text': 'Ya existe un mismo entregable con el tipo ' + tipo
+                    //                    });
+                    //                }
+                    //            }).catch(e => {
+                    //                Swal.fire({
+                    //                    'icon': "error",
+                    //                    'title': 'Servicio de Transporte de Personal',
+                    //                    'text': 'Ocurrío un error al válidar el entregable.'
+                    //                });
+                    //            });
+                    //        }
+                    //    }
+                    //});
 
                 /*FIN Adjunta Entregables*/
 
@@ -1560,24 +1629,27 @@
                                             'Servicio de Transporte de Personal',
                                             'El archivo fue eliminado correctamente.',
                                             'success'
-                                        );
-                                        axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId+"/" + model.id).then(response => {
+                                        ).then(function () {
+                                            window.location.reload();
+                                        });
+                                        axios.get("/transporte/getEntregables/" + model.id + "/" + model.servicioId + "/" + model.id).then(response => {
                                             if (response.data == null || response.data == "") {
                                                 $('#tEntregables').html(response.data);
                                             }
                                             $('#tEntregables').html(response.data);
+                                           
                                         });
                                     }
                                 }).catch(error => {
                                     Swal.fire(
                                         'Servicio de Transporte de Personal',
-                                        'No se pudo procesar tu solicitud. Contacta al  Administrador.',
+                                        'No se pudo procesar tu solicitud. Contacta al Administrador.',
                                         'error'
                                     );
                                 });
                             }
                         });
-                    });
+                   });
                  /*FIN de elimina entregables*/
 
             /*Ver archivo en modal*/
@@ -1844,9 +1916,10 @@
                         } else {
                             $('.btn_enviar').attr('disabled', true);
                             $('.btn_guardar').attr('disabled', true);
-                            validaEntregables();
+                            if (validaEntregables()) {
+                                location.reload();
+                            }
                         }
-
                     });
                 /*Enviar de guardar la cedula*/
 
