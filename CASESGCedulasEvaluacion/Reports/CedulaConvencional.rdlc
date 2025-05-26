@@ -1783,30 +1783,6 @@
                 <TextRuns>
                   <TextRun>
                     <Value />
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -1828,8 +1804,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Sandra Leticia 
-Mendoza Altamirano</Value>
+                    <Value>Lic. Sandra Leticia Mendoza Altamirano</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -1854,10 +1829,10 @@ Mendoza Altamirano</Value>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>43.26504cm</Top>
-            <Left>0.2125in</Left>
+            <Top>42.6283cm</Top>
+            <Left>1.11341in</Left>
             <Height>1.43058cm</Height>
-            <Width>6.83385cm</Width>
+            <Width>7.07331cm</Width>
             <ZIndex>17</ZIndex>
             <Style>
               <Border>
@@ -2158,34 +2133,10 @@ Mendoza Altamirano</Value>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Supervisó:</Value>
+                    <Value>Autorizó:</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
                   </TextRun>
                 </TextRuns>
                 <Style>
@@ -2217,10 +2168,94 @@ Mendoza Altamirano</Value>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Erika Rocio 
-Hernández Hernández</Value>
+                    <Value>Lic. Rosalía Nancy Ramírez Germán</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Directora de Área</Value>
+                    <Style>
+                      <FontSize>9pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox79</rd:DefaultName>
+            <Top>44.63913cm</Top>
+            <Left>10.85388cm</Left>
+            <Height>1.43058cm</Height>
+            <Width>6.16314cm</Width>
+            <ZIndex>27</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
+          <Textbox Name="Textbox81">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Supervisó:</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value />
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>____________________________</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Lic. Erika Luisa Anzures Rojas</Value>
+                    <Style>
+                      <FontStyle>Normal</FontStyle>
+                      <FontWeight>Bold</FontWeight>
+                      <TextDecoration>None</TextDecoration>
+                      <Color>#000000</Color>
                     </Style>
                   </TextRun>
                 </TextRuns>
@@ -2243,122 +2278,10 @@ Hernández Hernández</Value>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>43.29325cm</Top>
-            <Left>13.31324cm</Left>
+            <Top>44.63913cm</Top>
+            <Left>3.53041cm</Left>
             <Height>1.43058cm</Height>
-            <Width>6.96972cm</Width>
-            <ZIndex>27</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
-          <Textbox Name="Textbox81">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Revisó:</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>____________________________</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Ing. Arq. Laura Ivonne 
-Arellano Sandoval</Value>
-                    <Style>
-                      <FontStyle>Normal</FontStyle>
-                      <FontWeight>Bold</FontWeight>
-                      <TextDecoration>None</TextDecoration>
-                      <Color>#000000</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Jefa de Departamento</Value>
-                    <Style>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>43.29185cm</Top>
-            <Left>7.47943cm</Left>
-            <Height>1.43058cm</Height>
-            <Width>5.62214cm</Width>
+            <Width>5.66783cm</Width>
             <ZIndex>28</ZIndex>
             <Style>
               <Border>
@@ -3031,8 +2954,8 @@ Arellano Sandoval</Value>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>CedulaConvencional</DataSetName>
-            <Top>43.92414cm</Top>
-            <Left>2.31023cm</Left>
+            <Top>41.45741cm</Top>
+            <Left>2.20107cm</Left>
             <Height>0.6cm</Height>
             <Width>16.10474cm</Width>
             <ZIndex>32</ZIndex>
@@ -8234,8 +8157,90 @@ Arellano Sandoval</Value>
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
+          <Textbox Name="Textbox119">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Revisó:</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value />
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>____________________________</Value>
+                    <Style />
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Lic. Anabel Bernal Castillo</Value>
+                    <Style>
+                      <FontWeight>Bold</FontWeight>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>Coordinadora Técnica B</Value>
+                    <Style>
+                      <FontSize>9pt</FontSize>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style>
+                  <TextAlign>Center</TextAlign>
+                </Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>Textbox79</rd:DefaultName>
+            <Top>42.6283cm</Top>
+            <Left>10.85388cm</Left>
+            <Height>1.43058cm</Height>
+            <Width>6.16314cm</Width>
+            <ZIndex>45</ZIndex>
+            <Style>
+              <Border>
+                <Style>None</Style>
+              </Border>
+              <PaddingLeft>2pt</PaddingLeft>
+              <PaddingRight>2pt</PaddingRight>
+              <PaddingTop>2pt</PaddingTop>
+              <PaddingBottom>2pt</PaddingBottom>
+            </Style>
+          </Textbox>
         </ReportItems>
-        <Height>17.66823in</Height>
+        <Height>18.17101in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -8251,7 +8256,7 @@ Arellano Sandoval</Value>
           </RightBorder>
         </Style>
       </Body>
-      <Width>7.98542in</Width>
+      <Width>8.0859in</Width>
       <Page>
         <PageHeader>
           <Height>3.14854cm</Height>
@@ -8262,7 +8267,7 @@ Arellano Sandoval</Value>
               <Source>Embedded</Source>
               <Value>Imagen1</Value>
               <Sizing>FitProportional</Sizing>
-              <Top>0.89007cm</Top>
+              <Top>0.34823cm</Top>
               <Left>0.44965cm</Left>
               <Height>2.10854cm</Height>
               <Width>2.02917cm</Width>
@@ -8283,7 +8288,9 @@ Arellano Sandoval</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
                 <Paragraph>
                   <TextRuns>
@@ -8292,7 +8299,9 @@ Arellano Sandoval</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
                 <Paragraph>
                   <TextRuns>
@@ -8301,14 +8310,15 @@ Arellano Sandoval</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox1</rd:DefaultName>
-              <Top>0.93874cm</Top>
-              <Left>2.82807cm</Left>
+              <Top>0.61915cm</Top>
               <Height>1.83762cm</Height>
-              <Width>12.9775cm</Width>
+              <Width>20.53818cm</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -8328,7 +8338,7 @@ Arellano Sandoval</Value>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>2.54cm</Height>
+          <Height>2.72264cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -8369,7 +8379,7 @@ Arellano Sandoval</Value>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>TotalPages</rd:DefaultName>
-              <Top>1.48764cm</Top>
+              <Top>2.12264cm</Top>
               <Left>14.15887cm</Left>
               <Height>0.6cm</Height>
               <Width>5cm</Width>

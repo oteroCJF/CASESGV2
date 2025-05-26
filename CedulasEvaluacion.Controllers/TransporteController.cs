@@ -26,6 +26,7 @@ namespace CedulasEvaluacion.Controllers
         private readonly IRepositorioVariables vVariables;
         private readonly IRepositorioFiltrado vFiltrado;
 
+
         public TransporteController(IRepositorioEvaluacionServicios viCedula, IRepositorioInmuebles iVInmueble, IRepositorioUsuarios iVUsuario,
                                     IRepositorioIncidenciasTransporte iiTransporte, IRepositorioEntregablesCedula eeTransporte,
                                     IRepositorioPerfiles iPerfiles, IRepositorioFacturas iFacturas, IRepositorioVariables iVariables,
@@ -183,8 +184,12 @@ namespace CedulasEvaluacion.Controllers
                 cedTran.incidencias.transporte = await iTransporte.GetIncidencias(cedTran.Id);
                 cedTran.RespuestasEncuesta = new List<RespuestasEncuesta>();
                 cedTran.RespuestasEncuesta = await vCedula.obtieneRespuestas(cedTran.Id);
+                cedTran.TotalDeductivas = await vCedula.SumaDeductivas(cedTran.Id, cedTran.ServicioId);
+                cedTran.TotalPenalizaciones= await vCedula.SumaPenalizaciones(cedTran.Id, cedTran.ServicioId);
+
                 cedTran.historialCedulas = new List<HistorialCedulas>();
                 cedTran.historialCedulas = await vCedula.getHistorial(cedTran.Id);
+
                 foreach (var user in cedTran.historialCedulas)
                 {
                     user.usuarios = await vUsuarios.getUserById(user.UsuarioId);

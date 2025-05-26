@@ -13,11 +13,16 @@
 }
 
 <div class="row col-lg-12">
+
     <div class="col-lg-12">
-        <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3 btn_back'><i class="fal fa-arrow-left"></i></a>
+        <h4 style="color: #24135f;">
+            <strong>Evaluación correspondiente al mes de <b>@Model.Mes</b> del año <b>@Model.Anio</b></strong>
+        </h4>
+
+        <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-lg btn-warning float-right mr-2 mb-3 btn_back' data-toggle="tooltip" title="Regresar a las cédulas" data-placement="top" style="padding: 6px 78px; font-size: 22px;"><i class="fas fa-arrow-left"></i></a>
         @if (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
         {
-            <a href="#" class='btn-sm btn-primary float-right mr-2 mb-3 btnActaER' data-toggle="tooltip" title="Generar Acta ER" data-placement="top">
+            <a href="#" class='btn-lg btn-primary float-right mr-2 mb-3 btnActaER' data-toggle="tooltip" title="Generar Acta ER" data-placement="top">
                 <i class="fal fa-calendar-alt"></i>
             </a>
         }
@@ -28,16 +33,16 @@
         <ul class="nav nav-tabs h6" id="myTab" role="tablist">
             @{int i = 0;}
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
+                <a class="nav-link1 active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables_cedula" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#entregables_cedula" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_entregables" role="tab" aria-controls="contact" aria-selected="false">Historial de Entregables</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#historial_entregables" role="tab" aria-controls="contact" aria-selected="false">Historial de Entregables</a>
             </li>
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -49,310 +54,370 @@
             <div class="tab-pane fade show active" id="informacion_general" role="tabpanel" aria-labelledby="home-tab">
                 <div class="row justify-content-center align-items-center mt-4">
                     <div class="col-lg-12 h3 ml-4">
-                        Información General
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-info-circle me-2"></i> <strong>Información General</strong>
+                        </h4>                     
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
                         <div class="card bg-light d-flex flex-fill">
                             <div class="card-header border-bottom-0">
-                                <h2 class="lead"><b>Inmueble Evaluado: </b> @Model.inmuebles.Nombre</h2>
+                                <h3 class="card-title mb-0 text-dark text-center">
+                                    <i class="fas fa-building me-2"></i> <strong>Inmueble Evaluado:</strong> <span>@Model.inmuebles.Nombre</span>
+                                </h3>
                             </div>
                             <div class="card-body pt-0">
                                 <div class="row">
                                     <div class="col-7">
-                                        <h2 class="lead">
-                                            <strong>
-                                                Factura Capturadas:
-                                            </strong>
-                                            <a href="#" id="btn_facturas" class='btn btn-sm btn-facturas ml-2 mb-1' data-toggle="tooltip" title="Ver Facturas" data-placement="top">
+                                        <h5 class="mb-0 text-dark">
+                                            <i class="fal fa-file-invoice"></i> <strong>Facturas Capturadas:</strong>
+                                            <a href="#" id="btn_facturas" class='btn btn-lg btn-facturas ml-2 mb-1' data-toggle="tooltip" title="Ver Facturas" data-placement="top">
                                                 <i class="fal fa-file-invoice"></i>
                                             </a>
-                                        </h2>
-                                        <p class="text-sm">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
+                                        </h5>
                                         <ul class="ml-4 mb-0 fa-ul">
-                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
-                                            <li class="small mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
-                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
-                                            <li class="small mt-3">
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total: </strong>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</h5></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <h5> <strong>Calificación: </strong> </b> @Model.Calificacion</h5></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span>  <h5><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</h5></li>
+                                            <li class="strong mt-3">
                                                 <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
-                                                <strong>Correo:</strong>
+
                                                 @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
                                                 {
-                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                     <h5><strong>Correo:</strong><strong class="text-danger">@String.Format("Sin correo")</strong></h5>
                                                 }
                                                 else
                                                 {
-                                                    @Model.usuarios.correo_electronico
+                                                     <h5><strong>Correo:</strong> @Model.usuarios.correo_electronico </h5>
                                                 }
-                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
-                                                    <i class="fal fa-edit"></i>
-                                                </a>
+
                                             </li>
                                         </ul>
                                     </div>
+
+
                                     <div class="col-5">
                                         @if (@Model.Estatus.Equals("Enviado a DAS"))
                                         {
-                                            <h5 class="text-enviadoDAS lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-enviadoDAS lblEstatus d-flex align-items-center">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fa-regular fa-ballot-check ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Revisión CAE"))
                                         {
-                                            <h5 class="text-primary lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-primary lblEstatus d-flex align-items-center">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fa-regular fa-ballot-check ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("En Trámite"))
                                         {
-                                            <h5 class="text-info lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-info lblEstatus d-flex align-items-center ">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fas fa-tasks ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Rechazada"))
                                         {
-                                            <h5 class="text-danger lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-danger lblEstatus d-flex align-items-center">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fas fa-times ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Trámite Rechazado"))
                                         {
-                                            <h5 class="text-tramiteRechazado lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-tramiteRechazado lblEstatus d-flex align-items-center">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fal fa-window-close ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Autorizada"))
                                         {
-                                            <h5 class="text-autorizado lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-autorizado lblEstatus d-flex align-items-center">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fas fa-check ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Autorizado CAE"))
                                         {
-                                            <h5 class="text-autorizadoCAE lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-autorizadoCAE lblEstatus d-flex align-items-center justify-content-between">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fas fa-check ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Trámite de Pago"))
                                         {
-                                            <h5 class="text-tramitePago lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-tramitePago lblEstatus d-flex align-items-center justify-content-between">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fal fa-money-check-alt ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Enviada a DGPPT"))
                                         {
-                                            <h5 class="text-dgppt lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-dgppt lblEstatus d-flex align-items-center justify-content-between">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fa-light fa-cash-register ms-2 fa-lg"></i>
+                                            </h2>
                                         }
                                         else if (@Model.Estatus.Equals("Pagada"))
                                         {
-                                            <h5 class="text-success lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
+                                            <h2 class="text-success lblEstatus d-flex align-items-center justify-content-between">
+                                                <strong>Estatus: </strong>&nbsp;@Model.Estatus&nbsp; &nbsp;
+                                                <i class="fa-light fa-sack-dollar ms-2 fa-lg"></i>
+                                            </h2>
                                         }
-                                        <div class="col-lg-4" style="margin-top: -18px;">
-                                            <div class="small-box">
-                                                <div class="icon">
-                                                    @if (@Model.Estatus.Equals("Enviado a DAS"))
-                                                    {
-                                                        <i class="fa-regular fa-ballot-check text-enviadoDAS"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Revisión CAE"))
-                                                    {
-                                                        <i class="fa-regular fa-ballot-check text-primary"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("En Trámite"))
-                                                    {
-                                                        <i class="fas fa-tasks text-info"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Rechazada"))
-                                                    {
-                                                        <i class="fas fa-times text-danger"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Trámite Rechazado"))
-                                                    {
-                                                        <i class="fal fa-window-close text-tramiteRechazado"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Autorizada"))
-                                                    {
-                                                        <i class="fas fa-check text-autorizado"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Autorizado CAE"))
-                                                    {
-                                                        <i class="fas fa-check text-autorizadoCAE"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Trámite de Pago"))
-                                                    {
-                                                        <i class="fal fa-money-check-edit-alt text-tramitePago"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Enviada a DGPPT"))
-                                                    {
-                                                        <i class="fa-light fa-cash-register text-dgppt"></i>
-                                                    }
-                                                    else if (@Model.Estatus.Equals("Pagada"))
-                                                    {
-                                                        <i class="fa-light fa-sack-dollar text-success"></i>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
+
+
+                                @{ // Calculate the total deductibles from specific indices
+                                    // Ensure these indices exist in your Model.RespuestasEncuesta collection
+                                    decimal totalDeductivas = 0; // Initialize to 0
+                                    decimal totalPenalizaciones = 0;
+                                    // Safely sum the values, checking if the indices exist to prevent errors
+                                    if (Model.RespuestasEncuesta != null && Model.RespuestasEncuesta.Count > 1)
+                                    {
+                                        totalPenalizaciones = Model.RespuestasEncuesta[1].MontoPenalizacion;
+                                    }
+                                    if (Model.RespuestasEncuesta != null && Model.RespuestasEncuesta.Count > 5)
+                                    {
+                                        totalDeductivas = Model.RespuestasEncuesta[2].MontoPenalizacion +
+                                                            Model.RespuestasEncuesta[3].MontoPenalizacion +
+                                                            Model.RespuestasEncuesta[4].MontoPenalizacion +
+                                                            Model.RespuestasEncuesta[5].MontoPenalizacion;
+                                    }
+
+                                }
+
+
                             </div>
-                            @if (@Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
-                            {
-                                <div class="card-footer">
-                                    <div class="text-right" id="divAutoriza"></div>
+
+                            <div class="row mt-4 justify-content-center align-items-stretch">
+                                <div class="col-12 col-md-4 mb-4">
+
+
+                                    @if (totalPenalizaciones > 0)
+                                    {
+                                        <div class="card border-danger text-center">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-danger mb-2">
+                                                    <i class="fas fa-minus-circle me-2"></i> <strong>Total de Penalizaciones sin IVA:</strong>
+                                                </h5>
+                                                <p class="card-text display-4 text-danger fw-bold">
+                                                    <strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalPenalizaciones)</strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+
+                                    }
                                 </div>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="entregables_cedula" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="col-lg-12 h3 mt-4">
-                    Entregables Periódicos
-                </div>
-                <div class="row col-lg-12">
-                    <div class="col-lg-8">
-                        <p class="h6">El usuario adjuntó los siguientes entregables.</p>
-                    </div>
-                </div>
-                <div class="row col-lg-12 mt-1 h6">
-                    <div class="col-lg-12">
-                        <div class="col-lg-12 mb-3">
-                            @*if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Autorizado CAE")) && ((@User.Claims.ElementAt(2).Value).Contains("Evaluador") || (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
-                                {*@
-                            <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
-                            @*}*@
-                        </div>
-                        <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
-                        <table class="table" id="tableEntregables">
-                            <thead>
-                                <tr>
-                                    <th>Tipo</th>
-                                    <th>Nombre</th>
-                                    <th>Fecha de Creación</th>
-                                    <th class="text-center">Estatus</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{ string tipo = ""; }
-                                @foreach (var entre in @Model.iEntregables)
+                                <div class="col-12 col-md-4 mb-4">
+                                    @if (totalDeductivas > 0)
+                                    {
+                                        <div class="card border-primary text-center">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-primary mb-2">
+                                                    <i class="fas fa-calculator me-2"></i> <strong>Total de Deductivas sin IVA:</strong>
+                                                </h5>
+                                                <p class="card-text  display-4 text-primary fw-bold">
+                                                    <strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", totalDeductivas)</strong>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                </div>
+                            </div>
+
+
+
+
+                                @if (@Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
                                 {
-                                    <tr>
-                                        @if (entre.Tipo.Equals("ActaER"))
+                                    <div class="card-footer">
+                                        <div class="text-right" id="divAutoriza"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                     </div>
+                 </div>
+                 <div class="tab-pane fade" id="entregables_cedula" role="tabpanel" aria-labelledby="contact-tab">
+                     <div class="col-lg-12 h3 mt-4">
+                         <h4 style="color: #24135f;">
+                             <i class="fas fa-paperclip me-2"></i>
+                             <strong>Entregables Periódicos</strong>
+                         </h4>
+                     </div>
+                     <div class="row col-lg-12">
+                         <div class="col-lg-8">
+                             <h4>
+                                El usuario adjuntó los siguientes entregables:
+                             </h4>
+                         </div>
+                     </div>
+                     <div class="row col-lg-12 mt-1 h6">
+                         <div class="col-lg-12">
+                             <div class="col-lg-12 mb-3">
+                                 @*if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Autorizado CAE")) && ((@User.Claims.ElementAt(2).Value).Contains("Evaluador") || (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
+                                     {*@
+                                    <a href="#" type='button' class='btn-lg btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                                    @*}*@
+                                </div>
+                             <br>
+                                <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
+                                <table class="table" id="tableEntregables">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Nombre</th>
+                                            <th>Fecha de Creación</th>
+                                            <th class="text-center">Estatus</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ string tipo = ""; }
+                                        @foreach (var entre in @Model.iEntregables)
                                         {
-                                            tipo = "Acta Entrega - Recepción";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("Factura"))
-                                        {
-                                            tipo = "Factura";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("SAT"))
-                                        {
-                                            tipo = "Validación del SAT";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("NotaCredito"))
-                                        {
-                                            tipo = "Nota de Crédito";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("Reporte(s)"))
-                                        {
-                                            tipo = "Reporte(s)";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("Cedula_Firmada"))
-                                        {
-                                            cedula = true;
-                                            tipo = "Cédula Firmada";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("Memorandum"))
-                                        {
-                                            memo = true;
-                                            tipo = "Memorándum";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("AlcanceMO"))
-                                        {
-                                            tipo = "Alcance a Memorándum/Oficio";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else if (entre.Tipo.Equals("AlcanceAER"))
-                                        {
-                                            tipo = "Alcance a Acta E-R";
-                                            <td>@Html.DisplayName(tipo)</td>
-                                        }
-                                        else
-                                        {
-                                            tipo = @entre.Tipo;
-                                            <td>@entre.Tipo</td>
-                                        }
-                                        <td>@entre.NombreArchivo</td>
-                                        <td>@entre.FechaCreacion.ToString("dd-MM-yyyy")</td>
-                                        <td class="text-center @entre.Color font-weight-bold">
-                                            @if (await sPermisos.GetPermisosByModulo("autorizar entregables", @Model.ServicioId, @user) != 0)
-                                            {
-                                                @if (@entre.Estatus.Equals("Rechazado"))
+                                            <tr>
+                                                @if (entre.Tipo.Equals("ActaER"))
                                                 {
-                                                    @Html.Raw(@entre.Icono) @entre.Estatus
-                                                    <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
-                                                        <i class="fas fa-check ml-1"></i>
-                                                    </a>
+                                                    tipo = "Acta Entrega - Recepción";
+                                                    <td>@Html.DisplayName(tipo)</td>
                                                 }
-                                                else if (@entre.Estatus.Equals("Autorizado"))
+                                                else if (entre.Tipo.Equals("Factura"))
                                                 {
-                                                    @Html.Raw(@entre.Icono) @entre.Estatus
-                                                    <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
-                                                        <i class="far fa-times"></i>
-                                                    </a>
+                                                    tipo = "Factura";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("SAT"))
+                                                {
+                                                    tipo = "Validación del SAT";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("NotaCredito"))
+                                                {
+                                                    tipo = "Nota de Crédito";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("Reporte(s)"))
+                                                {
+                                                    tipo = "Reporte(s)";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("Cedula_Firmada"))
+                                                {
+                                                    cedula = true;
+                                                    tipo = "Cédula Firmada";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("Memorandum"))
+                                                {
+                                                    memo = true;
+                                                    tipo = "Memorándum";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("AlcanceMO"))
+                                                {
+                                                    tipo = "Alcance a Memorándum/Oficio";
+                                                    <td>@Html.DisplayName(tipo)</td>
+                                                }
+                                                else if (entre.Tipo.Equals("AlcanceAER"))
+                                                {
+                                                    tipo = "Alcance a Acta E-R";
+                                                    <td>@Html.DisplayName(tipo)</td>
                                                 }
                                                 else
                                                 {
-                                                    <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
-                                                        <i class="fas fa-check ml-1"></i>
-                                                    </a>
-                                                    <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
-                                                        <i class="far fa-times"></i>
-                                                    </a>
+                                                    tipo = @entre.Tipo;
+                                                    <td>@entre.Tipo</td>
                                                 }
-                                            }
-                                            else
-                                            {
-                                                @Html.Raw(@entre.Icono) @entre.Estatus
-                                            }
-                                        </td>
-                                        <td class="text-center">
-                                            <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
-                                               data-toggle="tooltip" title="Vista Previa de(la) @tipo" data-placement="top">
-                                                <i class='fas fa-eye text-success'></i>
-                                            </a>
-                                            @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado") ||
-                                        @Model.Estatus.Equals("Autorizado CAE")) ||
-                                         (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
-                                            {
-                                                @if (!entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
-                                                {
-                                                    <a href='#' class="text-center mr-2 update_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
-                                                       data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo" data-toggle="tooltip" title="Actualizar @entre.Tipo"
-                                                       data-placement="top">
-                                                        <i class='fas fa-pencil text-primary'></i>
+                                                <td>@entre.NombreArchivo</td>
+                                                <td>@entre.FechaCreacion.ToString("dd-MM-yyyy")</td>
+                                                <td class="text-center @entre.Color font-weight-bold">
+                                                    @if (await sPermisos.GetPermisosByModulo("autorizar entregables", @Model.ServicioId, @user) != 0)
+                                                    {
+                                                        @if (@entre.Estatus.Equals("Rechazado"))
+                                                        {
+                                                            @Html.Raw(@entre.Icono) @entre.Estatus
+                                                            <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
+                                                                <i class="fas fa-check ml-1"></i>
+                                                            </a>
+                                                        }
+                                                        else if (@entre.Estatus.Equals("Autorizado"))
+                                                        {
+                                                            @Html.Raw(@entre.Icono) @entre.Estatus
+                                                            <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
+                                                                <i class="far fa-times"></i>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
+                                                                <i class="fas fa-check ml-1"></i>
+                                                            </a>
+                                                            <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
+                                                                <i class="far fa-times"></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(@entre.Icono) @entre.Estatus
+                                                    }
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
+                                                       data-toggle="tooltip" title="Vista Previa de(la) @tipo" data-placement="top">
+                                                        <i class='fas fa-eye text-success'></i>
                                                     </a>
-                                                }
-                                            }
+                                                    @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado") ||
+                                               @Model.Estatus.Equals("Autorizado CAE")) ||
+                                                (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
+                                                    {
+                                                        @if (!entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
+                                                        {
+                                                            <a href='#' class="text-center mr-2 update_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
+                                                               data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo" data-toggle="tooltip" title="Actualizar @entre.Tipo"
+                                                               data-placement="top">
+                                                                <i class='fas fa-pencil text-primary'></i>
+                                                            </a>
+                                                        }
+                                                    }
 
-                                            @if (@Model.Estatus.Equals("En Trámite") && (@entre.Tipo.Equals("Cedula_Firmada") || @entre.Tipo.Equals("Memorandum"))
-                                              && @entre.ValidadoDas == false)
-                                            {
-                                                @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
-                                                {
-                                                    <a href='#' class="text-center mr-2 valida_cedula" data-id="@entre.Id" data-tipo="@tipo" data-toggle="tooltip" title="Validar Cédula de Evaluación"
-                                                       data-placement="top">
-                                                        <i class='fas fa-check text-cjf'></i>
+                                                    @if (@Model.Estatus.Equals("En Trámite") && (@entre.Tipo.Equals("Cedula_Firmada") || @entre.Tipo.Equals("Memorandum"))
+                                                     && @entre.ValidadoDas == false)
+                                                    {
+                                                        @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
+                                                        {
+                                                            <a href='#' class="text-center mr-2 valida_cedula" data-id="@entre.Id" data-tipo="@tipo" data-toggle="tooltip" title="Validar Cédula de Evaluación"
+                                                               data-placement="top">
+                                                                <i class='fas fa-check text-cjf'></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    <a href='#' class='text-center mr-2 view_alcances' data-id="@entre.Id" data-toggle="tooltip" title="Visualizar Alcances" data-placement="top">
+                                                        <i class="fa-solid fa-paperclip text-primary"></i>
                                                     </a>
-                                                }
-                                            }
-                                            <a href='#' class='text-center mr-2 view_alcances' data-id="@entre.Id" data-toggle="tooltip" title="Visualizar Alcances" data-placement="top">
-                                                <i class="fa-solid fa-paperclip text-primary"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                 </div>
                 <div class="row col-lg-12 justify-content-end mb-3">
                     @if (await sPermisos.GetPermisosByModulo("revisar CAE", @Model.ServicioId, @user) != 0)
@@ -380,7 +445,9 @@
             <div class="tab-pane fade" id="historial_cedula" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row justify-content-center align-items-center mt-4">
                     <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de la Cédula
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-magnifying-glass me-2"></i> <strong>Seguimiento de la Cédula</strong>
+                        </h4>
                     </div>
                     <div class="row col-lg-12">
                         <table class="table">
@@ -412,7 +479,9 @@
             <div class="tab-pane fade" id="historial_entregables" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row justify-content-center align-items-center mt-4">
                     <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de los Entregables
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-tasks me-2"></i> <strong>Seguimiento de los Entregables</strong>
+                        </h4>
                     </div>
                     <div class="row col-lg-12">
                         <table class="table mt-2">
@@ -660,6 +729,34 @@
         width: 100%;
         height: 500px;
     }
+
+    .nav-link1 {
+        font-size: 1.15rem; /* Tamaño base del texto del tab */
+        padding: 0.8rem 1.5rem; /* Relleno del tab */
+        color: #6c757d; /* Color por defecto del texto (gris suave) */
+        border-color: #dee2e6 #dee2e6 #dee2e6; /* Borde gris para los inactivos */
+        background-color: #e9ecef; /* Fondo ligeramente gris para inactivos */
+        transition: all 0.3s ease-in-out; /* Transición suave para los cambios */
+        border-radius: 0.25rem 0.25rem 0 0; /* Bordes redondeados arriba */
+    }
+
+        /* ESTILO PARA EL TAB ACTIVO CON COLOR INTENSO */
+        .nav-link1.active {
+            color: #ffffff; /* Color del texto blanco para contrastar */
+            background-color: #24135f; /* ¡Fondo azul brillante! */
+            border-color: #007bff #007bff #007bff; /* Borde del mismo color para un look sólido */
+            font-weight: bold; /* Texto en negrita */
+            font-size: 1.25rem; /* Opcional: hacer el texto del tab activo un poco más grande */
+            /* Eliminamos el borde inferior blanco si queremos un bloque de color sólido */
+        }
+
+        /* Efecto al pasar el ratón (hover) para tabs inactivos */
+        .nav-link1:hover:not(.active) { /* Solo aplica a los tabs que NO estén activos */
+            color: #0056b3; /* Color del texto al pasar el ratón */
+            background-color: #d8e6f1; /* Fondo más claro al pasar el ratón */
+            border-color: #c0d7ed;
+        }
+   
 </style>
 
 @section Scripts{
@@ -715,7 +812,7 @@
             /*Condicionales para Liberar los Botones*/
                 if (model.estatus == 'Autorizada') {
                     axios.get('/entregables/flujo/cae/' + model.id + '/' + model.estatus).then(btn => {
-                        if (btn.data != -1) {
+                        if (btn.data != -3) {
                             $('.revisar_cae').css('display', 'block');
                         }
                     });

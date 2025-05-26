@@ -118,7 +118,13 @@
                                             <a href="#" data-id="@item.Id" data-estatus="@item.Estatus" data-servicio="@item.ServicioId" data-inmueble="@item.InmuebleId" class="text-center pdf ml-2 btn_pdf" data-toggle="tooltip" title="Generar Cédula" data-placement="top">
                                                 @if (item.Estatus.Equals("Autorizada") || item.Estatus.Equals("En Trámite"))
                                                 {
-                                                    <i class="fal fa-file-pdf text-success"></i>
+
+                                                <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
+                                                    <i class="fad fa-eye text-success"></i>&nbsp; &nbsp;
+                                                </a> 
+
+                                                <i class="fal fa-file-pdf text-success"></i>
+
                                                 }
                                                 else @if (item.Estatus.Equals("Rechazada"))
                                            {

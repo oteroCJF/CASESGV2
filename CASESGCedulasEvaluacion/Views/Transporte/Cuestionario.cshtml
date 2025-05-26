@@ -4,8 +4,8 @@
 }
 
 <div class="container-fluid" id="limpieza">
-    <a href="#" type='button' id="btn_facturas" class='btn-sm btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice"></i></a>
-    <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al Listado de Cédulas de Transporte" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+    <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 6px 72px; font-size: 22px;"><i class="fas fa-arrow-left"></i></a>
+    <a href="#" type='button' id="btn_facturas" class='btn-lg btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice"></i></a>
     <div class="row col-lg-12 mt-2 mb-3">
         <table class="table">
             <tr>
@@ -30,6 +30,225 @@
         <div class="card-header bg-joke text-white">
             <h5 class="mt-2">Evaluación de la cédula</h5>
         </div>
+        @if (Model.Anio > 2025 || (Model.Anio == 2025 && (Model.Mes == "Abril" ||
+                                                       Model.Mes == "Mayo" ||
+                                                       Model.Mes == "Junio" ||
+                                                       Model.Mes == "Julio" ||
+                                                       Model.Mes == "Agosto" ||
+                                                       Model.Mes == "Septiembre" ||
+                                                       Model.Mes == "Octubre" ||
+                                                       Model.Mes == "Noviembre" ||
+                                                       Model.Mes == "Diciembre")))
+        {
+            <div class="card-body">
+                <div class="row ">
+                    <div class="col-lg-12">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#pregunta_1" role="tab" aria-controls="home" aria-selected="true">Pregunta 1</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">Pregunta 2</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_3" role="tab" aria-controls="contact" aria-selected="false">Pregunta 3</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_4" role="tab" aria-controls="contact" aria-selected="false">Pregunta 4</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_5" role="tab" aria-controls="contact" aria-selected="false">Pregunta 5</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_6" role="tab" aria-controls="contact" aria-selected="false">Pregunta 6</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_7" role="tab" aria-controls="contact" aria-selected="false">Pregunta 7</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_8" role="tab" aria-controls="contact" aria-selected="false">Pregunta 8</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            @* Pregunta 1 *@
+                            <div class="tab-pane fade mt-2 ml-3 show active" id="pregunta_1" role="tabpanel" aria-labelledby="home-tab">
+                                <p class="text-black h5">1. ¿En qué fecha se estableció el cierre del mes?</p>
+                                <div class="form-group">
+                                    <label for="fechaCierre">Fecha de Cierre</label>
+                                    <input type="date" name="pregunta1" id="detalle1" class="form-control col-lg-2 pregunta1">
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 1 *@
+                            @* Pregunta 2 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_2" role="tabpanel" aria-labelledby="profile-tab">
+                                <p class="text-black h5">2. ¿El prestador de servicios cumplió con la prestación del servicio de transporte para las personas servidoras públicas, conforme a los plazos y condiciones establecidas?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta2" value="true" id="radioSuccess1" class="pregunta2" data-pregunta="2">
+                                    <label for="radioSuccess1">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta2" value="false" id="radioSuccess2" class="pregunta2" data-pregunta="2">
+                                    <label for="radioSuccess2">No</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta2">
+                                    <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="2">Capturar Incidencia</button>
+                                    <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="2">Consultar Insidencias</button>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 2 *@
+                            @* Pregunta 3 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_3" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="text-black h5">3. ¿El prestador de servicios proporcionó los entregables en los plazos establecidos?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta3" value="true" id="radioSuccess3" class="pregunta3">
+                                    <label for="radioSuccess3">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta3" value="false" id="radioSuccess4" class="pregunta3">
+                                    <label for="radioSuccess4">No</label>
+                                </div>
+                                <div class="row col-lg-6 mt-3" id="diviPregunta3">
+                                    <label for="comentariosP3">Comentarios: </label>
+                                    <textarea id="detalle3" class="form-control" style="resize:none;"></textarea>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 3 *@
+                            @* Pregunta 4 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_4" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="text-black h5">4. ¿El personal operador del servicio cuenta con experiencia, herramientas, maquinaria, vehículos y equipos adecuados para el servicio requerido, mismas que se reflejaron en la Lista de verificación para la supervisión del servicio?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta4" value="true" id="radioSuccess5" class="pregunta4">
+                                    <label for="radioSuccess5">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta4" value="false" id="radioSuccess6" class="pregunta4">
+                                    <label for="radioSuccess6">No</label>
+                                </div>
+                                <div class="row col-lg-6 mt-3" id="diviPregunta4">
+                                    <label for="comentariosP3">Comentarios: </label>
+                                    <textarea id="detalle4" class="form-control" style="resize:none;"></textarea>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 4 *@
+                            @* Pregunta 5 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_5" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="text-black h5">
+                                    5. ¿El servicio se proporcionó de acuerdo a los recorridos y horarios establecidos en las rutas del programa de operación con la infraestructura técnica, mecánica, tecnológica y humana solicitadas en el anexo técnico?
+                                </p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta5" value="true" id="radioSuccess7" class="pregunta5" data-pregunta="5">
+                                    <label for="radioSuccess7">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta5" value="false" id="radioSuccess8" class="pregunta5" data-pregunta="5">
+                                    <label for="radioSuccess8">No</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta5">
+                                    <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="5">Capturar Incidencia</button>
+                                    <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="5">Consultar Insidencias</button>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 5 *@
+                            @* Pregunta 6 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_6" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="text-black h5">6. ¿El personal operador del servicio está capacitado y cuenta con experiencia, conforme a lo establecido?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta6" value="true" id="radioSuccess9" class="pregunta6" data-pregunta="6">
+                                    <label for="radioSuccess9">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta6" value="false" id="radioSuccess10" class="pregunta6" data-pregunta="6">
+                                    <label for="radioSuccess10">No</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta6">
+                                    <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="6">Capturar Incidencia</button>
+                                    <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="6">Consultar Insidencias</button>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 6 *@
+
+                            @* Pregunta 7 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_7" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="text-black h5">7. ¿El operador del servicio cumplió con las obligaciones generales como conducta, seguridad, uso del servicio, uniforme, gafete, conocer el reglamento de tránsito y la ruta, así como contar con licencia de conducir vigente?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta7" value="true" id="radioSuccess11" class="pregunta7" data-pregunta="7">
+                                    <label for="radioSuccess11">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta7" value="false" id="radioSuccess12" class="pregunta7" data-pregunta="7">
+                                    <label for="radioSuccess12">No</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta7">
+                                    <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="7">Capturar Incidencia</button>
+                                    <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="7">Consultar Insidencias</button>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 7 *@
+
+                            @* Pregunta 8 *@
+                            <div class="tab-pane fade mt-2 ml-3" id="pregunta_8" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="text-black h5">8. ¿El prestador del servicio cumplió con los horarios y rutas establecidos en el programa de operación?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta8" value="true" id="radioSuccess13" class="pregunta8" data-pregunta="8">
+                                    <label for="radioSuccess13">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta8" value="false" id="radioSuccess14" class="pregunta8" data-pregunta="8">
+                                    <label for="radioSuccess14">No</label>
+                                </div>
+                                 <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta8" value="false" id="radioSuccess15" class="pregunta8" data-pregunta="8">
+                                    <label for="radioSuccess15">No Aplica</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta8">
+                                    <button type='button' class='btn btn-primary mr-2 addIncidencias' data-pregunta="8">Capturar Incidencia</button>
+                                    <button type='button' class='btn btn-primary viewIncidencias' data-pregunta="8">Consultar Insidencias</button>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 8 *@
+
+                            @* Entregables *@
+                            <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="col-lg-12 mt-3">
+                                    <h3>Adjuntar Entregables</h3>
+                                    <p>
+                                        <span style="color: red; font-weight: bold;">Cédula en Proceso o Rechazada:</span> Adjuntar ÚNICAMENTE Factura, Validación del SAT y Reporte(s).<br>
+                                        <span style="color: green; font-weight: bold;">Cédula Autorizada:</span> Adjuntar Acta-Entrega, Cédula Firmada y Nota de Crédito.
+                                    </p>
+
+                                    <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                </div>
+                                <div class="row col-lg-12 mt-3">
+                                    <table class="table" id="tblEntregables">
+                                        <thead>
+                                            <tr>
+                                                <th>Entregable</th>
+                                                <th>Archivo</th>
+                                                <th>Fecha de Carga</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tEntregables"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @* Fin de Entregables *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class=" col-lg-12">
+                    <button type="button" class="btn btn-primary float-right ml-3 btn_enviar">Enviar a DAS</button>
+                    <button type="button" class="btn btn-success float-right btn_guardar">Guardar Cédula</button>
+                </div>
+            </div>
+        }
+        else
+        {
         <div class="card-body">
             <div class="row ">
                 <div class="col-lg-12">
@@ -161,7 +380,7 @@
                                     <span style="color: red; font-weight: bold;">Cédula en Proceso o Rechazada:</span> Adjuntar ÚNICAMENTE Factura, Validación del SAT y Reporte(s).<br>
                                     <span style="color: green; font-weight: bold;">Cédula Autorizada:</span> Adjuntar Acta-Entrega, Cédula Firmada y Nota de Crédito.
                                 </p>
-                              
+
                                 <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
                             </div>
                             <div class="row col-lg-12 mt-3">
@@ -189,6 +408,7 @@
                 <button type="button" class="btn btn-success float-right btn_guardar">Guardar Cédula</button>
             </div>
         </div>
+        }
     </div>
 </div>
 
@@ -1049,6 +1269,70 @@
                     }
                 });
 
+            $('.pregunta7').change(function () {
+                let tf = $(this).val();
+                let pr = $(this).data('pregunta');
+                if (tf == "true") {
+                    axios.get('/transporte/totalIncidencia/' + model.id + '/' + pr).then(total => {
+                        if (total.data > 0) {
+                            Swal.fire({
+                                'icon': 'warning',
+                                'title': 'Servicio de Transporte de Personal',
+                                'html': '<strong>Advertencia:</strong><p>Tiene incidencias capturadas en esta pregunta, al cambiar la respuesta de "NO" a "SI" ' +
+                                    '<strong>se borrarán todas las incidencias. ¿Deseas continuar? </strong></p>',
+                                'confirmButtonColor': '#3085d6',
+                                'cancelButtonColor': '#d33',
+                                'confirmButtonText': 'Si, eliminar',
+                                'cancelButtonText': 'Cancelar',
+                                'showCancelButton': true
+                            }).then(p => {
+                                if (p.isConfirmed) {
+                                    Swal.fire({
+                                        'icon': 'warning',
+                                        'title': 'Servicio de Transporte de Personal',
+                                        'text': 'Escriba la palabra ELIMINAR en mayúsculas para confirmar el cambio de respuesta.',
+                                        'confirmButtonColor': '#3085d6',
+                                        'cancelButtonColor': '#d33',
+                                        'confirmButtonText': 'Si, eliminar todo',
+                                        'cancelButtonText': 'Cancelar',
+                                        'showCancelButton': true,
+                                        'input': 'text',
+                                        'inputPlaceholder': 'Escribe la palabra ELIMINAR'
+                                    }).then(res => {
+                                        if (res.value == 'ELIMINAR') {
+                                            axios.get('/transporte/eliminaIncidencias/' + model.id + '/' + pr).then(r => {
+                                                Swal.fire({
+                                                    'icon': 'success',
+                                                    'title': 'Servicio de Transporte de Personal',
+                                                    'text': 'Las incidencias de esta pregunta fueron eliminadas correctamente.',
+                                                }).then(function () {
+                                                    $('input:radio[name="pregunta7"][value="true"]').prop('checked', true);
+                                                    guardaCedula();
+                                                    $('#diviPregunta7').css('display', 'none');
+                                                });
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                'icon': 'error',
+                                                'title': 'Servicio de Transporte de Personal',
+                                                'text': 'Debe escribir correctamente la palabra ELIMINAR en mayúsculas.',
+                                            });
+                                            $('input:radio[name="pregunta7"][value="false"]').prop('checked', true);
+                                        }
+                                    });
+                                } else {
+                                    $('input:radio[name="pregunta6"][value="false"]').prop('checked', true);
+                                }
+                            });
+                        } else {
+                            $('#diviPregunta7').css('display', 'none');
+                        }
+                    });
+                } else {
+                    $('#diviPregunta7').css('display', 'block');
+                }
+            });
+
 
             /******************************* FIN Cambio de Respuestas ************************************/
 
@@ -1075,6 +1359,8 @@
                         $("#categoria").val('Personal de Servicio');
                         $('#divFechaIncidencia').css('display', 'block');
                         $('#divInciComentarios').css('display', 'block');
+                    } else if (pregunta == 7) {
+
                     }
                 }
 
