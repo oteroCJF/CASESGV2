@@ -410,6 +410,8 @@ namespace CedulasEvaluacion.Controllers
                     }
                     else if (i == 2)
                     {
+                        incidencias = await iMuebles.GetIncidenciasPregunta(id, (i + 1));
+                        local.DataSources.Add(new ReportDataSource("IncidenciasPregunta3", incidencias));
                         if (respuestas[i].Respuesta == false && respuestas[i].Detalles != "N/A")
                         {
                             local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador del servicio no cumplió con la unidad de transporte solicitada para la prestación del servicio.") });
@@ -1077,6 +1079,106 @@ namespace CedulasEvaluacion.Controllers
                         local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El personal se comportó de forma cortés, amable y portó el uniforme e identificación de forma correcta.") });
                     }
                 }
+            }
+            local.DataSources.Add(new ReportDataSource("CedulaTransporte", cedulas));
+            local.SetParameters(new[] { new ReportParameter("elaboro", ((List<ReporteCedula>)cedulas)[0].Elaboro + "") });
+            var pdf = local.Render("PDF");
+            return File(pdf, "application/pdf");
+        }
+
+        [Route("/cedula/transporteNC/{servicio}/{id?}")]
+        public async Task<IActionResult> GeneraCedulaTransporteNuevoContrato(int servicio, int id)
+        {
+            var incidencias = new List<IncidenciasTransporte>();
+            LocalReport local = new LocalReport();
+            var path = Directory.GetCurrentDirectory() + "\\Reports\\CedulaTransporteNC.rdlc";
+            local.ReportPath = path;
+            var cedulas = await vrCedula.getCedulaByServicio(servicio, id);
+            var respuestas = await vCedula.obtieneRespuestas(id);
+            var firmantes = await vFirmantes.GetFirmantesByCedula(id, servicio);
+            local.DataSources.Add(new ReportDataSource("Firmantes", firmantes));
+            for (int i = 0; i < respuestas.Count; i++)
+            {
+                if (i == 0)
+                {
+                    local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El cierre de mes se realizó el día: " +
+                        Convert.ToDateTime(respuestas[i].Detalles).ToString("dd") +" de "+ Convert.ToDateTime(respuestas[i].Detalles).ToString("MMMM", CultureInfo.CreateSpecificCulture("es"))+
+                        " de "+Convert.ToDateTime(respuestas[i].Detalles).ToString("yyyy")+".") });
+                }
+                else if (i == 1)
+                {
+                    incidencias = await iTransporte.GetIncidenciasPregunta(id, respuestas[i].Pregunta);
+                    local.DataSources.Add(new ReportDataSource("IncidenciasPregunta" + (i + 1), incidencias));
+                    if (respuestas[i].Respuesta == false)
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador de servicios no cumplió con el servicio de transporte conforme a los plazos y condiciones establecidas: ") });
+                    }
+                    else
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador de servicios cumplió con el servicio de transporte conforme a los plazos y condiciones establecidas.") });
+                    }
+                }
+                else if (i == 2)
+                {
+                    if (respuestas[i].Respuesta == false)
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador de servicios no proporcionó los entregables en los plazos establecidos: ") });
+                    }
+                    else
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador de servicios proporcionó los entregables en los plazos establecidos.") });
+                    }
+                }
+                else if (i == 3)
+                {
+                    if (respuestas[i].Respuesta == false)
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El servicio no se proporcionó con la infraestructura técnica, mecánica, tecnológica y humana establecidas en el anexo técnico: ") });
+                    }
+                    else
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El servicio se proporcionó con la infraestructura técnica, mecánica, tecnológica y humana establecidas en el anexo técnico.") });
+                    }
+                }
+                else if (i == 4)
+                {
+                    incidencias = await iTransporte.GetIncidenciasPregunta(id, respuestas[i].Pregunta);
+                    local.DataSources.Add(new ReportDataSource("IncidenciasPregunta" + (i + 1), incidencias));
+                    if (respuestas[i].Respuesta == false)
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El personal operador del servicio no está capacitado ni cuenta con la experiencia conforme a lo establecido en el anexo técnico: ") });
+                    }
+                    else
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El personal operador del servicio está capacitado y cuenta con la experiencia conforme a lo establecido en el anexo técnico.") });
+                    }
+                }
+                else if (i == 5)
+                {
+                    incidencias = await iTransporte.GetIncidenciasPregunta(id, respuestas[i].Pregunta);
+                    local.DataSources.Add(new ReportDataSource("IncidenciasPregunta" + (i + 1), incidencias));
+                    if (respuestas[i].Respuesta == false)
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El personal operador del servicio no cumplió con las obligaciones generales establecidas en el anexo técnico: ") });
+                    }
+                    else
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El personal operador del servicio cumplió con las obligaciones generales establecidas en el anexo técnico.") });
+                    }
+                }
+                else if (i == 6)
+                {
+                    incidencias = await iTransporte.GetIncidenciasPregunta(id, respuestas[i].Pregunta);
+                    local.DataSources.Add(new ReportDataSource("IncidenciasPregunta" + (i + 1), incidencias));
+                    if (respuestas[i].Respuesta == false)
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador de servicios no cumplió con los horarios y rutas establecidos en el programa de operación: ") });
+                    }
+                    else
+                    {
+                        local.SetParameters(new[] { new ReportParameter("pregunta" + (i + 1), "El prestador de servicios cumplió con los horarios y rutas establecidos en el programa de operación.") });
+                    }
+                }               
             }
             local.DataSources.Add(new ReportDataSource("CedulaTransporte", cedulas));
             local.SetParameters(new[] { new ReportParameter("elaboro", ((List<ReporteCedula>)cedulas)[0].Elaboro + "") });

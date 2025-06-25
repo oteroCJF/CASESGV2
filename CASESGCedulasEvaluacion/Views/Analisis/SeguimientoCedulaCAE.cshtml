@@ -554,9 +554,9 @@
                     </div>
                 </div>
                 <div class="row col-lg-12 justify-content-end mb-3">
-                    @if (await sPermisos.GetPermisosByModulo("revisar CAE", @Model.ServicioId, @user) != 0)
+                   @if (await sPermisos.GetPermisosByModulo("revisar CAE", @Model.ServicioId, @user) != 0)
                     {
-                        <button href="" class="btn btn-primary float-right mr-3 revisar_cae"><i class="fas fa-check mr-2"></i>Enviar a Revisión CAE</button>
+                        <button href="" class="btn btn-primary float-right mr-3 revisar_cae btn-outline-dark"><i class="fas fa-check mr-2"></i>Enviar a Revisión CAE</button>
                     }
                     @if (await sPermisos.GetPermisosByModulo("autorizar CAE", @Model.ServicioId, @user) != 0)
                     {

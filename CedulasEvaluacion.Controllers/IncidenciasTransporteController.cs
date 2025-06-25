@@ -54,7 +54,7 @@ namespace CedulasEvaluacion.Controllers
                                 "<td>" + i + "</td>" +
                                 "<td>" + inc.Tipo + "</td>" +
                                 "<td>" + inc.FechaIncidencia.ToString("dd/MM/yyyy") + "</td>" +
-                                "<td>" + h + "</td>" +
+                                //"<td>" + h + "</td>" +
                                 "<td>" + inc.Comentarios + "</td>" +
                                 "<td>" +
                                     "<a href='#' class='text-center mr-2 update_incidencia' data-id='" + inc.Id + "' data-tipo='" + inc.Tipo + "' data-hora='" + inc.HoraPresentada +"' " +

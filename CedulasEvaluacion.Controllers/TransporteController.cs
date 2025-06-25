@@ -175,7 +175,7 @@ namespace CedulasEvaluacion.Controllers
                 CedulaEvaluacion cedTran = null;
                 cedTran = await vCedula.CedulaById(id);
                 cedTran.URL = Request.QueryString.Value;
-                cedTran.facturas = await vFacturas.getFacturas(id, cedTran.ServicioId);//
+                cedTran.facturas = await vFacturas.getFacturas(id, cedTran.ServicioId);
                 cedTran.TotalMontoFactura = vFacturas.obtieneTotalFacturas(cedTran.facturas);
                 cedTran.inmuebles = await vInmuebles.inmuebleById(cedTran.InmuebleId);
                 cedTran.usuarios = await vUsuarios.getUserById(cedTran.UsuarioId);

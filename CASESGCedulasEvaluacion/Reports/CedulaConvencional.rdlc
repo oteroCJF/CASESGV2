@@ -1804,7 +1804,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Sandra Leticia Mendoza Altamirano</Value>
+                    <Value>Lic. Yasmin Nayeli Anastacio Cerecedo</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -1817,7 +1817,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Analista Especializado</Value>
+                    <Value>Auxiliar de Servicios Generales</Value>
                     <Style>
                       <FontSize>9pt</FontSize>
                     </Style>
@@ -5969,7 +5969,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!HorasRetraso.Value</Value>
+                                  <Value>=Fields!DiasRetraso.Value</Value>
                                   <Style />
                                 </TextRun>
                                 <TextRun>

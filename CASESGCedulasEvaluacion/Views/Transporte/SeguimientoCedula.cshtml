@@ -2,7 +2,7 @@
 @inject CedulasEvaluacion.Services.ServicePermisos  sPermisos;
 @{
     int user = Convert.ToInt32(@User.Claims.ElementAt(0).Value + "");
-    ViewData["Title"] = "Seguimiento de la Cédula del Servicio de Transporte para Servidores Públicos: " + Model.Folio;
+    ViewData["Title"] = "Seguimiento de la Cédula del Servicio de Transporte para Personas Servidoras Públicas: " + Model.Folio;
 
     decimal totalP = Convert.ToDecimal(@Model.RespuestasEncuesta[0].MontoPenalizacion + @Model.RespuestasEncuesta[1].MontoPenalizacion +
                                   @Model.RespuestasEncuesta[2].MontoPenalizacion + @Model.RespuestasEncuesta[3].MontoPenalizacion +
