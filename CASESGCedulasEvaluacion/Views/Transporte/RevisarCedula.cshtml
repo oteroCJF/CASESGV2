@@ -8,8 +8,8 @@
     <div class="col-lg-12">
         <h4 style="color: #24135f;">
             <strong>Evaluación correspondiente al mes de <b>@Model.Mes</b> del año <b>@Model.Anio</b></strong>
+            <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px; font-size: 22px;"><i class="fas fa-arrow-left"></i></a>
         </h4>
-        <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px; font-size: 22px;"><i class="fas fa-arrow-left"></i></a>
     </div>
 </div>
 <div class="row">
@@ -122,7 +122,7 @@
                                         </a>
                                     </h5>
                                     <ul class="ml-4 mb-0 fa-ul">
-                                        <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total: </strong>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</h5></li>
+                                        <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</h5></li>
                                         <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <h5> <strong>Calificación: </strong> </b> @Model.Calificacion</h5></li>
                                         <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span>  <h5><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</h5></li>
                                         <li class="strong mt-3">
@@ -134,7 +134,7 @@
                                             }
                                             else
                                             {
-                                                <h5><strong>Correo:</strong> <strong> @Model.usuarios.correo_electronico</strong></h5>
+                                                <h5><strong>Correo:</strong> @Model.usuarios.correo_electronico</h5>
                                             }
 
                                         </li>

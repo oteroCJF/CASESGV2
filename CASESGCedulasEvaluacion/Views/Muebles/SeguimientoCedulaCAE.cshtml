@@ -2,18 +2,38 @@
 @inject CedulasEvaluacion.Services.ServicePermisos  sPermisos;
 @{
     int user = Convert.ToInt32(@User.Claims.ElementAt(0).Value + "");
-    ViewData["Title"] = "Seguimiento a la Cédula del Servicio de Transportación de Bienes Muebles con Folio: " + Model.Folio;
+    //ViewData["Title"] = "Seguimiento a la Cédula del Servicio de Transportación de Bienes Muebles";
+
+    <div class="titulo-principal">
+        <b>
+            Seguimiento a la Cédula del Servicio de Transportación de Bienes Muebles
+        </b> <i class="fa-sharp fa-solid fa-truck-clock mr-2"></i>
+    </div>
+
     int f = 0, cf = 0;
     int totalServicios = 0, totalServiciosNC = 0;
     decimal totalConceptos = 0, totalIVA = 0;
     decimal totalConceptosNC = 0, totalIVANC = 0;
 }
 
-<div class="row col-lg-12">
-    <div class="col-lg-12">
-        <a href="/muebles/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3 btn_back'><i class="fal fa-arrow-left"></i></a>
+<div class="row align-items-center mb-4 border-bottom pb-3">
+    <div class="col-lg-1 d-none d-lg-block text-center border-right pr-3">
+        <i class="fas fa-file-signature fa-3x text-primary"></i>
+    </div>
+    <div class="col-lg-8 col-md-9">
+        <h4 class="mb-1 text-dark" >
+            <span class="font-weight-bold display-5 text-decoration-underline" style="color: #24135f;">@Model.Folio</span> <br>
+            <small class="d-block text-muted mt-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Evaluación correspondiente al mes de <b class="text-dark">@Model.Mes</b> del año <b class="text-dark">@Model.Anio</b>
+            </small>
+        </h4>
+    </div>
+    <div class="col-lg-3 col-md-3 text-right">
+        <a href="/muebles/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;"><i class="fas fa-arrow-left mr-2"></i> Regresar
+        </a>
     </div>
 </div>
+
 <div class="row">
     <div class="col-lg-12">
         <ul class="nav nav-tabs h6" id="myTab" role="tablist">
@@ -33,47 +53,45 @@
             <div class="tab-pane fade show active" id="InformacionGeneral" role="tabpanel" aria-labelledby="home-tab">
                 <div class="row justify-content-center align-items-center mt-4">
                     <div class="col-lg-12 h3 ml-4">
-                        Información General
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-info-circle me-2"></i> <strong>Información General</strong>
+                        </h4>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12 mt-3">
-                        <div class="card bg-light d-flex flex-fill">
-                            <div class="card-header border-bottom-0">
-                                <h2 class="lead"><b>Inmueble Evaluado: </b> @Model.inmuebles.Nombre</h2>
-                            </div>
+                        <div class="card bg-light d-flex flex-fill">                         
                             <div class="card-body pt-0">
                                 <div class="row">
                                     <div class="col-lg-7 mr-2">
-                                        <p class="text-medium">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
                                         <ul class="ml-4 mb-0 fa-ul">
-                                            <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
-                                            <li class="medium mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
-                                            <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
-                                            <li class="medium mt-3">
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-building me-2"></i></span> <h5><strong>Inmueble Evaluado: </strong> <span>@Model.inmuebles.Nombre</span></h5></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</h5></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <h5> <strong>Calificación: </strong> </b> @Model.Calificacion</h5></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span>  <h5><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</h5></li>
+                                            <li class="strong mt-3">
                                                 <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
-                                                <strong>Correo:</strong>
+
                                                 @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
                                                 {
-                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                    <h5><strong>Correo:</strong><strong class="text-danger">@String.Format("Sin correo")</strong></h5>
                                                 }
                                                 else
                                                 {
-                                                    @Model.usuarios.correo_electronico
+                                                    <h5><strong>Correo:</strong> @Model.usuarios.correo_electronico</h5>
                                                 }
-                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
-                                                    <i class="fal fa-edit"></i>
-                                                </a>
+
                                             </li>
                                         </ul>
                                     </div>
                                     <div class="col-lg-4">
-                                        <h5 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
+                                        <h3 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
                                             @Html.Raw(Model.Icono)
                                             <strong class="ml-2">Estatus: </strong> @Model.Estatus
-                                        </h5>
+                                        </h3>
                                     </div>
                                 </div>
+
                             </div>
                             @if (Model.Estatus.Equals("Enviado a DAS"))
                             {
@@ -89,8 +107,11 @@
                 </div>
             </div>
             <div class="tab-pane fade mt-2 ml-3" id="facturacion" role="tabpanel" aria-labelledby="profile-tab">
-                <div class="col-lg-12 h3 mt-4">
-                    Facturación del Servicio
+                <div class="col-lg-12">
+                    <h4 style="color: #24135f;">
+                        <i class="fas fa-file-invoice text-info"></i> <strong>Facturación del Servicio</strong>
+                    </h4>
+        
                 </div>
                 @if (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
                 {
@@ -102,12 +123,12 @@
                 }
                 <div class="row">
                     <div class="row col-lg-12">
-                        <p class="text-justify ml-3">
+                        @*<p class="text-justify ml-3">
                             <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
                             la información de la factura que fue agregada.
-                        </p>
+                        </p>*@
                         <div class="col-lg-12 mt-3 ml-2">
-                            <table class="table tblIncidencias tablaFacturas" width="100%">
+                            <table class="table tblIncidencias tablaFacturas table-hover table-striped table-bordered table-sm" width="100%">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -238,8 +259,10 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="DecutivasPenalizacion" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="col-lg-12 h3 mt-4 mb-4">
-                    Penalizaciones y Deductivas
+                <div class="col-lg-12">
+                    <h4 style="color: #24135f;">
+                        <i class="fas fa-exclamation-triangle text-danger"></i><strong>Penalizaciones y Deductivas</strong>
+                    </h4>
                 </div>
                 <div class="row col-lg-12 mt-2 h6">
                     @if (Model.TotalDeductivas != 0 || Model.TotalPenalizaciones != 0)
@@ -347,24 +370,24 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="Entregables" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="col-lg-12 h3 mt-4">
-                    Entregables Periódicos
-                </div>
-                <div class="row col-lg-12">
-                    <div class="col-lg-8">
-                        <p class="h6">El usuario adjuntó los siguientes entregables.</p>
-                    </div>
+                <div class="col-lg-12">
+                    <h4 style="color: #24135f;">
+                        <i class="fas fa-calendar-check text-success"></i><strong>Entregables Periódicos</strong> 
+                    </h4>
+                    <p class="h6">El usuario adjuntó los siguientes entregables.</p>
+
                 </div>
                 <div class="row col-lg-12 mt-1 h6">
                     <div class="col-lg-12">
                         <div class="col-lg-12 mb-3">
                             @*if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Autorizado CAE")) && ((@User.Claims.ElementAt(2).Value).Contains("Evaluador") || (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
                                 {*@
-                            <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
-                            @*}*@
+                            <a href="#" type='button' class='btn btn-success btn-lg mr-2 float-right btn_addFile'
+                               data-toggle="tooltip" title="Adjuntar Entregable">
+                                <i class="fas fa-file-upload"></i>
+                            </a>                            @*}*@
                         </div>
-                        <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
-                        <table class="table" id="tableEntregables">
+                        <table class="table table-hover table-striped table-bordered table-sm" id="tableEntregables">
                             <thead>
                                 <tr>
                                     <th>Tipo</th>
@@ -424,8 +447,8 @@
                                                 <i class='fas fa-eye text-success'></i>
                                             </a>
                                             @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado") ||
-                                   @Model.Estatus.Equals("Autorizado CAE")) ||
-                                    (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
+                                 @Model.Estatus.Equals("Autorizado CAE")) ||
+                                  (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
                                             {
                                                 @if (!entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
                                                 {
@@ -438,7 +461,7 @@
                                             }
 
                                             @if (@Model.Estatus.Equals("En Trámite") && (@entre.Tipo.Equals("Cedula_Firmada") || @entre.Tipo.Equals("Memorandum"))
-                                         && @entre.ValidadoDas == false)
+                                       && @entre.ValidadoDas == false)
                                             {
                                                 @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
                                                 {
@@ -482,12 +505,13 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="HistorialCedula" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="row justify-content-center align-items-center mt-4">
-                    <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de la Cédula
-                    </div>
+                <div class="col-lg-12">
+                    <h4 style="color: #24135f;">
+                        <i class="fas fa-file-pdf text-primary"></i> <strong>Seguimiento de la Cédula</strong>
+                      </h4>
+                </div>                    
                     <div class="row col-lg-12">
-                        <table class="table">
+                        <table class="table table-hover table-striped table-bordered table-sm">
                             <thead>
                                 <tr>
                                     <th>Servicio</th>
@@ -511,15 +535,16 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
             </div>
             <div class="tab-pane fade" id="HistorialEntregables" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row justify-content-center align-items-center mt-4">
-                    <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de los Entregables
+                    <div class="col-lg-12">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-clipboard-check mr-3 text-info"></i> <strong>Seguimiento de los Entregables</strong>
+                            </h4>
                     </div>
                     <div class="row col-lg-12">
-                        <table class="table mt-2">
+                        <table class="table table-hover table-striped table-bordered table-sm">
                             <thead>
                                 <tr>
                                     <th>Servicio</th>
@@ -569,7 +594,7 @@
                         <label for="forFactura">El "XML" corresponde a:</label>
                         <select id="tipoFactura" class="form-control">
                             <option value="">Seleccione una opción</option>
-                            <option value="Factura">Factura</option>
+                            <option value="NC">Nota de Crédito</option>
                         </select>
                         <div class="col-sm-12 error_tipoFactura">
                             <small id="dateHelp" class="text-danger">
@@ -690,6 +715,33 @@
 
 
 <style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .dataTables_filter {
+        display: block;
+    }
+
     #view_pdf {
         width: 100%;
         height: 500px;

@@ -2,36 +2,67 @@
 @{
     var i = 0;
     var user = Convert.ToInt32((@User.Claims.ElementAt(2).Value).Contains("Evaluador"));
-    ViewData["Title"] = "Listado de Cédulas del Servicio de Transportación de Bienes Muebles";
+    //ViewData["Title"] = "Listado de Cédulas del Servicio de Transportación de Bienes Muebles";
+
+    <div class="titulo-principal">
+        <b>
+            Listado de Cédulas del Servicio de Transportación de Bienes Muebles
+        </b> <i class="fa-sharp fa-solid fa-truck-clock mr-2"></i>
+    </div>
 }
 
+<div class="col-md-10 d-flex">
+    <div class="col-md-12 d-flex align-items-stretch">
+        <div class="card w-100 bg-gray-light card-transport-bg">
+            <div class="row no-gutters">
+                <div class="col-9">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="card-subtitle mb-2"><strong>Contrato Actual:</strong></h6>
+                                <h6 class="card-subtitle mb-2"><span style="color: darkblue; font-size: 1.05em;"><strong>CON/DGRM/DCS/123/2023</strong></span></h6>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="card-subtitle mb-2"><strong>Vigencia:</strong></h6>
+                                <h6 class="card-subtitle mb-2"><span style="color: darkblue; font-size: 1.05em;"><strong> Del 16 de diciembre 2023 al 19 de julio 2025</strong></span></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
     <div class="row">
         <section class="col-xl-10 connectedSortable">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        Cedulas de Evaluación
+                <div class="card-header text-white text-center py-3 shadow-sm" style="background-color: #24135f;">
+                    <h3 class="card-title mb-0 fs-4 fw-bold text-uppercase">
+                        <i class="fas fa-clipboard-list me-3 "></i> Cédulas de Evaluación
                     </h3>
                 </div>
-                <div class="card-body" style="font-size: 14px;">
-                    <p class="text-justify"><b>NOTA: </b> Para el estatus <b class="text-danger">Rechazado</b> debe seleccionar el ícono <i class="fad fa-pencil text-primary"></i> para editar el cuestionario y volver a enviarlo a la DAS con las correcciones solicitadas para su revisión.</p>
-                    <table id="tblIncidencias" class="row-border" width="100%">
-                        <thead>
+                <div class="card-body" style="font-size: 15px;">
+                    <p class="mb-0">
+                        <strong>NOTA:</strong> Para el estatus <strong class="text-danger">Rechazado</strong>, debes seleccionar el ícono <i class="fas fa-pencil-alt text-primary"></i> para editar el cuestionario. Luego, envíalo nuevamente a la DAS con las correcciones solicitadas para su revisión.
+                    </p>
+                    <table id="tblIncidencias" class="table table-hover table-striped table-bordered table-sm" width="100%">
+                        <thead style="background-color: #24135f; color: white;">
                             <tr>
-                                <th>ID</th>
-                                <th>Estatus</th>
-                                <th>Inmueble Origen</th>
-                                <th>Inmueble Destino</th>
-                                <th>Folio</th>
-                                <th>Mes</th>
-                                <th>Año</th>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Estatus</th>
+                                <th class="text-center">Inmuebl Origen</th>
+                                <th class="text-center">Inmueble Destino</th>
+                                <th class="text-center">Folio</th>
+                                <th class="text-center">Mes</th>
+                                <th class="text-center">Año</th>
+                                <th class="text-center">Calif</th>
                                 @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
                                 {
                                     <th>Validaciones</th>
                                 }
-                                <th>Actualizado el:</th>
-                                <th>Acciones</th>
+                                <th class="text-center">Actualizado el:</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,15 +71,18 @@
                                 i++;
                                 <tr>
 
-                                    <td>@i</td>
-                                    <td class="@(item.Fondo.Replace("bg","text"))" style="font-weight: bold">@Html.DisplayFor(modelItem => item.Estatus)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Nombre)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Destino)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Folio)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Mes)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.Anio)</td>
+                                    <td class="text-center align-middle">@i</td>
+                                    <td class="@(item.Fondo.Replace("bg","text")) text-center align-middle" style="font-weight: bold">@Html.DisplayFor(modelItem => item.Estatus)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Nombre)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Destino)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Folio)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Mes)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Anio)</td>
+                                    <td class="text-center align-middle @(item.Calificacion < 8 ? "text-danger font-weight-bold" : "")">
+                                        @Html.DisplayFor(modelItem => item.Calificacion)
+                                    </td>
                                     @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") &&
-                                  (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
+                      (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
                                     {
                                         <td class="text-center">
                                             @if (item.MemoValidado == true)
@@ -148,150 +182,172 @@
         </section>
         <section class="col-xl-2 connectedSortable">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        Filtros de Búsqueda
+                    <div class="card-header text-white text-center py-3 shadow-sm" style="background-color: #24135f;">
+                        FILTROS DE BÚSQUEDA
                         <button id="recargarPagina" class="btn btn-success" data-toggle="tooltip" title="Reiniciar Filtros">
                             <i class="fa-regular fa-arrows-rotate"></i>
                         </button>
-                    </h3>
-                </div>
-                <div class="card-body" style="font-size: 14px;">
-                    <div class="row col-lg-12">
-                        <div class="col-lg-12">
-                            <b>Año:</b>
-                            <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
-                                <i class="fas fa-minus"></i>
-                            </a>
-                        </div>
-                        @foreach (var an in Model.anios)
-                        {
-                        <div class="col-lg-12 show ml-3" id="btnAnio">
-
-                            <label class="checkbox-inline">
-                                @if (Model.filtroAnios.Contains(an.Valor))
-                                {
-                                    <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
-                                           data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                           data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                           data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
-                                    }
-                                    else
-                                    {
-                                        <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
-                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
-                                        }
-                            </label>
-                        </div>
-                        }
                     </div>
-                    <div class="row col-lg-12 mt-2">
-                        <div class="col-lg-12">
-                            <b>Mes:</b>
-                            <a class="btn-sm bg-primary btnMeses float-right show" data-target="#btnMes" data-toggle="collapse">
-                                <i class="fas fa-minus"></i>
-                            </a>
-                        </div>
-                        @foreach (var an in Model.Meses)
-                        {
-                            <div class="col-lg-12 show ml-3" id="btnMes">
-                                <label class="checkbox-inline float-left">
-                                    @if (Model.filtroMeses.Contains(an.Mes))
-                                    {
-                                        <input class="selectMes" id="mes_@an.Mes" type="checkbox" data-toggle="toggle"
-                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Mes" checked> @an.Mes
-                                        }
-                                        else
-                                        {
-                                            <input class="selectMes" id="mes_@an.Mes" type="checkbox" data-toggle="toggle"
-                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Mes"> @an.Mes
-                                            }
-                                </label>
+                    <div class="card-body" style="font-size: 14px;">
+                        <div class="row col-lg-12">
+                            <div class="col-lg-12">
+                                <b>Año:</b>
+                                <a class="btn-sm bg-primary btnAnios float-right" data-target="#btnAnio" data-toggle="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </a>
                             </div>
-                        }
-                    </div>
-                    <div class="row col-lg-12 mt-2">
-                        <div class="col-lg-12">
-                            <b>Estatus:</b>
-                            <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
-                                <i class="fas fa-minus"></i>
-                            </a>
-                        </div>
-                        @foreach (var an in Model.festatus)
-                        {
-                            <div class="col-lg-12 show ml-3" id="btnEstatus">
-                                <label class="checkbox-inline">
-                                    @if (Model.filtroEstatus.Contains(an.Estatus))
-                                    {
-                                        <input class="selectEstatus" type="checkbox" data-toggle="toggle"
-                                               data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                               data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                               data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Estatus" checked> @an.Estatus
-                                        }
-                                        else
-                                        {
-                                            <input class="selectEstatus" type="checkbox" data-toggle="toggle"
-                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
-                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Estatus"> @an.Estatus
-                                            }
-                                </label>
-                            </div>
-                        }
-                    </div>
-                    <div class="row col-lg-12 mt-2" id="divInmuebles">
-                        <div class="col-lg-12">
-                            <b>Inmuebles:</b>
-                            <a class="btn-sm bg-primary btnInmuebles float-right" data-target="#btnInmueble" data-toggle="collapse">
-                                <i class="fas fa-minus"></i>
-                            </a>
-                        </div>
-                        <div class="col-lg-12 example-1 scrollbar-deep-purple mt-2 ">
-                            <div class="row col-lg-12 mb-2 mt-2">
-                                <div class="form-group">
-                                    <label for="inputsm">Buscar: </label>
-                                    <input class="form-control input-sm searchToggle" id="searchToggle" type="text">
-                                </div>
-                            </div>
-                            @foreach (var an in Model.inmuebles)
+                            @foreach (var an in Model.anios)
                             {
-                                <div class="show col-lg-12  inmuebles inm_@an.AdministracionId inmu_@an.Nombre ml-3" id="btnInmueble" style="font-size: 12px;">
-                                    <label class="checkbox-inline ">
-                                        @if (Model.filtroInmuebles.Contains(an.Nombre))
+                                <div class="col-lg-12 show ml-3" id="btnAnio">
+
+                                    <label class="checkbox-inline">
+                                        @if (Model.filtroAnios.Contains(an.Valor))
                                         {
-                                            <input class="selectInmueble" id="inm_@an.Id" type="checkbox" data-toggle="toggle" data-abre="@an.Id"
+                                            <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
                                                    data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
                                                    data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Nombre" checked> @an.Abreviacion
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor" checked> @an.Valor
                                             }
                                             else
                                             {
-                                                <input class="selectInmueble" id="inm_@an.Id" type="checkbox" data-toggle="toggle" data-abre="@an.Id"
+                                                <input class="selectAnio" id="anio_@an.Valor" type="checkbox" data-toggle="toggle"
                                                        data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
                                                        data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
-                                                       data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Nombre"> @an.Abreviacion
+                                                       data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Valor"> @an.Valor
                                                 }
                                     </label>
                                 </div>
                             }
                         </div>
+                        <div class="row col-lg-12 mt-2">
+                            <div class="col-lg-12">
+                                <b>Mes:</b>
+                                <a class="btn-sm bg-primary btnMeses float-right show" data-target="#btnMes" data-toggle="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </a>
+                            </div>
+                            @foreach (var an in Model.Meses)
+                            {
+                                <div class="col-lg-12 show ml-3" id="btnMes">
+                                    <label class="checkbox-inline float-left">
+                                        @if (Model.filtroMeses.Contains(an.Mes))
+                                        {
+                                            <input class="selectMes" id="mes_@an.Mes" type="checkbox" data-toggle="toggle"
+                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Mes" checked> @an.Mes
+                                            }
+                                            else
+                                            {
+                                                <input class="selectMes" id="mes_@an.Mes" type="checkbox" data-toggle="toggle"
+                                                       data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                       data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                       data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Mes"> @an.Mes
+                                                }
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="row col-lg-12 mt-2">
+                            <div class="col-lg-12">
+                                <b>Estatus:</b>
+                                <a class="btn-sm bg-primary btnEstatuss float-right" data-target="#btnEstatus" data-toggle="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </a>
+                            </div>
+                            @foreach (var an in Model.festatus)
+                            {
+                                <div class="col-lg-12 show ml-3" id="btnEstatus">
+                                    <label class="checkbox-inline">
+                                        @if (Model.filtroEstatus.Contains(an.Estatus))
+                                        {
+                                            <input class="selectEstatus" type="checkbox" data-toggle="toggle"
+                                                   data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                   data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                   data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Estatus" checked> @an.Estatus
+                                            }
+                                            else
+                                            {
+                                                <input class="selectEstatus" type="checkbox" data-toggle="toggle"
+                                                       data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                       data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                       data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Estatus"> @an.Estatus
+                                                }
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        <div class="row col-lg-12 mt-2" id="divInmuebles">
+                            <div class="col-lg-12">
+                                <b>Inmuebles:</b>
+                                <a class="btn-sm bg-primary btnInmuebles float-right" data-target="#btnInmueble" data-toggle="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </a>
+                            </div>
+                            <div class="col-lg-12 example-1 scrollbar-deep-purple mt-2 ">
+                                <div class="row col-lg-12 mb-2 mt-2">
+                                    <div class="form-group">
+                                        <label for="inputsm">Buscar: </label>
+                                        <input class="form-control input-sm searchToggle" id="searchToggle" type="text">
+                                    </div>
+                                </div>
+                                @foreach (var an in Model.inmuebles)
+                                {
+                                    <div class="show col-lg-12  inmuebles inm_@an.AdministracionId inmu_@an.Nombre ml-3" id="btnInmueble" style="font-size: 12px;">
+                                        <label class="checkbox-inline ">
+                                            @if (Model.filtroInmuebles.Contains(an.Nombre))
+                                            {
+                                                <input class="selectInmueble" id="inm_@an.Id" type="checkbox" data-toggle="toggle" data-abre="@an.Id"
+                                                       data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                       data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                       data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Nombre" checked> @an.Abreviacion
+                                                }
+                                                else
+                                                {
+                                                    <input class="selectInmueble" id="inm_@an.Id" type="checkbox" data-toggle="toggle" data-abre="@an.Id"
+                                                           data-on="<i class='fa fa-check' style='margin-top: -2px;'></i>"
+                                                           data-off="<i class='fa fa-times' style='margin-top: -2px;'></i>" data-size="mini"
+                                                           data-onstyle="success" data-offstyle="danger" data-style="ios" value="@an.Nombre"> @an.Abreviacion
+                                                    }
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
         </section>
     </div>
 </div>
 
 <style>
+
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
     .dataTables_filter {
         display: block;
     }
+
     #recargarPagina {
         cursor: pointer;
         font-size: 12px; /* Ajusta el tamaño de la fuente según tus necesidades */
@@ -299,6 +355,7 @@
         border-radius: 50px;
         transition: background-color 0.3s ease;
     }
+
     .example-1 {
         position: relative;
         overflow-y: scroll;
@@ -388,7 +445,7 @@
                             className: "bg-cjf"
                         }*/],
                     //"bFilter": false,
-                    lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
+                    lengthMenu: [[35, 50, 100, -1], [35, 50, 100, "Todos"]],
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"
