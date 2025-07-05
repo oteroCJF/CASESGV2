@@ -717,7 +717,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>5.77303cm</Top>
+            <Top>3.16953cm</Top>
             <Left>13.9166cm</Left>
             <Height>0.98961cm</Height>
             <Width>6.50668cm</Width>
@@ -752,7 +752,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>2.85954cm</Top>
+            <Top>1.58954cm</Top>
             <Left>7.27027cm</Left>
             <Height>0.50815cm</Height>
             <Width>12.05146cm</Width>
@@ -787,7 +787,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox1</rd:DefaultName>
-            <Top>5.12802cm</Top>
+            <Top>2.84202cm</Top>
             <Left>7.27027cm</Left>
             <Height>0.63677cm</Height>
             <Width>12.05146cm</Width>
@@ -868,8 +868,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>3.50881cm</Top>
-            <Left>15.1107cm</Left>
+            <Top>1.88602cm</Top>
+            <Left>14.5392cm</Left>
             <Height>0.77255cm</Height>
             <Width>6.80213cm</Width>
             <ZIndex>4</ZIndex>
@@ -936,7 +936,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Jefa de Departamento</Value>
+                    <Value>Coordinadora Técnica B</Value>
                     <Style>
                       <FontSize>9pt</FontSize>
                     </Style>
@@ -948,8 +948,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>3.50881cm</Top>
-            <Left>4.33305cm</Left>
+            <Top>1.88602cm</Top>
+            <Left>5.29707cm</Left>
             <Height>0.77255cm</Height>
             <Width>6.80213cm</Width>
             <ZIndex>5</ZIndex>
@@ -1028,7 +1028,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>5.78613cm</Top>
+            <Top>3.18263cm</Top>
             <Left>6.5335cm</Left>
             <Height>0.98961cm</Height>
             <Width>6.50668cm</Width>
@@ -1044,7 +1044,7 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>6.77574cm</Height>
+        <Height>4.95541cm</Height>
         <Style />
       </Body>
       <Width>26.64423cm</Width>
