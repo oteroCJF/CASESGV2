@@ -1,34 +1,55 @@
 ﻿@* Cuestionario Traslado Expedientes *@
 @model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
-    ViewData["Title"] = "Cédula de Traslado y Maniobra de Expedientes - Folio: " + Model.Folio;
+//ViewData["Title"] = "Cédula de Traslado y Maniobra de Expedientes - Folio: " + Model.Folio;
+
+    <div class="titulo-principal">
+        <b>
+            Cuestionario del Servicio de Traslado y Maniobra de Expedientes
+        </b> <i class="fa-sharp fa-solid fa-truck mr-2"></i>
+    </div>
 }
 
 <div class="container-fluid" id="limpieza">
-    <a href="#" type='button' id="btn_facturas" class='btn-sm btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice"></i></a>
-    <a href="/trasladoExp/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al Listado de Cédulas de Mensajería" data-placement="top"><i class="fal fa-arrow-left"></i></a>
+
+
+    <a href="/trasladoExp/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 6px 72px;">
+        <i class="fas fa-arrow-left mr-2"></i> Regresar
+    </a>
+    <a href="#" type='button' id="btn_facturas" class='btn-lg btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice mr-3"></i>Ver/Agregar Facturas o NC</a>
+
+
     <div class="row col-lg-12 mt-2 mb-3">
-        <table class="table">
-            <tr>
-                <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top"><strong>Folio: </strong> @Model.Folio</td>
-                <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
-                <td><strong data-toggle="tooltip" title="Mes evaluado" data-placement="top">Mes Evaluado: </strong>@Model.Mes</td>
-                <td data-toggle="tooltip" title="Administración/Inmueble evaluado" data-placement="top"><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
-                <td data-toggle="tooltip" title="Estatus de la cédula del servicio de Limpieza" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
-            </tr>
-            <tr>
-                <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes"' data-placement="top">
-                    <strong>Facturas asignadas: </strong> @Model.facturas.Count
-                </td>
-                <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
-                    <strong>Monto Total IVA Incluido: </strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)
-                </td>
-                @if (@Model.Maniobras == 1)
-                {
-                    <td data-toggle="tooltip" title="Se requirio Maniobras" data-placement="top"><strong>Servicio Requerido: </strong>Maniobras</td>
-                }
-                <td colspan="2"></td>
-            </tr>
+        <table class="table table-info-summary">
+            <tbody>
+                <tr>
+                    <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top">
+                        <i class="fas fa-file-alt icon-primary"></i> <strong>Folio:</strong> <span class="summary-value">@Model.Folio</span>
+                    </td>
+                    <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top">
+                        <i class="fas fa-calendar-alt icon-primary"></i> <strong>Año:</strong> <span class="summary-value">@Model.Anio</span>
+                    </td>
+                    <td data-toggle="tooltip" title="Mes evaluado" data-placement="top">
+                        <i class="fas fa-calendar-day icon-primary"></i> <strong>Mes:</strong> <span class="summary-value">@Model.Mes</span>
+                    </td>
+                    <td data-toggle="tooltip" title="Administración/Inmueble evaluado" data-placement="top">
+                        <i class="fas fa-building icon-primary"></i> <strong>Inmueble:</strong> <span class="summary-value">@Model.inmuebles.Nombre</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" title="Estatus de la cédula del servicio de Transporte" data-placement="top">
+                        <i class="fas fa-info-circle icon-primary"></i> <strong>Estatus:</strong> <span class="summary-value">@Model.Estatus</span>
+                    </td>
+                    <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes" del inmueble "@Model.inmuebles.Nombre"' data-placement="top">
+                        <i class="fas fa-file-invoice icon-secondary"></i> <strong>Facturas asignadas:</strong> <span class="summary-value-highlight">@Model.facturas.Count</span>
+                    </td>
+                    <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
+                        <i class="fas fa-dollar-sign icon-secondary"></i> <strong>Monto Total IVA Incluido:</strong> <span class="summary-value-highlight">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)</span>
+                    </td>
+                    <td colspan="3"></td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div class="card">
@@ -40,109 +61,114 @@
                 <div class="col-lg-12">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="profile-tab" data-toggle="tab" href="#pregunta_1" role="tab" aria-controls="profile" aria-selected="false">Pregunta 1</a>
+                            <a class="nav-link2 active" id="profile-tab" data-toggle="tab" href="#pregunta_1" role="tab" aria-controls="profile" aria-selected="false">Pregunta 1</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">Pregunta 2</a>
+                            <a class="nav-link2" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">Pregunta 2</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_3" role="tab" aria-controls="contact" aria-selected="false">Pregunta 3</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_3" role="tab" aria-controls="contact" aria-selected="false">Pregunta 3</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_4" role="tab" aria-controls="contact" aria-selected="false">Pregunta 4</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_4" role="tab" aria-controls="contact" aria-selected="false">Pregunta 4</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         @* Pregunta 1 *@
-                        <div class="tab-pane fade mt-2 ml-3 show active" id="pregunta_1" role="tabpanel" aria-labelledby="home-tab">
-                            <p class="text-black h5">1. ¿El servicio se presentó con el número de personal requerido?</p>
-                            <div class="icheck-success d-inline">
-                                <input type="radio" name="pregunta1" value="true" id="radioSuccess1" class="pregunta1" data-pregunta="1">
-                                <label for="radioSuccess1">Si</label>
+                        <div class="tab-pane fade p-4 show active" id="pregunta_1" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="question-block">
+
+                                <p class="question-text">1. ¿El servicio se presentó con el número de personal requerido?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta1" value="true" id="radioSuccess1" class="pregunta1" data-pregunta="1">
+                                    <label for="radioSuccess1">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta1" value="false" id="radioSuccess2" class="pregunta1" data-pregunta="1">
+                                    <label for="radioSuccess2">No</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta1">
+                                    <button class="btn btn-primary mt-2 mr-1 btn_addInci" data-pregunta="1">Registro de Incidencias</button>
+                                    <button class="btn btn-primary mt-2 btn_viewInci" data-pregunta="1">Consultar Incidencias</button>
+                                </div>
+                                </div>
                             </div>
-                            <div class="icheck-success d-inline ml-3">
-                                <input type="radio" name="pregunta1" value="false" id="radioSuccess2" class="pregunta1" data-pregunta="1">
-                                <label for="radioSuccess2">No</label>
-                            </div>
-                            <div class="row col-lg-12 mt-3" id="diviPregunta1">
-                                <button class="btn btn-primary mt-2 mr-1 btn_addInci" data-pregunta="1">Registro de Incidencias</button>
-                                <button class="btn btn-primary mt-2 btn_viewInci" data-pregunta="1">Consultar Incidencias</button>
-                            </div>
-                        </div>
-                        @* Fin de la Pregunta 1 *@
-                        @* Pregunta 2 *@
-                        <div class="tab-pane fade mt-2 ml-3" id="pregunta_2" role="tabpanel" aria-labelledby="profile-tab">
-                            <p class="text-black h5">2. ¿El personal de servicio se presentó debidamente uniformado e identificado?</p>
-                            <div class="icheck-success d-inline">
-                                <input type="radio" name="pregunta2" value="true" id="radioSuccess3" class="pregunta2">
-                                <label for="radioSuccess3">Si</label>
-                            </div>
-                            <div class="icheck-success d-inline ml-3">
-                                <input type="radio" name="pregunta2" value="false" id="radioSuccess4" class="pregunta2">
-                                <label for="radioSuccess4">No</label>
-                            </div>
-                            <div class="form-row col-lg-12 mt-3" id="diviPregunta2">
-                                <div class="form-row">
-                                    <div class="col col-lg-6">
-                                        <label for="peronsalSol" class="h6">Comentarios: </label>
-                                        <textarea type="number" id="comentarios" class="form-control" style="resize:none"></textarea>
+                            @* Fin de la Pregunta 1 *@
+                            @* Pregunta 2 *@
+                            <div class="tab-pane fade p-4" id="pregunta_2" role="tabpanel" aria-labelledby="profile-tab">
+                                <p class="question-text">2. ¿El personal de servicio se presentó debidamente uniformado e identificado?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta2" value="true" id="radioSuccess3" class="pregunta2">
+                                    <label for="radioSuccess3">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta2" value="false" id="radioSuccess4" class="pregunta2">
+                                    <label for="radioSuccess4">No</label>
+                                </div>
+                                <div class="form-row col-lg-12 mt-3" id="diviPregunta2">
+                                    <div class="form-row">
+                                        <div class="col col-lg-6">
+                                            <label for="peronsalSol" class="h6">Comentarios: </label>
+                                            <textarea type="number" id="comentarios" class="form-control" style="resize:none"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            @* Fin de la Pregunta 2 *@
+                            @* Pregunta 3 *@
+                            <div class="tab-pane fade p-4" id="pregunta_3" role="tabpanel" aria-labelledby="contact-tab">
+                                <p class="question-text">3. ¿El prestador de servicios entregó el equipo, maquinaria y herramientas necesarias para prestar el servicio?</p>
+                                <div class="icheck-success d-inline">
+                                    <input type="radio" name="pregunta3" value="true" id="radioSuccess5" class="pregunta3" data-pregunta="3">
+                                    <label for="radioSuccess5">Si</label>
+                                </div>
+                                <div class="icheck-success d-inline ml-3">
+                                    <input type="radio" name="pregunta3" value="false" id="radioSuccess6" class="pregunta3" data-pregunta="3">
+                                    <label for="radioSuccess6">No</label>
+                                </div>
+                                <div class="row col-lg-12 mt-3" id="diviPregunta3">
+                                    <button class="btn btn-primary mt-2 mr-1 btn_addInci" data-pregunta="3">Registro de Incidencias</button>
+                                    <button class="btn btn-primary mt-2 btn_viewInci" data-pregunta="3">Consultar Incidencias</button>
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 3 *@
+                            @* Pregunta 4 *@
+                            <div class="tab-pane fade p-4" id="pregunta_4" role="tabpanel" aria-labelledby="home-tab">
+                                <p class="question-text">4. ¿Cúando se estableció el cierre de mes?</p>
+                                <div class="form-group">
+                                    <label for="fechaCierre">Fecha de Cierre</label>
+                                    <input type="date" name="pregunta4" id="detalle4" class="form-control col-lg-4 pregunta4">
+                                </div>
+                            </div>
+                            @* Fin de la Pregunta 4 *@
+                            @* Entregables *@
+                            <div class="tab-pane fade p-4" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                                <div class="col-lg-12 mt-3">
+                                    <h3>Adjuntar Entregables</h3>
+                                    Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
+                                    <a href="#" type='button' class='btn-lg btn-success mr-2 float-right btn_addFile'>
+                                    <i class="fas fa-file-upload mr-3"></i>Adjuntar Entregable</a>
+                                </div>
+                                <br>
+                                <div class="row col-lg-12 mt-3">
+                                    <table class="table table-hover table-striped table-bordered table-sm" id="tblEntregables">
+                                        <thead>
+                                            <tr>
+                                                <th>Entregable</th>
+                                                <th>Archivo</th>
+                                                <th>Fecha de Carga</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tEntregables"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @* Fin de Entregables *@
                         </div>
-                        @* Fin de la Pregunta 2 *@
-                        @* Pregunta 3 *@
-                        <div class="tab-pane fade mt-2 ml-3" id="pregunta_3" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">3. ¿El prestador de servicios entregó el equipo, maquinaria y herramientas necesarias para prestar el servicio?</p>
-                            <div class="icheck-success d-inline">
-                                <input type="radio" name="pregunta3" value="true" id="radioSuccess5" class="pregunta3" data-pregunta="3">
-                                <label for="radioSuccess5">Si</label>
-                            </div>
-                            <div class="icheck-success d-inline ml-3">
-                                <input type="radio" name="pregunta3" value="false" id="radioSuccess6" class="pregunta3" data-pregunta="3">
-                                <label for="radioSuccess6">No</label>
-                            </div>
-                            <div class="row col-lg-12 mt-3" id="diviPregunta3">
-                                <button class="btn btn-primary mt-2 mr-1 btn_addInci" data-pregunta="3">Registro de Incidencias</button>
-                                <button class="btn btn-primary mt-2 btn_viewInci" data-pregunta="3">Consultar Incidencias</button>
-                            </div>
-                        </div>
-                        @* Fin de la Pregunta 3 *@
-                        @* Pregunta 4 *@
-                        <div class="tab-pane fade mt-2 ml-3" id="pregunta_4" role="tabpanel" aria-labelledby="home-tab">
-                            <p class="text-black h5">4. ¿Cúando se estableció el cierre de mes?</p>
-                            <div class="form-group">
-                                <label for="fechaCierre">Fecha de Cierre</label>
-                                <input type="date" name="pregunta4" id="detalle4" class="form-control col-lg-4 pregunta4">
-                            </div>
-                        </div>
-                        @* Fin de la Pregunta 4 *@
-                        @* Entregables *@
-                        <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
-                            <div class="col-lg-12 mt-3">
-                                <h3>Adjuntar Entregables</h3>
-                                Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
-                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
-                            </div>
-                            <div class="row col-lg-12 mt-3">
-                                <table class="table" id="tblEntregables">
-                                    <thead>
-                                        <tr>
-                                            <th>Entregable</th>
-                                            <th>Archivo</th>
-                                            <th>Fecha de Carga</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tEntregables"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                        @* Fin de Entregables *@
-                    </div>
                 </div>
             </div>
         </div>
@@ -481,6 +507,228 @@
 </div>
 @*Fin Modal para ver Adjuntos*@
 
+<style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 25px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+    .radio-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px; /* Espacio entre las opciones "Si", "No", "No Aplica" */
+        margin-bottom: 1rem;
+    }
+
+    /* Targeting the hidden input, though iCheck typically handles this */
+    .icheck-success input[type="radio"] {
+        /* iCheck usually sets opacity: 0; position: absolute; for the native input */
+        /* If you're custom styling, you'd hide it here */
+        /* For iCheck, leave this alone */
+    }
+
+    /* Targeting the visual element rendered by iCheck for the radio button */
+    .icheck-success label::before {
+        /* The ::before pseudo-element is commonly used by iCheck for the outer circle */
+        content: '';
+        display: inline-block;
+        width: 20px; /* Tamaño del radio */
+        height: 20px; /* Tamaño del radio */
+        border: 2px solid #ccc; /* Borde del círculo inactivo */
+        border-radius: 50%; /* Hace un círculo perfecto */
+        background-color: #f8f8f8; /* Fondo ligero para el círculo inactivo */
+        margin-right: 8px; /* Espacio entre el círculo y la etiqueta */
+        vertical-align: middle; /* Alineación con el texto */
+        transition: all 0.2s ease-in-out; /* Transición suave para los cambios de estado */
+        box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+    }
+
+    .icheck-success input[type="radio"]:checked + label::before {
+        /* Cuando el radio está seleccionado (outer circle) */
+        background-color: #24135f; /* ¡Tu morado principal para el fondo del círculo! */
+        border-color: #24135f; /* Borde del mismo color */
+    }
+
+    .icheck-success label::after {
+        /* The ::after pseudo-element is commonly used by iCheck for the inner dot */
+        content: '';
+        display: block;
+        width: 10px; /* Tamaño del punto interno */
+        height: 10px; /* Tamaño del punto interno */
+        background-color: #ffffff; /* Punto interno blanco */
+        border-radius: 50%; /* Hace un círculo perfecto */
+        position: absolute;
+        top: 50%; /* Centrar verticalmente */
+        left: 50%; /* Centrar horizontalmente */
+        transform: translate(-50%, -50%) scale(0); /* Inicialmente oculto */
+        transition: transform 0.2s ease-in-out; /* Transición para la aparición/desaparición */
+    }
+
+    .icheck-success input[type="radio"]:checked + label::after {
+        /* Cuando el radio está seleccionado (inner dot) */
+        transform: translate(-50%, -50%) scale(1); /* Hace visible el punto */
+    }
+
+    /* Estilo para las etiquetas de los radio buttons (Sí/No/No Aplica) */
+    .icheck-success label {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.3rem;
+        color: #444;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative; /* Necesario para posicionar el ::after */
+        padding-left: 28px; /* Espacio para que el radio no se superponga con el texto */
+        display: inline-block; /* Asegura que ocupe solo el ancho necesario */
+        line-height: 20px; /* Alinea la altura del texto con el radio */
+    }
+
+        /* Efecto hover en el label para el círculo exterior */
+        .icheck-success label:hover::before {
+            border-color: #6a5acd; /* Morado más claro al pasar el ratón */
+            box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.15); /* Sombra suave al pasar el ratón */
+        }
+
+    /* Asegurarse de que el input esté oculto pero accesible para lectores de pantalla */
+    .icheck-success input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+    .question-text {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.18rem; /* Ligeramente más grande para mayor impacto */
+        color: #1a1a1a; /* Tu color morado principal */
+        font-weight: 700; /* ¡Más negrita! Esto hará que todo el texto de la pregunta destaque. */
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        /* Si quieres un subrayado sutil o un borde, podrías añadir: */
+        /* border-bottom: 1px dashed #e0e0e0; */
+        /* padding-bottom: 0.5rem; */
+    }
+        /* Estilo para los títulos (por ejemplo, "Folio:", "Año:", etc.) */
+        .table-info-summary strong {
+            color: #24135f;      /* Tu color morado principal */
+            font-weight: 800;   /* ¡CAMBIO: Hacemos el texto más negrita! Puedes probar 900 si quieres aún más. */
+            font-size: 1.05rem; /* ¡CAMBIO: Aumentamos el tamaño de la fuente para los títulos! */
+            margin-right: 10px;  /* Un poco más de espacio entre el título y el valor */
+        }
+
+        .summary-value {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        /* Estilo para los valores que quieres resaltar más (Facturas, Monto) */
+        .summary-value-highlight {
+            font-weight: 700;
+            color: #24135f;
+            font-size: 1.05rem;
+        }
+
+        /* Estilos para los íconos */
+        .table-info-summary i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .table-info-summary .icon-primary {
+            color: #6a5acd;
+            opacity: 0.8;
+        }
+
+        .table-info-summary .icon-secondary {
+            color: #24135f;
+            font-size: 1.2rem;
+        }
+
+        /* Estilo para las celdas de la segunda fila (Estatus, Facturas y Monto) */
+        .table-info-summary tr:nth-child(2) td {
+            background-color: #f7f7f7;
+            border-top: 1px dashed #e0e0e0;
+            padding-top: 1.2rem;
+        }
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan si hay muchas en una fila */
+        border-bottom: 2px solid #ddd; /* Aumentamos el grosor de la línea base para que se vea más sólida */
+        margin-bottom: 0; /* Asegura que no haya margen extra debajo de cada fila de pestañas */
+    }
+
+    .nav-link2 { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+        font-size: 0.95rem; /* Ligeramente más grande para mejor legibilidad */
+        padding: 0.8rem 1.3rem; /* Aumentamos un poco el padding para que las pestañas sean más cómodas */
+        color: #555; /* Un gris más suave para el texto inactivo */
+        background-color: #f0f0f0; /* Un gris muy claro para el fondo de las inactivas */
+        border: 1px solid #ddd; /* Un borde gris claro para todas las pestañas */
+        border-bottom: none; /* Crucial: Elimina el borde inferior individual para que se una a la línea del .nav-tabs */
+        border-radius: 0.4rem 0.4rem 0 0; /* Bordes superiores un poco más redondeados */
+        transition: all 0.3s ease-in-out; /* Transición suave para todos los cambios de estado */
+        margin-right: 0.35rem; /* Un poco más de espacio entre pestañas */
+        margin-bottom: 0.25rem; /* Mantiene el espacio entre filas cuando se envuelven */
+        text-align: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+
+        /* Efecto al pasar el ratón (hover) sobre pestañas inactivas */
+        .nav-link2:hover:not(.active) { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto morado principal */
+            background-color: #e6e6fa; /* Un lila muy suave para el fondo del hover */
+            border-color: #a0a0d0; /* Un borde un poco más oscuro para el hover */
+            cursor: pointer;
+        }
+
+        /* Estilo para la pestaña ACTIVA */
+        .nav-link2.active { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto de la pestaña activa en tu color morado principal */
+            background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+            border-color: #24135f; /* Borde superior, izquierdo y derecho en morado principal */
+            font-weight: 600; /* Texto en negrita para resaltar */
+            font-size: 1rem; /* Ligeramente más grande para darle peso visual */
+            padding-top: 0.9rem; /* Un poco más de padding para "levantarla" visualmente */
+            position: relative;
+            z-index: 2; /* Asegura que se muestre por encima de la línea base */
+            /* ----- CLAVE para el efecto de remarcado sutil ----- */
+            border-bottom: 2px solid #ffffff; /* Este borde inferior "corta" la línea base y debe ser del mismo color que el fondo del .tab-content */
+        }
+
+    .form-check-input.incidencia-option {
+        width: 1.25em; /* O un valor en píxeles, por ejemplo, 24px */
+        height: 1.25em; /* Debe ser igual al ancho para mantener el cuadrado */
+        /* Ajusta el margen superior para que se alinee con el texto si es necesario */
+    }
+
+    /* Opcional: Ajustar el label si el texto parece desalineado */
+    .form-check-label {
+        padding-left: 0.5em; /* Añade un pequeño espacio entre el checkbox y el texto/icono */
+    }
+
+    }
+</style>
 @section Scripts{
     <script>
             window.onload = function () {

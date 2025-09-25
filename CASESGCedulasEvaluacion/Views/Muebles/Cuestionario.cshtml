@@ -95,18 +95,18 @@
                                         @foreach (var pr in Model.preguntas)
                                         {
                                             <li class="nav-item" role="presentation">
-                                                <a class="nav-link @(pr.Cierre ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
+                                                <a class="nav-link2 @(pr.Cierre ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
                                             </li>
                                         }
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                         @foreach (var pr in Model.preguntas)
                                         {
                                             <div class="tab-pane fade mt-2 ml-3 @(pr.Cierre ? "show active":"")" id="pregunta_@pr.NoPreguntaUsuario" role="tabpanel" aria-labelledby="home-tab">
-                                                <p class="text-black h5">
+                                                <p class="text-black question-text h5">
                                                     @pr.NoPreguntaUsuario.- @pr.Pregunta
                                                     <a href="#" class="text-primary ml-2 btnAyuda" data-toggle="tooltip" title="Ayuda" data-placement="top" data-ayuda="@pr.Ayuda">
                                                         <i class="fa-solid fa-circle-question"></i>
@@ -231,7 +231,8 @@
                                                        aria-label="Cargar Archivo">
                                                         <i class="fas fa-upload mr-2"></i> Cargar Archivo
                                                     </a>
-                                                </div>                                            </div>
+                                                </div>                                           
+                                            </div>
                                             <div class="row col-lg-12 mt-3">
                                                 <table class="table table-hover table-striped table-bordered table-sm" id="tblEntregables">
                                                     <thead>
@@ -649,7 +650,7 @@
 <style>
     .titulo-principal {
         font-family: Arial, sans-serif;
-        font-size: 20px;
+        font-size: 25px;
         color: #24135f;
         text-align: left;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
@@ -674,40 +675,63 @@
         display: block;
     }
 
-    .custom-tabs-modern {
-        border-bottom: none; /* Asegura que no haya borde inferior si se usó nav-tabs antes */
+    .question-text {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.18rem; /* Ligeramente más grande para mayor impacto */
+        color: #1a1a1a; /* Tu color morado principal */
+        font-weight: 700; /* ¡Más negrita! Esto hará que todo el texto de la pregunta destaque. */
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        /* Si quieres un subrayado sutil o un borde, podrías añadir: */
+        /* border-bottom: 1px dashed #e0e0e0; */
+        padding-top: 1.5rem; 
+    }
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan si hay muchas en una fila */
+        border-bottom: 2px solid #ddd; /* Aumentamos el grosor de la línea base para que se vea más sólida */
+        margin-bottom: 0; /* Asegura que no haya margen extra debajo de cada fila de pestañas */
     }
 
-        .custom-tabs-modern .nav-link {
-            color: #6c757d; /* Color de texto para pestañas inactivas (gris Bootstrap) */
-            font-weight: 500; /* Un poco más de peso para el texto */
-            padding: 0.75rem 1.25rem; /* Aumentar el padding para hacer las pestañas más grandes */
-            border-radius: 0.5rem; /* Bordes más redondeados para una apariencia de píldora suave */
-            margin-right: 0.5rem; /* Espacio entre cada pestaña */
-            transition: all 0.3s ease-in-out; /* Transición suave para efectos de hover y active */
-            display: flex; /* Usar flexbox para alinear perfectamente el ícono y el texto */
-            align-items: center; /* Centrar verticalmente el ícono y el texto */
+    /* Estilo base para CADA ENLACE de pestaña (el <a>, ahora con la clase .nav-link) */
+    .nav-link2 { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+        font-size: 0.95rem; /* Ligeramente más grande para mejor legibilidad */
+        padding: 0.8rem 1.3rem; /* Aumentamos un poco el padding para que las pestañas sean más cómodas */
+        color: #555; /* Un gris más suave para el texto inactivo */
+        background-color: #f0f0f0; /* Un gris muy claro para el fondo de las inactivas */
+        border: 1px solid #ddd; /* Un borde gris claro para todas las pestañas */
+        border-bottom: none; /* Crucial: Elimina el borde inferior individual para que se una a la línea del .nav-tabs */
+        border-radius: 0.4rem 0.4rem 0 0; /* Bordes superiores un poco más redondeados */
+        transition: all 0.3s ease-in-out; /* Transición suave para todos los cambios de estado */
+        margin-right: 0.35rem; /* Un poco más de espacio entre pestañas */
+        margin-bottom: 0.25rem; /* Mantiene el espacio entre filas cuando se envuelven */
+        text-align: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+
+        /* Efecto al pasar el ratón (hover) sobre pestañas inactivas */
+        .nav-link2:hover:not(.active) { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto morado principal */
+            background-color: #e6e6fa; /* Un lila muy suave para el fondo del hover */
+            border-color: #a0a0d0; /* Un borde un poco más oscuro para el hover */
+            cursor: pointer;
         }
 
-            .custom-tabs-modern .nav-link:hover {
-                color: #0056b3; /* Color de texto en hover (azul más oscuro) */
-                background-color: #e9ecef; /* Fondo sutil en hover para un efecto visual */
-                text-decoration: none; /* Asegura que no se subraye en hover */
-            }
-
-            .custom-tabs-modern .nav-link.active {
-                background-color: #007bff; /* Color de fondo para la pestaña activa (azul primario de Bootstrap) */
-                color: #fff; /* Color de texto blanco para la pestaña activa */
-                box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3); /* Sombra para la pestaña activa, dándole profundidad */
-                transform: translateY(-2px); /* Ligero efecto de levantamiento para la pestaña activa */
-                border: none; /* Asegura que no haya borde en la pestaña activa */
-                font-weight: 600; /* Texto un poco más negrita en la pestaña activa */
-            }
-
-            /* Iconos dentro de las pestañas */
-            .custom-tabs-modern .nav-link .fas {
-                font-size: 1.1em; /* Ajusta el tamaño del ícono ligeramente */
-            }
+        /* Estilo para la pestaña ACTIVA */
+        .nav-link2.active { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto de la pestaña activa en tu color morado principal */
+            background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+            border-color: #24135f; /* Borde superior, izquierdo y derecho en morado principal */
+            font-weight: 600; /* Texto en negrita para resaltar */
+            font-size: 1rem; /* Ligeramente más grande para darle peso visual */
+            padding-top: 0.9rem; /* Un poco más de padding para "levantarla" visualmente */
+            position: relative;
+            z-index: 2; /* Asegura que se muestre por encima de la línea base */
+            /* ----- CLAVE para el efecto de remarcado sutil ----- */
+            border-bottom: 2px solid #ffffff; /* Este borde inferior "corta" la línea base y debe ser del mismo color que el fondo del .tab-content */
+        }
 </style>
 @section Scripts{
     <script>
@@ -1112,7 +1136,7 @@
                     }
                     else
                     {
-                        if (pregunta == 3) {
+                        if (pregunta == 1) {
                             $("#divIncidencias_" + pusuario).css("display", "block");
                         } else {
                             $("#divIncidencias_" + pusuario).css("display", "none");

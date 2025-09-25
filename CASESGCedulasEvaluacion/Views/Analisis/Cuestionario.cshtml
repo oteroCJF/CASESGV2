@@ -1,6 +1,13 @@
 ﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
-    ViewData["Title"] = "Cédula del Servicio de Análisis Microbiológicos con Folio: " + Model.Folio;
+    //ViewData["Title"] = "Cédula del Servicio de Análisis Microbiológicos con Folio: " + Model.Folio;
+
+    <div class="titulo-principal">
+        <b>
+            Cédula del Servicio de Análisis Microbiológicos
+        </b> <i class="fa-sharp fa-solid fa-bug mr-2"></i>
+    </div>
+
     var f = 0;
     var cf = 0;
     var i = 1;
@@ -9,20 +16,19 @@
 }
 
 <div class="row col-lg-12 d-flex justify-content-end">
-    <a href="/analisis/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip"
-       title="Regresar al listado de cédulas de análisis microbiológicos" data-placement="top">
-        <i class="fal fa-arrow-left"></i>
+    <a href="/analisis/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;">    
+        <i class="fal fa-arrow-left"></i> Regresar
     </a>
 </div>
 <div class="row col-lg-12">
     <div class="row col-lg-12">
         <div class="col-lg-12">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <ul class="nav nav-pills custom-tabs-modern mb-3" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#evaluacion" role="tab" aria-controls="home" aria-selected="true">Evaluación del Servicio</a>
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#evaluacion" role="tab" aria-controls="home" aria-selected="true">  <i class="fas fa-star mr-2"></i> Evaluación del Servicio</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#facturacion" role="tab" aria-controls="profile" aria-selected="false">Facturación</a>
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#facturacion" role="tab" aria-controls="profile" aria-selected="false"> <i class="fas fa-file-invoice-dollar mr-2"></i>Facturación</a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
@@ -60,18 +66,18 @@
                                         @foreach (var pr in Model.preguntas)
                                         {
                                             <li class="nav-item" role="presentation">
-                                                <a class="nav-link @(pr.Cierre ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
+                                                <a class="nav-link2 @(pr.Cierre ? "active":"")" id="profile-tab" data-toggle="tab" href="#pregunta_@pr.NoPreguntaUsuario" role="tab" aria-controls="profile" aria-selected="false">Pregunta @pr.NoPreguntaUsuario</a>
                                             </li>
                                         }
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content" id="myTabContent">
                                         @foreach (var pr in Model.preguntas)
                                         {
                                             <div class="tab-pane fade mt-2 ml-3 @(pr.Cierre ? "show active":"")" id="pregunta_@pr.NoPreguntaUsuario" role="tabpanel" aria-labelledby="home-tab">
-                                                <p class="text-black h5">
+                                                <p class="text-black question-text h5">
                                                     @pr.NoPreguntaUsuario.- @pr.Pregunta
                                                     <a href="#" class="text-primary ml-2 btnAyuda" data-toggle="tooltip" title="Ayuda" data-placement="top" data-ayuda="@pr.Ayuda">
                                                         <i class="fa-solid fa-circle-question"></i>
@@ -152,10 +158,10 @@
                                             <div class="col-lg-12 mt-3">
                                                 <h3>Adjuntar Entregables</h3>
                                                 Favor de Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
-                                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus mr-3"></i>Adjuntar Entregable </a>
                                             </div>
                                             <div class="row col-lg-12 mt-3">
-                                                <table class="table" id="tblEntregables">
+                                                <table class="table table-hover table-striped table-bordered table-sm" id="tblEntregables">
                                                     <thead>
                                                         <tr>
                                                             <th>Entregable</th>
@@ -533,7 +539,88 @@
     <!-- /.modal-dialog -->
 </div>
 @*Fin Modal para ver Adjuntos*@
+<style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
 
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .question-text {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.18rem; /* Ligeramente más grande para mayor impacto */
+        color: #1a1a1a; /* Tu color morado principal */
+        font-weight: 700; /* ¡Más negrita! Esto hará que todo el texto de la pregunta destaque. */
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        /* Si quieres un subrayado sutil o un borde, podrías añadir: */
+        /* border-bottom: 1px dashed #e0e0e0; */
+        padding-top: 1.5rem;
+    }
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan si hay muchas en una fila */
+        border-bottom: 2px solid #ddd; /* Aumentamos el grosor de la línea base para que se vea más sólida */
+        margin-bottom: 0; /* Asegura que no haya margen extra debajo de cada fila de pestañas */
+    }
+
+    /* Estilo base para CADA ENLACE de pestaña (el <a>, ahora con la clase .nav-link) */
+    .nav-link2 { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+        font-size: 0.95rem; /* Ligeramente más grande para mejor legibilidad */
+        padding: 0.8rem 1.3rem; /* Aumentamos un poco el padding para que las pestañas sean más cómodas */
+        color: #555; /* Un gris más suave para el texto inactivo */
+        background-color: #f0f0f0; /* Un gris muy claro para el fondo de las inactivas */
+        border: 1px solid #ddd; /* Un borde gris claro para todas las pestañas */
+        border-bottom: none; /* Crucial: Elimina el borde inferior individual para que se una a la línea del .nav-tabs */
+        border-radius: 0.4rem 0.4rem 0 0; /* Bordes superiores un poco más redondeados */
+        transition: all 0.3s ease-in-out; /* Transición suave para todos los cambios de estado */
+        margin-right: 0.35rem; /* Un poco más de espacio entre pestañas */
+        margin-bottom: 0.25rem; /* Mantiene el espacio entre filas cuando se envuelven */
+        text-align: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+
+        /* Efecto al pasar el ratón (hover) sobre pestañas inactivas */
+        .nav-link2:hover:not(.active) { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto morado principal */
+            background-color: #e6e6fa; /* Un lila muy suave para el fondo del hover */
+            border-color: #a0a0d0; /* Un borde un poco más oscuro para el hover */
+            cursor: pointer;
+        }
+
+        /* Estilo para la pestaña ACTIVA */
+        .nav-link2.active { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto de la pestaña activa en tu color morado principal */
+            background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+            border-color: #24135f; /* Borde superior, izquierdo y derecho en morado principal */
+            font-weight: 600; /* Texto en negrita para resaltar */
+            font-size: 1rem; /* Ligeramente más grande para darle peso visual */
+            padding-top: 0.9rem; /* Un poco más de padding para "levantarla" visualmente */
+            position: relative;
+            z-index: 2; /* Asegura que se muestre por encima de la línea base */
+            /* ----- CLAVE para el efecto de remarcado sutil ----- */
+            border-bottom: 2px solid #ffffff; /* Este borde inferior "corta" la línea base y debe ser del mismo color que el fondo del .tab-content */
+        }
+</style>
 @section Scripts{
     <script>
         $(function () {

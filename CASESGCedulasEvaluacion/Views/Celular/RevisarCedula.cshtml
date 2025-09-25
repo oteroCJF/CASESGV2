@@ -1,6 +1,15 @@
 ﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
-    ViewData["Title"] = "Cédula Telefonía Celular e Internet Móvil - Folio: " + Model.Folio;
+//ViewData["Title"] = "Cédula Telefonía Celular e Internet Móvil - Folio: " + Model.Folio;
+
+    <div class="titulo-principal">
+        <b>
+            Revisión de la Cédula de Telefonía Celular e Internet Móvil
+        </b> <i class="fa-sharp fa-solid fa-bus-school mr-2"></i>
+    </div>
+
+
+
     decimal totalP = 0;
     decimal totalD = Convert.ToDecimal(@Model.TotalBajoDemanda);
     decimal total = 0;
@@ -13,62 +22,91 @@
     total = totalD + totalP;
 }
 
-<div class="row col-lg-12">
-    <div class="col-lg-12">
-        <a href="/telCelular/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3'><i class="fal fa-arrow-left"></i></a>
+<div class="row align-items-center mb-4 border-bottom pb-3">
+    <div class="col-lg-1 d-none d-lg-block text-center border-right pr-3">
+        <i class="fas fa-file-signature fa-3x text-primary"></i>
+    </div>
+    <div class="col-lg-8 col-md-9">
+        <h4 class="mb-1 text-dark">
+            <span class="font-weight-bold display-5 text-decoration-underline" style="color: #24135f;">@Model.Folio</span> <br>
+            <small class="d-block text-muted mt-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Evaluación correspondiente al mes de <b class="text-dark">@Model.Mes</b> del año <b class="text-dark">@Model.Anio</b>
+            </small>
+        </h4>
+    </div>
+    <div class="col-lg-3 col-md-3 text-right">
+        <a href="/telCelular/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;">
+            <i class="fas fa-arrow-left mr-2"></i> Regresar
+        </a>
     </div>
 </div>
+
 <div class="row">
     <div class="col-lg-12">
-        <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+
+
+
+
+        <div style="margin-bottom: 30px;">
+            <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1 active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="home-tab" data-toggle="tab" href="#altaEquipo" role="tab" aria-controls="home" aria-selected="true">Alta con Equipo</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="profile-tab" data-toggle="tab" href="#alta" role="tab" aria-controls="profile" aria-selected="false">Alta sin Equipo</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#baja" role="tab" aria-controls="contact" aria-selected="false">Baja de Servicios</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#reactivacion" role="tab" aria-controls="contact" aria-selected="false">Reactivación por Robo/Extravío</a>
+                </li>
+            </ul>
+        </div>
+
+        <ul class="nav nav-tabs h6" id="myTabRow2" role="tablist">
+          
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#suspension" role="tab" aria-controls="contact" aria-selected="false">Suspensión por Robo/Extravío</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="home-tab" data-toggle="tab" href="#altaEquipo" role="tab" aria-controls="home" aria-selected="true">Alta con Equipo</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#perfil" role="tab" aria-controls="contact" aria-selected="false">Cambio de Perfil</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#alta" role="tab" aria-controls="profile" aria-selected="false">Alta sin Equipo</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#sim" role="tab" aria-controls="contact" aria-selected="false">Switcheo de SIM Card</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#baja" role="tab" aria-controls="contact" aria-selected="false">Baja de Servicios</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#cambio" role="tab" aria-controls="contact" aria-selected="false">Cambio de Número o Región</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#reactivacion" role="tab" aria-controls="contact" aria-selected="false">Reactivación por Robo/Extravío</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#vozDatos" role="tab" aria-controls="contact" aria-selected="false">Voz/Datos</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#suspension" role="tab" aria-controls="contact" aria-selected="false">Suspensión por Robo/Extravío</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#diagnostico" role="tab" aria-controls="contact" aria-selected="false">Diagnóstico de Equipo</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#perfil" role="tab" aria-controls="contact" aria-selected="false">Cambio de Perfil</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#reparacion" role="tab" aria-controls="contact" aria-selected="false">Reparación de Equipo</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#sim" role="tab" aria-controls="contact" aria-selected="false">Switcheo de SIM Card</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#cambio" role="tab" aria-controls="contact" aria-selected="false">Cambio de Número o Región</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#vozDatos" role="tab" aria-controls="contact" aria-selected="false">Voz/Datos</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#diagnostico" role="tab" aria-controls="contact" aria-selected="false">Diagnóstico de Equipo</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#reparacion" role="tab" aria-controls="contact" aria-selected="false">Reparación de Equipo</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
-            </li>
+
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="informacion_general" role="tabpanel" aria-labelledby="home-tab">
                 <div class="row justify-content-center align-items-center mt-4">
                     <div class="col-lg-12 h3 ml-4">
-                        Información General
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-info-circle me-2"></i> <strong>Información General</strong>
+                        </h4>
+
                     </div>
                 </div>
                 <div class="row">
@@ -85,10 +123,11 @@
                                                 <i class="fal fa-file-invoice"></i>
                                             </a>
                                         </h2>
-                                        <p class="text-medium">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
+
                                         <ul class="ml-4 mb-0 fa-ul">
-                                            <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
-                                            <li class="medium mt-3">
+                                            <li class="strong mt-3"><span class="fa-li">  <i class="fas fa-building me-2 mr-1"></i></span>  <strong>Inmueble Evaluado:</strong> <span>@Model.inmuebles.Nombre</span></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <strong>Facturación Total: </strong>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
+                                            <li class="strong mt-3">
                                                 <span class="fa-li"><i class="fas fa-lg fa-sack-dollar"></i></span>
                                                 @if (total > 0)
                                                 {
@@ -100,22 +139,20 @@
                                                 }
                                                 @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", total)
                                             </li>
-                                            <li class="medium mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
-                                            <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
-                                            <li class="medium mt-3">
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span>  <strong>Calificación: </strong> </b> @Model.Calificacion</li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
+                                            <li class="strong mt-3">
                                                 <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
-                                                <strong>Correo:</strong>
+
                                                 @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
                                                 {
-                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                    <strong>Correo:</strong><strong class="text-danger">@String.Format("Sin correo")</strong>
                                                 }
                                                 else
                                                 {
-                                                    @Model.usuarios.correo_electronico
+                                                    <strong>Correo:</strong> @Model.usuarios.correo_electronico
                                                 }
-                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
-                                                    <i class="fal fa-edit"></i>
-                                                </a>
+
                                             </li>
                                         </ul>
                                     </div>
@@ -159,10 +196,10 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-2">
-                                        <h5 class="@(Model.Fondo.Replace("bg","text")) lblEstatus">
+                                        <h4 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
                                             @Html.Raw(Model.Icono)
                                             <strong class="ml-2">Estatus: </strong> @Model.Estatus
-                                        </h5>
+                                        </h4>
                                     </div>
                                 </div>
                             </div>
@@ -182,8 +219,11 @@
             @* Alta/Equipo *@
             <div class="tab-pane fade mt-2 ml-2" id="altaEquipo" role="tabpanel" aria-labelledby="home-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2 ml-2">Requerimiento Alta con Equipo</h4>
-                    <div class="col-lg-12">
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-arrow-alt-square-up me-2"></i> <strong>Alta de Servicio con Equipo</strong>
+                        </h4>
+                    </div>                    <div class="col-lg-12">
                         @if (@Model.incidencias.altaEntrega.Count > 0)
                         {
                             <div class="row mt-2">
@@ -251,10 +291,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -278,8 +318,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success ml-4">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -290,7 +330,11 @@
             @* Alta sin equipo*@
             <div class="tab-pane fade mt-2 ml-2" id="alta" role="tabpanel" aria-labelledby="profile-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2 ml-2">Alta de Servicio sin Equipo</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-arrow-alt-circle-up me-2"></i> <strong>Alta de Servicio sin Equipo</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.altasentrega.Count > 0)
                         {
@@ -359,10 +403,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -386,8 +430,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -398,7 +442,11 @@
             @* Baja *@
             <div class="tab-pane fade mt-2 ml-3" id="baja" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Baja de Servicios</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-arrow-alt-circle-down me-2"></i> <strong>Baja de Servicios</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.bajaServicio.Count > 0)
                         {
@@ -467,10 +515,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -494,8 +542,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -506,7 +554,11 @@
             @* Reactivacion *@
             <div class="tab-pane fade mt-2 ml-3" id="reactivacion" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Reactivación por Robo/Extravío</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-circle-phone-flip me-2"></i> <strong>Reactivación por Robo/Extravío</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.reactivacion.Count > 0)
                         {
@@ -575,10 +627,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -602,8 +654,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -614,7 +666,12 @@
             @* Suspension *@
             <div class="tab-pane fade mt-2 ml-3" id="suspension" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Suspensión por Robo/Extravío</h4>
+                    <h4 class="mt-2 mb-2"></h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-circle-phone me-2"></i> <strong>Suspensión por Robo/Extravío</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.suspension.Count > 0)
                         {
@@ -683,10 +740,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -710,8 +767,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -722,7 +779,11 @@
             @* Perfil *@
             <div class="tab-pane fade mt-2 ml-3" id="perfil" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Cambio de Perfil</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-person-arrow-up-from-line me-2"></i> <strong>Cambio de Perfil</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.cambioPerfil.Count > 0)
                         {
@@ -791,10 +852,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -818,8 +879,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -830,7 +891,11 @@
             @* SIM *@
             <div class="tab-pane fade mt-2 ml-3" id="sim" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Switcheo de SIM Card</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-sim-card me-2"></i> <strong>Switcheo de SIM Card</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.switcheoCard.Count > 0)
                         {
@@ -899,10 +964,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -926,8 +991,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -938,7 +1003,11 @@
             @* Cambio de Número o Región *@
             <div class="tab-pane fade mt-2 ml-3" id="cambio" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Cambio de Número o Región</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-map-location me-2"></i> <strong>Cambio de Número o Región</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.cambioRegion.Count > 0)
                         {
@@ -1007,10 +1076,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -1034,8 +1103,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -1046,7 +1115,11 @@
             @* VozDatos *@
             <div class="tab-pane fade mt-2 ml-3" id="vozDatos" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Solicitud de Servicios de Voz/Datos</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-network-wired me-2"></i> <strong>Solicitud de Servicios de Voz/Datos</strong>
+                        </h4>
+                    </div>
                     <div class="col-lg-12">
                         @if (@Model.incidencias.servicioVozDatos.Count > 0)
                         {
@@ -1115,10 +1188,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -1142,8 +1215,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -1154,7 +1227,11 @@
             @* Diagnostico *@
             <div class="tab-pane fade mt-2 ml-3" id="diagnostico" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Diagnóstico de Equipo</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-search-minus me-2"></i> <strong>Diagnóstico de Equipo</strong>
+                        </h4>
+                    </div>                       
                     <div class="col-lg-12">
                         @if (@Model.incidencias.diagnostico.Count > 0)
                         {
@@ -1223,10 +1300,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -1250,8 +1327,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -1262,7 +1339,11 @@
             @* Diagnostico *@
             <div class="tab-pane fade mt-2 ml-3" id="reparacion" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row">
-                    <h4 class="mt-2 mb-2">Reparación de Equipo</h4>
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-tools me-2"></i> <strong>Reparación de Equipo</strong>
+                        </h4>
+                    </div>                    
                     <div class="col-lg-12">
                         @if (@Model.incidencias.reparacion.Count > 0)
                         {
@@ -1331,10 +1412,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                        <h5 class="text-danger ml-4">
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                        </h5>
+                    </div>*@
                             </div>
                         }
                         else
@@ -1358,8 +1439,8 @@
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     @*<h5 class="text-success">
-                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
-                                    </h5>*@
+                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)
+                        </h5>*@
                                 </div>
                             </div>
                         }
@@ -1379,19 +1460,21 @@
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade show active" id="entregables_periodicos" role="tabpanel" aria-labelledby="home-tab">
-                            <div class="col-lg-12 h3 mt-4">
-                                Entregables Períodicos
-                            </div>
-
                             <div class="row col-lg-12">
                                 <div class="col-lg-8">
-                                    <p class="h6">El usuario adjunto los siguientes entregables.</p>
+                                    <h4 style="color: #24135f;">
+                                        <br>
+                                        <i class="fas fa-paperclip me-2"></i> <strong>Entregables Periódicos</strong>
+                                        <br>
+                                        <h6>El usuario adjuntó los siguientes entregables:</h6>
+
+                                    </h4>
                                 </div>
-                            </div>
+                            </div>                           
                             <div class="row col-lg-12 mt-2 h6">
                                 <div class="col-lg-12">
-                                    <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
-                                    <table class="table">
+
+                                    <table class="table table-hover table-striped table-bordered table-md" width="100%">
                                         <thead>
                                             <tr>
                                                 <th>Tipo</th>
@@ -1454,14 +1537,16 @@
             </div>
             <div class="tab-pane fade" id="historial_cedula" role="tabpanel" aria-labelledby="contact-tab">
                 <div class="row justify-content-center align-items-center mt-4">
-                    <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de la Cédula
+                    <div class="row col-lg-12 mt-2 h6">
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-magnifying-glass me-2"></i> <strong>Seguimiento de la Cédula</strong>
+                        </h4>
+
                     </div>
                     <div class="row col-lg-12">
-                        <table class="table">
+                        <table class="table table-hover table-striped table-bordered table-md" width="100%">
                             <thead>
                                 <tr>
-                                    <th>Servicio</th>
                                     <th>Usuario</th>
                                     <th>Comentarios</th>
                                     <th>Estatus</th>
@@ -1472,7 +1557,6 @@
                                 @foreach (var hist in @Model.historialCedulas)
                                 {
                                     <tr>
-                                        <td>Traslado y Maniobra de Expedientes</td>
                                         <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
                                         <td>@hist.Comentarios</td>
                                         <td>@hist.Estatus</td>
@@ -1486,7 +1570,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
 @* Modal para ver las facturas de la cedula *@
 <div class="modal fade" id="modal-ver-facturas">
@@ -1690,6 +1774,87 @@
 </div>
 @* FIN del Modal para agregar facturas la cedula *@
 
+<style>
+
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 25px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Asegúrate de que el encabezado también tenga el color o sea compatible */
+    .tabla-incidencias-color thead tr {
+        background-color: #24135f !important; /* Un tono aún más oscuro para el encabezado */
+        color: white !important; /* Texto blanco para el encabezado */
+    }
+    /* Estilo para CADA contenedor de fila de pestañas (es decir, cada ul.nav-tabs) */
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan si hay muchas en una fila */
+        border-bottom: 2px solid #ddd; /* Aumentamos el grosor de la línea base para que se vea más sólida */
+        margin-bottom: 0; /* Asegura que no haya margen extra debajo de cada fila de pestañas */
+    }
+
+    /* Estilo base para CADA ENLACE de pestaña (el <a> con la clase .nav-link1) */
+    .nav-link1 {
+        font-size: 0.95rem; /* Ligeramente más grande para mejor legibilidad */
+        padding: 0.8rem 1.3rem; /* Aumentamos un poco el padding para que las pestañas sean más cómodas */
+        color: #555; /* Un gris más suave para el texto inactivo */
+        background-color: #f0f0f0; /* Un gris muy claro para el fondo de las inactivas */
+        border: 1px solid #ddd; /* Un borde gris claro para todas las pestañas */
+        border-bottom: none; /* Crucial: Elimina el borde inferior individual para que se una a la línea del .nav-tabs */
+        border-radius: 0.4rem 0.4rem 0 0; /* Bordes superiores un poco más redondeados */
+        transition: all 0.3s ease-in-out; /* Transición suave para todos los cambios de estado */
+        margin-right: 0.35rem; /* Un poco más de espacio entre pestañas */
+        margin-bottom: 0.25rem; /* Mantiene el espacio entre filas cuando se envuelven */
+        text-align: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+
+        /* Efecto al pasar el ratón (hover) sobre pestañas inactivas */
+        .nav-link1:hover:not(.active) {
+            color: #24135f; /* Texto morado principal */
+            background-color: #e6e6fa; /* Un lila muy suave para el fondo del hover */
+            border-color: #a0a0d0; /* Un borde un poco más oscuro para el hover */
+            cursor: pointer;
+        }
+
+        /* Estilo para la pestaña ACTIVA */
+        .nav-link1.active {
+            color: #24135f; /* Texto de la pestaña activa en tu color morado principal */
+            background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+            border-color: #24135f; /* Borde superior, izquierdo y derecho en morado principal */
+            font-weight: 600; /* Texto en negrita para resaltar */
+            font-size: 1rem; /* Ligeramente más grande para darle peso visual */
+            padding-top: 0.9rem; /* Un poco más de padding para "levantarla" visualmente */
+            position: relative;
+            z-index: 2; /* Asegura que se muestre por encima de la línea base */
+            /* ----- CLAVE para el efecto de remarcado sutil ----- */
+            border-bottom: 2px solid #ffffff; /* ¡IMPORTANTE! Este borde inferior "corta" la línea base */
+            /* y debe ser del mismo color que el fondo del .tab-content */
+            /* para que la pestaña se vea unida al contenido. */
+        }
+
+</style>
 @section Scripts{
     <script>
         $(function () {

@@ -1,30 +1,53 @@
 ﻿@* Cuestionario Telefonia Celular *@
 @model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
-    ViewData["Title"] = "Cédula de Telefonía Celular e Internet Móvil - Folio: " + Model.Folio;
+    //ViewData["Title"] = "Cédula de Telefonía Celular e Internet Móvil - Folio: " + Model.Folio;
+    <div class="titulo-principal">
+        <b>
+            Cédula del Servicio de Telefonía Celular e Internet Móvil
+        </b> <i class="fa-sharp fa-solid fa-mobile-iphone mr-2"></i>
+    </div>
 }
 
+<div class="row col-lg-12 d-flex justify-content-end">
+    <a href="#" type='button' id="btn_facturas" class='btn btn-success btn-lg shadow-sm mr-2' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top" style="padding: 3px 10px;"><i class="fal fa-file-invoice"></i>  Ver/Agregar Facturas o NC</a>
+
+    <a href="/telCelular/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;">
+        <i class="fas fa-arrow-left mr-2"></i> Regresar
+    </a>
+</div>
 <div class="container-fluid" id="limpieza">
-    <a href="#" type='button' id="btn_facturas" class='btn-sm btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice"></i></a>
-    <a href="/telCelular/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al Listado de Cédulas de Mensajería" data-placement="top"><i class="fal fa-arrow-left"></i></a>
     <div class="row col-lg-12 mt-2 mb-3">
-        <table class="table">
-            <tr>
-                <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top"><strong>Folio: </strong> @Model.Folio</td>
-                <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top"><strong>Año: </strong>@Model.Anio</td>
-                <td><strong data-toggle="tooltip" title="Mes evaluado" data-placement="top">Mes: </strong>@Model.Mes</td>
-                <td data-toggle="tooltip" title="Administración/Inmueble evaluado" data-placement="top"><strong>Inmueble: </strong>@Model.inmuebles.Nombre</td>
-                <td data-toggle="tooltip" title="Estatus de la cédula del servicio de Limpieza" data-placement="top"><strong>Estatus: </strong>@Model.Estatus</td>
-            </tr>
-            <tr>
-                <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes"' data-placement="top">
-                    <strong>Facturas asignadas: </strong> @Model.facturas.Count
-                </td>
-                <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
-                    <strong>Monto Total IVA Incluido: </strong>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)
-                </td>
-                <td colspan="3"></td>
-            </tr>
+        <table class="table table-hover table-sm mb-0">
+            <tbody>
+                <tr>
+                    <td data-toggle="tooltip" title="Folio de evaluación asignado por el sistema" data-placement="top">
+                        <strong><i class="fas fa-hashtag mr-2"></i>Folio:</strong> @Model.Folio
+                    </td>
+                    <td data-toggle="tooltip" title="Año de evaluación del servicio" data-placement="top">
+                        <strong><i class="fas fa-calendar-alt mr-2"></i>Año:</strong> @Model.Anio
+                    </td>
+                    <td data-toggle="tooltip" title="Mes evaluado" data-placement="top">
+                        <strong><i class="fas fa-calendar-days mr-2"></i>Mes:</strong> @Model.Mes
+                    </td>
+                </tr>
+                <tr>
+                    <td data-toggle="tooltip" title="Inmueble" data-placement="top">
+                        <strong><i class="fas fa-building mr-2"></i>Inmueble:</strong> @Model.inmuebles.Nombre
+                    </td>
+
+                    <td data-toggle="tooltip" title="Estatus de la cédula del servicio de Bienes Muebles" data-placement="top">
+                        <strong><i class="fas fa-info-circle mr-2"></i>Estatus:</strong> <span>@Model.Estatus</span>
+                    </td>
+
+                    <td id="total_facturas" data-toggle="tooltip" title='Cantidad de facturas asignadas a el mes de "@Model.Mes" del servicio bienes muebles"' data-placement="top">
+                        <strong><i class="fas fa-file-invoice mr-2"></i>Facturas asignadas:</strong> @Model.facturas.Count
+                    </td>
+                    <td id="monto_facturas" data-toggle="tooltip" title="Monto total de las facturas capturadas en este folio" data-placement="top">
+                        <strong><i class="fas fa-dollar-sign mr-2"></i>Monto Total IVA Incluido:</strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.TotalMontoFactura)
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div class="card">
@@ -36,52 +59,52 @@
                 <div class="col-lg-12">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#incidencias" role="tab" aria-controls="home" aria-selected="true">Registro de Requerimientos</a>
+                            <a class="nav-link2 active" id="home-tab" data-toggle="tab" href="#incidencias" role="tab" aria-controls="home" aria-selected="true">Registro de Requerimientos</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#pregunta_1" role="tab" aria-controls="profile" aria-selected="false">Fecha de Cierre</a>
+                            <a class="nav-link2" id="profile-tab" data-toggle="tab" href="#pregunta_1" role="tab" aria-controls="profile" aria-selected="false">Fecha de Cierre</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">Pregunta 2</a>
+                            <a class="nav-link2" id="profile-tab" data-toggle="tab" href="#pregunta_2" role="tab" aria-controls="profile" aria-selected="false">Pregunta 2</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#pregunta_3" role="tab" aria-controls="profile" aria-selected="false">Pregunta 3</a>
+                            <a class="nav-link2" id="profile-tab" data-toggle="tab" href="#pregunta_3" role="tab" aria-controls="profile" aria-selected="false">Pregunta 3</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_4" role="tab" aria-controls="contact" aria-selected="false">Pregunta 4</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_4" role="tab" aria-controls="contact" aria-selected="false">Pregunta 4</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_5" role="tab" aria-controls="contact" aria-selected="false">Pregunta 5</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_5" role="tab" aria-controls="contact" aria-selected="false">Pregunta 5</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_6" role="tab" aria-controls="contact" aria-selected="false">Pregunta 6</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_6" role="tab" aria-controls="contact" aria-selected="false">Pregunta 6</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_7" role="tab" aria-controls="contact" aria-selected="false">Pregunta 7</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_7" role="tab" aria-controls="contact" aria-selected="false">Pregunta 7</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_8" role="tab" aria-controls="contact" aria-selected="false">Pregunta 8</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_8" role="tab" aria-controls="contact" aria-selected="false">Pregunta 8</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_9" role="tab" aria-controls="contact" aria-selected="false">Pregunta 9</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_9" role="tab" aria-controls="contact" aria-selected="false">Pregunta 9</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_10" role="tab" aria-controls="contact" aria-selected="false">Pregunta 10</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_10" role="tab" aria-controls="contact" aria-selected="false">Pregunta 10</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_11" role="tab" aria-controls="contact" aria-selected="false">Pregunta 11</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_11" role="tab" aria-controls="contact" aria-selected="false">Pregunta 11</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#pregunta_12" role="tab" aria-controls="contact" aria-selected="false">Pregunta 12</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#pregunta_12" role="tab" aria-controls="contact" aria-selected="false">Pregunta 12</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                            <a class="nav-link2" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
                         </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         @* Apartado Incidencias *@
                         <div class="tab-pane fade mt-2 ml-3 show active" id="incidencias" role="tabpanel" aria-labelledby="home-tab">
-                            <h5 class="bold">Registro de Requerimientos</h5>
+                            <h5 class="bold question-text">Registro de Requerimientos</h5>
                             <div>
                                 Para poder capturar los requerimientos presentados en el mes, haga click en el siguiente botón:
                                 <br />
@@ -91,7 +114,7 @@
                         @* Fin del apartado Incidencias *@
                         @* Fecha de Cierre *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_1" role="tabpanel" aria-labelledby="home-tab">
-                            <p class="text-black h5">1. ¿Cúando se estableció el cierre de mes?</p>
+                            <p class="text-black question-text h5">1. ¿Cúando se estableció el cierre de mes?</p>
                             <div class="form-group">
                                 <label for="fechaCierre">Fecha de Cierre</label>
                                 <input type="date" name="pregunta1" id="detalle1" class="form-control col-lg-2 pregunta1">
@@ -100,7 +123,7 @@
                         @* Fin de la Fecha de Cierre*@
                         @* Pregunta 1 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_2" role="tabpanel" aria-labelledby="profile-tab">
-                            <p class="text-black h5">2. ¿Se realizó algún alta de Servicios con entrega de equipo?</p>
+                            <p class="text-black question-text h5">2. ¿Se realizó algún alta de Servicios con entrega de equipo?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta2" value="true" id="radioSuccess1" class="pregunta2">
                                 <label for="radioSuccess1">Si</label>
@@ -113,7 +136,7 @@
                         @* Fin de la Pregunta 1 *@
                         @* Pregunta 2 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_3" role="tabpanel" aria-labelledby="profile-tab">
-                            <p class="text-black h5">3. ¿Se realizó algún alta de servicios sin entrega de equipo?</p>
+                            <p class="text-black question-text h5">3. ¿Se realizó algún alta de servicios sin entrega de equipo?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta3" value="true" id="radioSuccess3" class="pregunta3">
                                 <label for="radioSuccess3">Si</label>
@@ -126,7 +149,7 @@
                         @* Fin de la Pregunta 2 *@
                         @* Pregunta 3 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_4" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">4. ¿Se realizó la baja de servicios?</p>
+                            <p class="text-black question-text h5">4. ¿Se realizó la baja de servicios?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta4" value="true" id="radioSuccess5" class="pregunta4">
                                 <label for="radioSuccess5">Si</label>
@@ -139,7 +162,7 @@
                         @* Fin de la Pregunta 3 *@
                         @* Pregunta 4 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_5" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">5. ¿Se realizó alguna reactivación de servicio por robo o extravío?</p>
+                            <p class="text-black question-text h5">5. ¿Se realizó alguna reactivación de servicio por robo o extravío?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta5" value="true" id="radioSuccess7" class="pregunta5">
                                 <label for="radioSuccess7">Si</label>
@@ -152,7 +175,7 @@
                         @* Fin de la Pregunta 4 *@
                         @* Pregunta 5 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_6" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">6. ¿Se realizó la suspensión de servicio por robo o extravío?</p>
+                            <p class="text-black question-text h5">6. ¿Se realizó la suspensión de servicio por robo o extravío?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta6" value="true" id="radioSuccess9" class="pregunta6">
                                 <label for="radioSuccess9">Si</label>
@@ -165,7 +188,7 @@
                         @* Fin de la Pregunta 5 *@
                         @* Pregunta 6 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_7" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">7. ¿Se realizó algún cambio de perfil?</p>
+                            <p class="text-black question-text h5">7. ¿Se realizó algún cambio de perfil?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta7" value="true" id="radioSuccess11" class="pregunta7">
                                 <label for="radioSuccess11">Si</label>
@@ -178,7 +201,7 @@
                         @* Fin de la Pregunta 6 *@
                         @* Pregunta 7 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_8" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">8. ¿Se realizó algún switcheo de sim card?</p>
+                            <p class="text-black question-text h5">8. ¿Se realizó algún switcheo de sim card?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta8" value="true" id="radioSuccess13" class="pregunta8">
                                 <label for="radioSuccess13">Si</label>
@@ -191,7 +214,7 @@
                         @* Fin de la Pregunta 7 *@
                         @* Pregunta 8 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_9" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">9. ¿Se realizó cambio de número o regón de alguna línea?</p>
+                            <p class="text-black question-text h5">9. ¿Se realizó cambio de número o regón de alguna línea?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta9" value="true" id="radioSuccess15" class="pregunta9">
                                 <label for="radioSuccess15">Si</label>
@@ -204,7 +227,7 @@
                         @* Fin de la Pregunta 8 *@
                         @* Pregunta 9 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_10" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">10. ¿Se solicitó alguno de los servicios de voz y datos internacionales o mundiales y/o la habilitación de los servicios de telefonía?</p>
+                            <p class="text-black question-text h5">10. ¿Se solicitó alguno de los servicios de voz y datos internacionales o mundiales y/o la habilitación de los servicios de telefonía?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta10" value="true" id="radioSuccess17" class="pregunta10">
                                 <label for="radioSuccess17">Si</label>
@@ -217,7 +240,7 @@
                         @* Fin de la Pregunta 9 *@
                         @* Pregunta 10 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_11" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">11. ¿Se realizó el diagnóstico de algún equipo de telefonía celular?</p>
+                            <p class="text-black question-text h5">11. ¿Se realizó el diagnóstico de algún equipo de telefonía celular?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta11" value="true" id="radioSuccess19" class="pregunta11">
                                 <label for="radioSuccess19">Si</label>
@@ -230,7 +253,7 @@
                         @* Fin de la Pregunta 10 *@
                         @* Pregunta 11 *@
                         <div class="tab-pane fade mt-2 ml-3" id="pregunta_12" role="tabpanel" aria-labelledby="contact-tab">
-                            <p class="text-black h5">12. ¿Se realizó alguna reparación de equipo?</p>
+                            <p class="text-black question-text h5">12. ¿Se realizó alguna reparación de equipo?</p>
                             <div class="icheck-success d-inline">
                                 <input type="radio" name="pregunta12" value="true" id="radioSuccess21" class="pregunta12">
                                 <label for="radioSuccess21">Si</label>
@@ -244,12 +267,22 @@
                         @* Entregables *@
                         <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
                             <div class="col-lg-12 mt-3">
-                                <h3>Adjuntar Entregables</h3>
-                                Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
-                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                <h3 class="fw-bold text-primary">
+                                    <i class="fas fa-paperclip me-2"></i> Adjuntar Entregables
+                                </h3>
+                                Favor de Adjuntar la Factura, el Acta Entrega - Recepción y la Validación del SAT.
+                                <div class="d-flex justify-content-end">
+                                    <a href="#" type='button' class='btn btn-success btn_addFile'
+                                       data-toggle="tooltip"
+                                       title="Cargar Archivo"
+                                       data-placement="top"
+                                       aria-label="Cargar Archivo">
+                                        <i class="fas fa-upload mr-2"></i> Cargar Archivo
+                                    </a>
+                                </div>
                             </div>
                             <div class="row col-lg-12 mt-3">
-                                <table class="table" id="tblEntregables">
+                                <table class="table table-hover table-striped table-bordered table-sm" id="tblEntregables">
                                     <thead>
                                         <tr>
                                             <th>Entregable</th>
@@ -489,6 +522,179 @@
 </div>
 @*Fin Modal para ver Adjuntos*@
 
+<style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 25px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .dataTables_filter {
+        display: block;
+    }
+
+    .question-text {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.18rem; /* Ligeramente más grande para mayor impacto */
+        color: #1a1a1a; /* Tu color morado principal */
+        font-weight: 700; /* ¡Más negrita! Esto hará que todo el texto de la pregunta destaque. */
+        line-height: 1.6;
+        margin-bottom: 2rem;
+        /* Si quieres un subrayado sutil o un borde, podrías añadir: */
+        /* border-bottom: 1px dashed #e0e0e0; */
+        padding-top: 1.5rem;
+    }
+
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan si hay muchas en una fila */
+        border-bottom: 2px solid #ddd; /* Aumentamos el grosor de la línea base para que se vea más sólida */
+        margin-bottom: 0; /* Asegura que no haya margen extra debajo de cada fila de pestañas */
+    }
+
+    /* Estilo base para CADA ENLACE de pestaña (el <a>, ahora con la clase .nav-link) */
+    .nav-link2 { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+        font-size: 0.9rem; /* Ligeramente más grande para mejor legibilidad */
+        padding: 0.8rem 1rem; /* Aumentamos un poco el padding para que las pestañas sean más cómodas */
+        color: #555; /* Un gris más suave para el texto inactivo */
+        background-color: #f0f0f0; /* Un gris muy claro para el fondo de las inactivas */
+        border: 1px solid #ddd; /* Un borde gris claro para todas las pestañas */
+        border-bottom: none; /* Crucial: Elimina el borde inferior individual para que se una a la línea del .nav-tabs */
+        border-radius: 0.4rem 0.4rem 0 0; /* Bordes superiores un poco más redondeados */
+        transition: all 0.3s ease-in-out; /* Transición suave para todos los cambios de estado */
+        margin-right: 0.35rem; /* Un poco más de espacio entre pestañas */
+        margin-bottom: 0.25rem; /* Mantiene el espacio entre filas cuando se envuelven */
+        text-align: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+
+        /* Efecto al pasar el ratón (hover) sobre pestañas inactivas */
+        .nav-link2:hover:not(.active) { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto morado principal */
+            background-color: #e6e6fa; /* Un lila muy suave para el fondo del hover */
+            border-color: #a0a0d0; /* Un borde un poco más oscuro para el hover */
+            cursor: pointer;
+        }
+
+        /* Estilo para la pestaña ACTIVA */
+        .nav-link2.active { /* ¡CAMBIO: Selector de .nav-link1 a .nav-link! */
+            color: #24135f; /* Texto de la pestaña activa en tu color morado principal */
+            background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+            border-color: #24135f; /* Borde superior, izquierdo y derecho en morado principal */
+            font-weight: 600; /* Texto en negrita para resaltar */
+            font-size: 1rem; /* Ligeramente más grande para darle peso visual */
+            padding-top: 0.9rem; /* Un poco más de padding para "levantarla" visualmente */
+            position: relative;
+            z-index: 2; /* Asegura que se muestre por encima de la línea base */
+            /* ----- CLAVE para el efecto de remarcado sutil ----- */
+            border-bottom: 2px solid #ffffff; /* Este borde inferior "corta" la línea base y debe ser del mismo color que el fondo del .tab-content */
+        }
+
+    .radio-group {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px; /* Espacio entre las opciones "Si", "No", "No Aplica" */
+        margin-bottom: 1rem;
+    }
+
+    /* Targeting the hidden input, though iCheck typically handles this */
+    .icheck-success input[type="radio"] {
+        /* iCheck usually sets opacity: 0; position: absolute; for the native input */
+        /* If you're custom styling, you'd hide it here */
+        /* For iCheck, leave this alone */
+    }
+
+    /* Targeting the visual element rendered by iCheck for the radio button */
+    .icheck-success label::before {
+        /* The ::before pseudo-element is commonly used by iCheck for the outer circle */
+        content: '';
+        display: inline-block;
+        width: 20px; /* Tamaño del radio */
+        height: 20px; /* Tamaño del radio */
+        border: 2px solid #ccc; /* Borde del círculo inactivo */
+        border-radius: 50%; /* Hace un círculo perfecto */
+        background-color: #f8f8f8; /* Fondo ligero para el círculo inactivo */
+        margin-right: 8px; /* Espacio entre el círculo y la etiqueta */
+        vertical-align: middle; /* Alineación con el texto */
+        transition: all 0.2s ease-in-out; /* Transición suave para los cambios de estado */
+        box-sizing: border-box; /* Incluye padding y border en el tamaño total */
+    }
+
+    .icheck-success input[type="radio"]:checked + label::before {
+        /* Cuando el radio está seleccionado (outer circle) */
+        background-color: #24135f; /* ¡Tu morado principal para el fondo del círculo! */
+        border-color: #24135f; /* Borde del mismo color */
+    }
+
+    .icheck-success label::after {
+        /* The ::after pseudo-element is commonly used by iCheck for the inner dot */
+        content: '';
+        display: block;
+        width: 10px; /* Tamaño del punto interno */
+        height: 10px; /* Tamaño del punto interno */
+        background-color: #ffffff; /* Punto interno blanco */
+        border-radius: 50%; /* Hace un círculo perfecto */
+        position: absolute;
+        top: 50%; /* Centrar verticalmente */
+        left: 50%; /* Centrar horizontalmente */
+        transform: translate(-50%, -50%) scale(0); /* Inicialmente oculto */
+        transition: transform 0.2s ease-in-out; /* Transición para la aparición/desaparición */
+    }
+
+    .icheck-success input[type="radio"]:checked + label::after {
+        /* Cuando el radio está seleccionado (inner dot) */
+        transform: translate(-50%, -50%) scale(1); /* Hace visible el punto */
+    }
+
+    /* Estilo para las etiquetas de los radio buttons (Sí/No/No Aplica) */
+    .icheck-success label {
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-size: 1.3rem;
+        color: #444;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative; /* Necesario para posicionar el ::after */
+        padding-left: 28px; /* Espacio para que el radio no se superponga con el texto */
+        display: inline-block; /* Asegura que ocupe solo el ancho necesario */
+        line-height: 20px; /* Alinea la altura del texto con el radio */
+    }
+
+        /* Efecto hover en el label para el círculo exterior */
+        .icheck-success label:hover::before {
+            border-color: #6a5acd; /* Morado más claro al pasar el ratón */
+            box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.15); /* Sombra suave al pasar el ratón */
+        }
+
+    /* Asegurarse de que el input esté oculto pero accesible para lectores de pantalla */
+    .icheck-success input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+    }
+</style>
 @section Scripts{
     <script>
             window.onload = function () {

@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Shared\tablaIncidenciasTransporte.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.21" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.9" />
@@ -38,6 +42,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="CedulasEvaluacionV2DataSet.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CedulasEvaluacionV2DataSet.xsd</DependentUpon>
+    </Compile>
     <Compile Update="CedulasEvaluacionV2DataSet3.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -63,9 +72,23 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>DtReporteMensajeria.xsd</DependentUpon>
     </Compile>
+    <Compile Update="Firmantes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Firmantes.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="NuevosFirmantes.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NuevosFirmantes.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
   
   <ItemGroup>
+    <None Update="CedulasEvaluacionV2DataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>CedulasEvaluacionV2DataSet.Designer.cs</LastGenOutput>
+    </None>
     <None Update="CedulasEvaluacionV2DataSet3.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>CedulasEvaluacionV2DataSet3.Designer.cs</LastGenOutput>
@@ -89,6 +112,14 @@
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>DtReporteMensajeria.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Firmantes.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>Firmantes.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="NuevosFirmantes.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>NuevosFirmantes.Designer.cs</LastGenOutput>
     </None>
     <None Update="Reports\ActaERConvencional.rdlc">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

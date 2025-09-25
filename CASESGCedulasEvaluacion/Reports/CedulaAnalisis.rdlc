@@ -180,7 +180,7 @@
       </Fields>
       <rd:DataSetInfo>
         <rd:DataSetName>DtGeneraCedulaByServicio</rd:DataSetName>
-        <rd:SchemaPath>D:\Proyectos\CASESGV2\CASESGCedulasEvaluacion\DtGeneraCedulaByServicio.xsd</rd:SchemaPath>
+        <rd:SchemaPath>C:\Users\coterog\Documents\Proyectos GITHUB\CASESGV2 GIT\CASESGV2\CASESGCedulasEvaluacion\DtGeneraCedulaByServicio.xsd</rd:SchemaPath>
         <rd:TableName>sp_getFirmantesCedula</rd:TableName>
         <rd:TableAdapterFillMethod>Fill</rd:TableAdapterFillMethod>
         <rd:TableAdapterGetDataMethod>GetData</rd:TableAdapterGetDataMethod>
@@ -957,7 +957,7 @@ del Servicio de Análisis Microbiológicos</Value>
             <Top>8.82926cm</Top>
             <Left>0.96992cm</Left>
             <Height>1.2cm</Height>
-            <Width>18.55276cm</Width>
+            <Width>18.55275cm</Width>
             <ZIndex>16</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -1131,7 +1131,7 @@ del Servicio de Análisis Microbiológicos</Value>
             <Top>1.32348cm</Top>
             <Left>1.41845cm</Left>
             <Height>0.6cm</Height>
-            <Width>18.10423cm</Width>
+            <Width>18.10424cm</Width>
             <ZIndex>17</ZIndex>
             <Style>
               <Border>
@@ -1558,7 +1558,7 @@ del Servicio de Análisis Microbiológicos</Value>
             <Top>2.01627cm</Top>
             <Left>0.96992cm</Left>
             <Height>1.8cm</Height>
-            <Width>18.55278cm</Width>
+            <Width>18.55279cm</Width>
             <ZIndex>18</ZIndex>
             <Style>
               <Border>
@@ -1749,7 +1749,7 @@ del Servicio de Análisis Microbiológicos</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Textbox8">
+                        <Textbox Name="Textbox12">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -1768,7 +1768,7 @@ del Servicio de Análisis Microbiológicos</Value>
                               </Style>
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Textbox8</rd:DefaultName>
+                          <rd:DefaultName>Textbox12</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -1987,7 +1987,7 @@ del Servicio de Análisis Microbiológicos</Value>
                     </TablixCell>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="Autoriza4">
+                        <Textbox Name="Textbox13">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
@@ -2022,7 +2022,7 @@ del Servicio de Análisis Microbiológicos</Value>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>__________________________</Value>
+                                  <Value>________________________</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -2047,8 +2047,22 @@ del Servicio de Análisis Microbiológicos</Value>
                                 <TextAlign>Center</TextAlign>
                               </Style>
                             </Paragraph>
+                            <Paragraph>
+                              <TextRuns>
+                                <TextRun>
+                                  <Value />
+                                  <Style>
+                                    <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
+                                  </Style>
+                                </TextRun>
+                              </TextRuns>
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
+                            </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>Autoriza</rd:DefaultName>
+                          <rd:DefaultName>Textbox13</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -2085,8 +2099,8 @@ del Servicio de Análisis Microbiológicos</Value>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>Firmantes</DataSetName>
-            <Top>16.67913cm</Top>
-            <Left>1.21124cm</Left>
+            <Top>20.08059cm</Top>
+            <Left>1.80467cm</Left>
             <Height>2.32549cm</Height>
             <Width>16.602cm</Width>
             <ZIndex>20</ZIndex>
@@ -2181,8 +2195,8 @@ del Servicio de Análisis Microbiológicos</Value>
               </TablixMembers>
             </TablixRowHierarchy>
             <DataSetName>CedulaAnalisis</DataSetName>
-            <Top>19.27626cm</Top>
-            <Left>1.67245cm</Left>
+            <Top>16.27572cm</Top>
+            <Left>1.41845cm</Left>
             <Height>0.6cm</Height>
             <Width>16.10474cm</Width>
             <ZIndex>21</ZIndex>
@@ -2196,10 +2210,10 @@ del Servicio de Análisis Microbiológicos</Value>
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
-                  <Width>5.09543cm</Width>
+                  <Width>8.39455cm</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>5.7918cm</Width>
+                  <Width>8.20745cm</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -2474,9 +2488,9 @@ del Servicio de Análisis Microbiológicos</Value>
             </TablixRowHierarchy>
             <DataSetName>Firmantes</DataSetName>
             <Top>16.85267cm</Top>
-            <Left>4.47208cm</Left>
+            <Left>1.80467cm</Left>
             <Height>2.64299cm</Height>
-            <Width>10.88723cm</Width>
+            <Width>16.602cm</Width>
             <ZIndex>22</ZIndex>
             <Visibility>
               <Hidden>=IIF(Fields!Reviso.Value.Equals(Fields!Superviso.Value), False, True)</Hidden>
@@ -2489,7 +2503,7 @@ del Servicio de Análisis Microbiológicos</Value>
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>7.9003in</Height>
+        <Height>9.20863in</Height>
         <Style />
       </Body>
       <Width>7.83437in</Width>

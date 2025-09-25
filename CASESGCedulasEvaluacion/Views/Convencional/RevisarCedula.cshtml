@@ -1,64 +1,94 @@
 ﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
-    ViewData["Title"] = "Cédula Telefonía Convencional - Folio: " + Model.Folio;
+    //ViewData["Title"] = "Cédula Telefonía Convencional - Folio: " + Model.Folio;
+    <div class="titulo-principal">
+        <b>
+            Revisión de la Cédula del Servicio de Telefonía Convencional y Servicios Adicionales
+        </b> <i class="fa-sharp fa-solid fa-phone mr-2"></i>
+    </div>
 }
 
-<div class="row col-lg-12">
-    <div class="col-lg-12">
-        <a href="/telConvencional/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3'><i class="fal fa-arrow-left"></i></a>
+<div class="row align-items-center mb-4 border-bottom pb-3">
+    <div class="col-lg-1 d-none d-lg-block text-center border-right pr-3">
+        <i class="fas fa-file-signature fa-3x text-primary"></i>
+    </div>
+    <div class="col-lg-8 col-md-9">
+        <h4 class="mb-1 text-dark">
+            <span class="font-weight-bold display-5 text-decoration-underline" style="color: #24135f;">@Model.Folio</span> <br>
+            <small class="d-block text-muted mt-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Evaluación correspondiente al mes de <b class="text-dark">@Model.Mes</b> del año <b class="text-dark">@Model.Anio</b>
+            </small>
+        </h4>
+    </div>
+    <div class="col-lg-3 col-md-3 text-right">
+        <a href="/telConvencional/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;">
+            <i class="fas fa-arrow-left mr-2"></i> Regresar
+        </a>
     </div>
 </div>
 <div class="row">
     <div class="col-lg-12">
-        <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+
+        <div style="margin-bottom: 30px;">
+            <ul class="nav nav-tabs h6" id="myTabRow1" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1 active" id="informacion-general-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="informacion_general" aria-selected="true">Información General</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="seguimiento-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="historial_cedula" aria-selected="false">Seguimiento a la Cédula</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <ul class="nav nav-tabs h6" id="myTabRow2" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
+                <a class="nav-link1" id="profile-tab" data-toggle="tab" href="#altaEquipo" role="tab" aria-controls="profile" aria-selected="true">Alta de Línea</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#altaEquipo" role="tab" aria-controls="profile" aria-selected="true">Alta de Línea</a>
+                <a class="nav-link1" id="profile-tab" data-toggle="tab" href="#alta" role="tab" aria-controls="profile" aria-selected="false">Cableado Interior</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#alta" role="tab" aria-controls="profile" aria-selected="false">Cableado Interior</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#baja" role="tab" aria-controls="contact" aria-selected="false">Aparato Telefónico</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#baja" role="tab" aria-controls="contact" aria-selected="false">Aparato Telefónico</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#reactivacion" role="tab" aria-controls="contact" aria-selected="false">Cambio de Domicilio</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#reactivacion" role="tab" aria-controls="contact" aria-selected="false">Cambio de Domicilio</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#suspension" role="tab" aria-controls="contact" aria-selected="false">Reubicación de Línea</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#suspension" role="tab" aria-controls="contact" aria-selected="false">Reubicación de Línea</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#perfil" role="tab" aria-controls="contact" aria-selected="false">Identificador de Llamadas</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#perfil" role="tab" aria-controls="contact" aria-selected="false">Identificador de Llamadas</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#sim" role="tab" aria-controls="contact" aria-selected="false">Troncales y DID's</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#sim" role="tab" aria-controls="contact" aria-selected="false">Troncales y DID's</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#cambio" role="tab" aria-controls="contact" aria-selected="false">Contratación de Internet</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#cambio" role="tab" aria-controls="contact" aria-selected="false">Contratación de Internet</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#vozDatos" role="tab" aria-controls="contact" aria-selected="false">Servicios de Telefonía</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#vozDatos" role="tab" aria-controls="contact" aria-selected="false">Servicios de Telefonía</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#diagnostico" role="tab" aria-controls="contact" aria-selected="false">Cancelación de Servicios</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#diagnostico" role="tab" aria-controls="contact" aria-selected="false">Cancelación de Servicios</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#reparacion" role="tab" aria-controls="contact" aria-selected="false">Reporte de Fallas</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
+                <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#reparacion" role="tab" aria-controls="contact" aria-selected="false">Reporte de Fallas</a>
             </li>
         </ul>
+
+
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="informacion_general" role="tabpanel" aria-labelledby="home-tab">
                 <div class="row justify-content-center align-items-center mt-4">
                     <div class="col-lg-12 h3 ml-4">
-                        Información General
+                        <h4 style="color: #24135f;">
+                            <i class="fas fa-info-circle me-2"></i> <strong>Información General</strong>
+                        </h4>
+
                     </div>
                 </div>
                 <div class="row">
@@ -68,55 +98,43 @@
                                 <div class="row">
                                     <div class="col-7">
                                         <h2 class="lead">
-                                            <strong>
-                                                Factura Capturadas:
-                                            </strong>
+                                            <strong>Factura Capturadas:</strong>
+
                                             <a href="#" id="btn_facturas" class='btn btn-sm btn-facturas ml-2 mb-1' data-toggle="tooltip" title="Ver Facturas" data-placement="top">
                                                 <i class="fal fa-file-invoice"></i>
                                             </a>
                                         </h2>
-                                        <p class="text-sm">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
                                         <ul class="ml-4 mb-0 fa-ul">
-                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
-                                            <li class="small mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
-                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
+
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total:</strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span><h5><strong>Calificación: </strong> @Model.Calificacion</h5></li>
+                                            <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <h5><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</h5></li>
                                             <li class="small mt-3">
                                                 <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
-                                                <strong>Correo:</strong>
+
                                                 @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
                                                 {
-                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                    <h5><strong>Correo:</strong><strong class="text-danger">@String.Format("Sin correo")</strong></h5>
                                                 }
                                                 else
                                                 {
-                                                    @Model.usuarios.correo_electronico
+                                                    <h5><strong>Correo:</strong> @Model.usuarios.correo_electronico</h5>
                                                 }
-                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
-                                                    <i class="fal fa-edit"></i>
-                                                </a>
+
                                             </li>
                                         </ul>
                                     </div>
+                                     <div class="col-lg-4">
+                                        <h3 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
+                                            @Html.Raw(Model.Icono)
+                                            <strong class="ml-2">Estatus: </strong> @Model.Estatus
+                                        </h3>
+                                    </div>
                                     <div class="col-5">
-                                        @if (@Model.Estatus.Equals("Revisión"))
-                                        {
-                                            <h5 class="text-primary lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
-                                        }
-                                        else if (@Model.Estatus.Equals("Autorizada"))
-                                        {
-                                            <h5 class="text-success lblEstatus"><strong>Estatus: </strong> @Model.Estatus </h5>
-                                        }
-                                        else if (@Model.Estatus.Equals("Rechazada"))
-                                        {
-                                            <h5 class="text-danger lblEstatus"><strong>Estatus: </strong> @Model.Estatus </h5>
-                                        }
-                                        else
-                                        {
-                                            <h5 class="text-info lblEstatus"><strong>Estatus: </strong> @Model.Estatus </h5>
-                                        }
+                                     
                                         <p class="text-sm">
                                             @{decimal total = Convert.ToDecimal(@Model.RespuestasEncuesta[0].MontoPenalizacion + @Model.RespuestasEncuesta[1].MontoPenalizacion +
-                                                      @Model.RespuestasEncuesta[2].MontoPenalizacion + @Model.RespuestasEncuesta[3].MontoPenalizacion);
+                                                              @Model.RespuestasEncuesta[2].MontoPenalizacion + @Model.RespuestasEncuesta[3].MontoPenalizacion);
                                             }
                                             @if (total > 0)
                                             {
@@ -128,22 +146,19 @@
                                             {
                                                 <h5 class="text-danger">
                                                     @*<b>No hay Monto Penalizable</b>*@
-                                                    <b>** Penalizaciones en Construcción **</b>
                                                 </h5>
                                             }
                                         </p>
                                         @*<ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Recolección: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Entrega: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Acuses: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Mal Estado: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Extraviadas: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[4].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Material: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[5].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-star"></i></span> <b> Penalización en Calidad y Eficiencia: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.PenaCalificacion)</li>
-                                            </ul>*@
-                                        <div>
-                                            <img src="~/img/web1.jpg" alt="Alternate Text" width="40%" />
-                                        </div>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Recolección: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Entrega: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Acuses: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Mal Estado: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Extraviadas: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[4].MontoPenalizacion)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Material: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[5].MontoPenalizacion)</li>
+                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-star"></i></span> <b> Penalización en Calidad y Eficiencia: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.PenaCalificacion)</li>
+                                        </ul>*@
+
                                     </div>
                                 </div>
                             </div>
@@ -230,10 +245,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -336,10 +351,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -442,10 +457,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -548,10 +563,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -654,10 +669,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -760,10 +775,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -866,10 +881,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -972,10 +987,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -1078,10 +1093,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -1184,10 +1199,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -1290,10 +1305,10 @@
                                     </h6>
                                 </div>
                                 @*<div class="col-lg-12">
-                                        <h5 class="text-danger ml-4">
-                                            <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
-                                        </h5>
-                                    </div>*@
+                                    <h5 class="text-danger ml-4">
+                                        <strong>Penalización: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}",@Model.RespuestasEncuesta[0].MontoPenalizacion)
+                                    </h5>
+                                </div>*@
                             </div>
                         }
                         else
@@ -1602,6 +1617,77 @@
 </div>
 @* FIN del Modal para agregar facturas la cedula *@
 
+<style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+    .nav-tabs {
+        display: flex;
+        flex-wrap: wrap; /* Permite que las pestañas se envuelvan si hay muchas en una fila */
+        border-bottom: 2px solid #ddd; /* Aumentamos el grosor de la línea base para que se vea más sólida */
+        margin-bottom: 0; /* Asegura que no haya margen extra debajo de cada fila de pestañas */
+    }
+    /* Estilo base para CADA ENLACE de pestaña (el <a> con la clase .nav-link1) */
+    .nav-link1 {
+        font-size: 0.95rem; /* Ligeramente más grande para mejor legibilidad */
+        padding: 0.4rem; /* Aumentamos un poco el padding para que las pestañas sean más cómodas */
+        color: #555; /* Un gris más suave para el texto inactivo */
+        background-color: #f0f0f0; /* Un gris muy claro para el fondo de las inactivas */
+        border: 1px solid #ddd; /* Un borde gris claro para todas las pestañas */
+        border-bottom: none; /* Crucial: Elimina el borde inferior individual para que se una a la línea del .nav-tabs */
+        border-radius: 0.4rem 0.4rem 0 0; /* Bordes superiores un poco más redondeados */
+        transition: all 0.3s ease-in-out; /* Transición suave para todos los cambios de estado */
+        margin-right: 0.35rem; /* Un poco más de espacio entre pestañas */
+        margin-bottom: 0.25rem; /* Mantiene el espacio entre filas cuando se envuelven */
+        text-align: center;
+        flex-shrink: 0;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+
+        /* Efecto al pasar el ratón (hover) sobre pestañas inactivas */
+        .nav-link1:hover:not(.active) {
+            color: #24135f; /* Texto morado principal */
+            background-color: #e6e6fa; /* Un lila muy suave para el fondo del hover */
+            border-color: #a0a0d0; /* Un borde un poco más oscuro para el hover */
+            cursor: pointer;
+        }
+
+        /* Estilo para la pestaña ACTIVA */
+        .nav-link1.active {
+            color: #24135f; /* Texto de la pestaña activa en tu color morado principal */
+            background-color: #ffffff; /* Fondo blanco para la pestaña activa */
+            border-color: #24135f; /* Borde superior, izquierdo y derecho en morado principal */
+            font-weight: 600; /* Texto en negrita para resaltar */
+            font-size: 1rem; /* Ligeramente más grande para darle peso visual */
+            padding-top: 0.9rem; /* Un poco más de padding para "levantarla" visualmente */
+            position: relative;
+            z-index: 2; /* Asegura que se muestre por encima de la línea base */
+            /* ----- CLAVE para el efecto de remarcado sutil ----- */
+            border-bottom: 2px solid #ffffff; /* ¡IMPORTANTE! Este borde inferior "corta" la línea base */
+            /* y debe ser del mismo color que el fondo del .tab-content */
+            /* para que la pestaña se vea unida al contenido. */
+        }
+</style>
 @section Scripts{
     <script>
         $(function () {

@@ -54,7 +54,7 @@
             <div class="card">
                 <div class="card-header text-white text-center py-3 shadow-sm" style="background-color: #24135f;">
                     <h3 class="card-title mb-0 fs-4 fw-bold text-uppercase">
-                        <i class="fas fa-clipboard-list me-3 "></i> Cédulas de Evaluación
+                        <i class="fas fa-clipboard-list me-3 mr-2 "></i> <strong>Cédulas de Evaluación</strong>
                     </h3>
                 </div>
                 <div class="card-body" style="font-size: 15px;">
@@ -83,156 +83,156 @@
                             @foreach (var item in Model.cedulas)
                             {
                                 i++;
-                            <tr>
+                                <tr>
 
-                                <td class="text-center align-middle">@i</td>
-                                <td class="@(item.Fondo.Replace("bg","text")) text-center align-middle" style="font-weight: bold">@Html.DisplayFor(modelItem => item.Estatus)</td>
-                                <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Nombre)</td>
-                                <td class="text-center align-middle">
-                                    @{ string folio = item.Folio.ToString();
-                                        string classToApply = "";
-                                        if (folio.Contains("N", StringComparison.OrdinalIgnoreCase)) // Usamos OrdinalIgnoreCase para que detecte 'n' o 'N'
-                                        {
-                                            classToApply = "text-danger-highlight"; // Esta es la clase CSS que crearemos
-                                        } }
-                                    <span class="@classToApply">@folio</span>
-                                </td>
-                                <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Mes)</td>
-                                <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Anio)</td>
-                                <td class="text-center @(item.Calificacion < 8 ? "text-danger font-weight-bold" : "")">
-                                    @Html.DisplayFor(modelItem => item.Calificacion)
-                                </td>
-
-
-                                @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") &&
-                        (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
-                                {
+                                    <td class="text-center align-middle">@i</td>
+                                    <td class="@(item.Fondo.Replace("bg","text")) text-center align-middle" style="font-weight: bold">@Html.DisplayFor(modelItem => item.Estatus)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Nombre)</td>
                                     <td class="text-center align-middle">
-                                        @if (item.MemoValidado == true)
-                                        {
-                                            <i class="fa-regular fa-check text-success mr-2" data-toggle="tooltip" title="Memorándum validado" data-placement="top"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="fa-regular fa-clipboard-check text-danger mr-2" data-toggle="tooltip" title="Memorándum pendiente de validar" data-placement="top"></i>
-                                        }
-
-                                        @if (item.CedulaValidada == true)
-                                        {
-                                            <i class="fa-regular fa-check text-success mr-2" data-toggle="tooltip" title="Cédula validada" data-placement="top"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="fa-regular fa-clipboard-check text-danger mr-2" data-toggle="tooltip" title="Cédula pendiente de validar" data-placement="top"></i>
-                                        }
-
-                                        @if (item.ActaFirmada == true)
-                                        {
-                                            <i class="fa-regular fa-file-check text-success" data-toggle="tooltip" title="Acta Entrega - Recepción" data-placement="top"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="fa-regular fa-file-xmark text-danger" data-toggle="tooltip" title="Acta Entrega - Recepción pendiente de validar" data-placement="top"></i>
-                                        }
+                                        @{ string folio = item.Folio.ToString();
+                                            string classToApply = "";
+                                            if (folio.Contains("N", StringComparison.OrdinalIgnoreCase)) // Usamos OrdinalIgnoreCase para que detecte 'n' o 'N'
+                                            {
+                                                classToApply = "text-danger-highlight"; // Esta es la clase CSS que crearemos
+                                            } }
+                                        <span class="@classToApply">@folio</span>
                                     </td>
-                                }
-                                else if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") && !item.Estatus.Equals("En Trámite"))
-                                {
-                                    @if (item.MemoValidado == true && item.CedulaValidada == true)
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Mes)</td>
+                                    <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Anio)</td>
+                                    <td class="text-center @(item.Calificacion < 8 ? "text-danger font-weight-bold" : "")">
+                                        @Html.DisplayFor(modelItem => item.Calificacion)
+                                    </td>
+
+
+                                    @if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") &&
+                           (item.Estatus.Equals("En Trámite") || item.Estatus.Equals("Trámite de Pago") || item.Estatus.Equals("Enviada a DGPPT") || item.Estatus.Equals("Pagada")))
                                     {
                                         <td class="text-center align-middle">
-                                            <i class="fa-regular fa-check text-success"></i>
-                                            <i class="fa-regular fa-check text-success"></i>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td class="text-center align-middle">
-                                            <i class="fa-regular fa-user-clock text-primary"></i>
-                                        </td>
-                                    }
-                                }
-                                <td class="text-center align-middle">@item.FechaActualizacion.ToString("dd/MM/yyyy hh:mm tt")</td>
-                                <td class="text-center align-middle">
-                                    @if (!item.Estatus.Equals("En Proceso") && !(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
-                                    {
-                                        <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
-                                            <i class="fad fa-eye text-success"></i>
-                                        </a>
-                                    }
-                                    @if (item.Estatus.Equals("Rechazada") || item.Estatus.Equals("En Proceso") || !(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
-                                    {
-                                        <a href="#" data-id="@item.Id" class="text-center ml-2 btnCuestionario" data-toggle="tooltip" title="Modificar Cédula" data-placement="top">
-                                            <i class="fad fa-pencil text-primary"></i>
-                                        </a>
-                                    }
-                                    @if (item.Estatus.Equals("En Proceso"))
-                                    {
-                                        <a href="#" class="text-center ml-2 delete_cedula" data-id="@item.Id" data-folio="@item.Folio" data-toggle="tooltip" title="Eliminar Cédula" data-placement="top">
-                                            <i class="fad fa-times text-danger"></i>
-                                        </a>
-                                    }
-                                    @*@if (!item.Estatus.Equals("En Proceso"))
-             {
-                  <a href="#" data-id="@item.Id" data-estatus="@item.Estatus" data-servicio="@item.ServicioId" data-inmueble="@item.InmuebleId" class="text-center pdf ml-2 btn_pdf" data-toggle="tooltip" title="Generar Cédula" data-placement="top">
-
-                      @if (item.Estatus.Equals("Autorizada") || item.Estatus.Equals("En Trámite"))
-                      {
-
-                         <i class="fal fa-file-pdf text-success"></i>
-
-                         <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
-                             <i class="fad fa-eye text-success"></i>
-                         </a>
-
-                       }  else @if (item.Estatus.Equals("Rechazada")){
-                          <i class="fal fa-file-pdf text-danger"></i>
-                       }  else {
-                          <i class="fal fa-file-pdf text-primary"></i>
-                       }
-                  </a>
-            }*@
-                                    @if (!item.Estatus.Equals("En Proceso"))
-                                    {
-                                        <a href="#"
-                                           data-id="@item.Id"
-                                           data-estatus="@item.Estatus"
-                                           data-servicio="@item.ServicioId"
-                                           data-inmueble="@item.InmuebleId"
-                                           data-anio="@item.Anio" @* <--- ¡CAMBIO AQUÍ! Usa item.Anio *@
-                                           data-mes="@item.Mes" @* <--- ¡CAMBIO AQUÍ! Usa item.Mes *@
-                                           class="text-center pdf ml-2 @((item.Anio > 2025 || (item.Anio == 2025 && (item.Mes == "Marzo" || item.Mes == "Abril" || item.Mes == "Mayo" || item.Mes == "Junio" || item.Mes == "Julio" || item.Mes == "Agosto" || item.Mes == "Septiembre" || item.Mes == "Octubre" || item.Mes == "Noviembre" || item.Mes == "Diciembre"))) ? "btn_pdfNC" : "btn_pdf")"
-                                           data-toggle="tooltip"
-                                           title="Generar Cédula"
-                                           data-placement="top">
-
-                                            @if (item.Estatus.Equals("Autorizada") || item.Estatus.Equals("En Trámite"))
+                                            @if (item.MemoValidado == true)
                                             {
-                                                <i class="fal fa-file-pdf text-success"></i>
-
-                                                <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
-                                                    <i class="fad fa-eye text-success"></i>
-                                                </a>
-                                            }
-                                            else if (item.Estatus.Equals("Rechazada"))
-                                            {
-                                                <i class="fal fa-file-pdf text-danger"></i>
+                                                <i class="fa-regular fa-check text-success mr-2" data-toggle="tooltip" title="Memorándum validado" data-placement="top"></i>
                                             }
                                             else
                                             {
-                                                <i class="fal fa-file-pdf text-primary"></i>
+                                                <i class="fa-regular fa-clipboard-check text-danger mr-2" data-toggle="tooltip" title="Memorándum pendiente de validar" data-placement="top"></i>
                                             }
-                                        </a>
-                                    }
 
-                                    @if (!item.Estatus.Equals("En Proceso") && !item.Estatus.Equals("Enviado a DAS"))
-                                    {
-                                        <a href="#" data-id="@item.Id" class="text-center ml-2 btnSeguimiento" data-toggle="tooltip" title="Seguimiento a la Cédula" data-placement="top">
-                                            <i class="fas fa-file-import text-primary"></i>
-                                        </a>
+                                            @if (item.CedulaValidada == true)
+                                            {
+                                                <i class="fa-regular fa-check text-success mr-2" data-toggle="tooltip" title="Cédula validada" data-placement="top"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-clipboard-check text-danger mr-2" data-toggle="tooltip" title="Cédula pendiente de validar" data-placement="top"></i>
+                                            }
+
+                                            @if (item.ActaFirmada == true)
+                                            {
+                                                <i class="fa-regular fa-file-check text-success" data-toggle="tooltip" title="Acta Entrega - Recepción" data-placement="top"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa-regular fa-file-xmark text-danger" data-toggle="tooltip" title="Acta Entrega - Recepción pendiente de validar" data-placement="top"></i>
+                                            }
+                                        </td>
                                     }
-                                </td>
-                            </tr>
+                                    else if (!(@User.Claims.ElementAt(2).Value).Contains("Evaluador") && !item.Estatus.Equals("En Trámite"))
+                                    {
+                                        @if (item.MemoValidado == true && item.CedulaValidada == true)
+                                        {
+                                            <td class="text-center align-middle">
+                                                <i class="fa-regular fa-check text-success"></i>
+                                                <i class="fa-regular fa-check text-success"></i>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-center align-middle">
+                                                <i class="fa-regular fa-user-clock text-primary"></i>
+                                            </td>
+                                        }
+                                    }
+                                    <td class="text-center align-middle">@item.FechaActualizacion.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                    <td class="text-center align-middle">
+                                        @if (!item.Estatus.Equals("En Proceso") && !(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                        {
+                                            <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
+                                                <i class="fad fa-eye text-success"></i>
+                                            </a>
+                                        }
+                                        @if (item.Estatus.Equals("Rechazada") || item.Estatus.Equals("En Proceso") || !(@User.Claims.ElementAt(2).Value).Contains("Evaluador"))
+                                        {
+                                            <a href="#" data-id="@item.Id" class="text-center ml-2 btnCuestionario" data-toggle="tooltip" title="Modificar Cédula" data-placement="top">
+                                                <i class="fad fa-pencil text-primary"></i>
+                                            </a>
+                                        }
+                                        @if (item.Estatus.Equals("En Proceso"))
+                                        {
+                                            <a href="#" class="text-center ml-2 delete_cedula" data-id="@item.Id" data-folio="@item.Folio" data-toggle="tooltip" title="Eliminar Cédula" data-placement="top">
+                                                <i class="fad fa-times text-danger"></i>
+                                            </a>
+                                        }
+                                        @*@if (!item.Estatus.Equals("En Proceso"))
+                         {
+                              <a href="#" data-id="@item.Id" data-estatus="@item.Estatus" data-servicio="@item.ServicioId" data-inmueble="@item.InmuebleId" class="text-center pdf ml-2 btn_pdf" data-toggle="tooltip" title="Generar Cédula" data-placement="top">
+
+                                  @if (item.Estatus.Equals("Autorizada") || item.Estatus.Equals("En Trámite"))
+                                  {
+
+                                     <i class="fal fa-file-pdf text-success"></i>
+
+                                     <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
+                                         <i class="fad fa-eye text-success"></i>
+                                     </a>
+
+                                   }  else @if (item.Estatus.Equals("Rechazada")){
+                                      <i class="fal fa-file-pdf text-danger"></i>
+                                   }  else {
+                                      <i class="fal fa-file-pdf text-primary"></i>
+                                   }
+                              </a>
+                        }*@
+                                        @if (!item.Estatus.Equals("En Proceso"))
+                                        {
+                                            <a href="#"
+                                               data-id="@item.Id"
+                                               data-estatus="@item.Estatus"
+                                               data-servicio="@item.ServicioId"
+                                               data-inmueble="@item.InmuebleId"
+                                               data-anio="@item.Anio" @* <--- ¡CAMBIO AQUÍ! Usa item.Anio *@
+                                               data-mes="@item.Mes" @* <--- ¡CAMBIO AQUÍ! Usa item.Mes *@
+                                               class="text-center pdf ml-2 @((item.Anio > 2025 || (item.Anio == 2025 && (item.Mes == "Marzo" || item.Mes == "Abril" || item.Mes == "Mayo" || item.Mes == "Junio" || item.Mes == "Julio" || item.Mes == "Agosto" || item.Mes == "Septiembre" || item.Mes == "Octubre" || item.Mes == "Noviembre" || item.Mes == "Diciembre"))) ? "btn_pdfNC" : "btn_pdf")"
+                                               data-toggle="tooltip"
+                                               title="Generar Cédula"
+                                               data-placement="top">
+
+                                                @if (item.Estatus.Equals("Autorizada") || item.Estatus.Equals("En Trámite"))
+                                                {
+                                                    <i class="fal fa-file-pdf text-success"></i>
+
+                                                    <a href="#" data-id="@item.Id" class="text-center btnRevision" data-toggle="tooltip" title="Revisar Cédula" data-placement="top">
+                                                        <i class="fad fa-eye text-success"></i>
+                                                    </a>
+                                                }
+                                                else if (item.Estatus.Equals("Rechazada"))
+                                                {
+                                                    <i class="fal fa-file-pdf text-danger"></i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fal fa-file-pdf text-primary"></i>
+                                                }
+                                            </a>
+                                        }
+
+                                        @if (!item.Estatus.Equals("En Proceso") && !item.Estatus.Equals("Enviado a DAS"))
+                                        {
+                                            <a href="#" data-id="@item.Id" class="text-center ml-2 btnSeguimiento" data-toggle="tooltip" title="Seguimiento a la Cédula" data-placement="top">
+                                                <i class="fas fa-file-import text-primary"></i>
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -241,9 +241,9 @@
         </section>
         <section class="col-xl-2 connectedSortable">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header text-white text-center py-3 shadow-sm" style="background-color: #24135f;">
                     <h3 class="card-title">
-                        Filtros de Búsqueda
+                        <strong>FILTROS DE BÚSQUEDA</strong>
                         <button id="recargarPagina" class="btn btn-success" data-toggle="tooltip" title="Reiniciar Filtros">
                             <i class="fa-regular fa-arrows-rotate"></i>
                         </button>
@@ -453,7 +453,7 @@
 
     .titulo-principal {
         font-family: Arial, sans-serif;
-        font-size: 20px;
+        font-size: 24px;
         color: #24135f;
         text-align: left;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
@@ -543,7 +543,7 @@
                             className: "bg-cjf"
                         }*/],
                     //"bFilter": false,
-                    lengthMenu: [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
+                    lengthMenu: [[35, 50, 100, -1], [35, 50, 100, "Todos"]],
                     responsive: true,
                     language: {
                         url: "//cdn.datatables.net/plug-ins/1.10.19/i18n/Spanish.json"

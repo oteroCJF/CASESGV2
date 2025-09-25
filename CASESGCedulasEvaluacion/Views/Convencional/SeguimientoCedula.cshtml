@@ -2,558 +2,623 @@
 @inject CedulasEvaluacion.Services.ServicePermisos  sPermisos;
 @{
     int user = Convert.ToInt32(@User.Claims.ElementAt(0).Value + "");
-    ViewData["Title"] = "Seguimiento a la Cédula del Servicio de Telefonía Convencional y Servicios Adicionales: " + Model.Folio;
+    //ViewData["Title"] = "Seguimiento a la Cédula del Servicio de Telefonía Convencional y Servicios Adicionales: " + Model.Folio;
     decimal totalD = 0;
+
+    <div class="titulo-principal">
+        <b>
+            Seguimiento a la Cédula del Servicio de Telefonía Convencional y Servicios Adicionales
+        </b> <i class="fa-sharp fa-solid fa-phone mr-2"></i>
+    </div>
 }
 
-<div class="row col-lg-12">
-    <div class="col-lg-12">
-        <a href="/telConvencional/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3 btn_back'><i class="fal fa-arrow-left"></i></a>
-        @if (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
-        {
-            <a href="#" class='btn-sm btn-primary float-right mr-2 mb-3 btnActaER' data-toggle="tooltip" title="Generar Acta ER" data-placement="top">
-                <i class="fal fa-calendar-alt"></i>
-            </a>
-        }
+<div class="row align-items-center mb-4 border-bottom pb-3">
+    <div class="col-lg-1 d-none d-lg-block text-center border-right pr-3">
+        <i class="fas fa-file-signature fa-3x text-primary"></i>
     </div>
+    <div class="col-lg-8 col-md-9">
+        <h4 class="mb-1 text-dark">
+            <span class="font-weight-bold display-5 text-decoration-underline" style="color: #24135f;">@Model.Folio</span> <br>
+            <small class="d-block text-muted mt-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Evaluación correspondiente al mes de <b class="text-dark">@Model.Mes</b> del año <b class="text-dark">@Model.Anio</b>
+            </small>
+        </h4>
+    </div>
+    <div class="col-lg-3 col-md-3 text-right">
+        <a href="/telConvencional/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;"><i class="fas fa-arrow-left mr-2"></i> Regresar </a>
 </div>
-<div class="row">
-    <div class="col-lg-12">
-        <ul class="nav nav-tabs h6" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#entregables_cedula" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#historial_entregables" role="tab" aria-controls="contact" aria-selected="false">Historial de Entregables</a>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
-            @{ bool autoriza = true; }
-            @{ bool estatus = false; }
-            @{ bool rechazat = false; }
-            @{ bool cedula = false; }
-            @{ bool memo = false; }
-            @{ bool omemo = false; }
-            <div class="tab-pane fade show active" id="informacion_general" role="tabpanel" aria-labelledby="home-tab">
-                <div class="row justify-content-center align-items-center mt-4">
-                    <div class="col-lg-12 h3 ml-4">
-                        Información General
+    </div>
+
+    <div class="row col-lg-12">
+        <div class="col-lg-12">
+            @if (Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
+            {
+                <a href="#" class='btn-sm btn-primary float-right mr-2 mb-3 btnActaER' data-toggle="tooltip" title="Generar Acta ER" data-placement="top">
+                    <i class="fal fa-calendar-alt"></i>
+                </a>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="nav nav-tabs h6" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1 active" id="home-tab" data-toggle="tab" href="#informacion_general" role="tab" aria-controls="home" aria-selected="true">Información General</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#entregables_cedula" role="tab" aria-controls="contact" aria-selected="false">Entregables</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#historial_cedula" role="tab" aria-controls="contact" aria-selected="false">Historial de Cambios</a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link1" id="contact-tab" data-toggle="tab" href="#historial_entregables" role="tab" aria-controls="contact" aria-selected="false">Historial de Entregables</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                @{ bool autoriza = true; }
+                @{ bool estatus = false; }
+                @{ bool rechazat = false; }
+                @{ bool cedula = false; }
+                @{ bool memo = false; }
+                @{ bool omemo = false; }
+                <div class="tab-pane fade show active" id="informacion_general" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="row justify-content-center align-items-center mt-4">
+                        <div class="col-lg-12 h3 ml-4">
+                            <h4 style="color: #24135f;">
+                                <i class="fas fa-info-circle me-2"></i> <strong>Información General</strong>
+                            </h4>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12 mt-3">
-                        <div class="card bg-light d-flex flex-fill">
-                            <div class="card-body pt-0 mt-4">
-                                <div class="row">
-                                    <div class="col-7">
-                                        <h2 class="lead">
-                                            <strong>
-                                                Factura Capturadas:
-                                            </strong>
-                                            <a href="#" id="btn_facturas" class='btn btn-sm btn-facturas ml-2 mb-1' data-toggle="tooltip" title="Ver Facturas" data-placement="top">
-                                                <i class="fal fa-file-invoice"></i>
-                                            </a>
-                                        </h2>
-                                        <p class="text-sm">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
-                                        <ul class="ml-4 mb-0 fa-ul">
-                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
-                                            <li class="small mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
-                                            <li class="small mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
-                                            <li class="small mt-3">
-                                                <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
-                                                <strong>Correo:</strong>
-                                                @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
+                    <div class="row">
+                        <div class="col-lg-12 mt-3">
+                            <div class="card bg-light d-flex flex-fill">
+                                <div class="card-body pt-0 mt-4">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <h2 class="lead">
+                                                <strong>
+                                                    Factura Capturadas:
+                                                </strong>
+                                                <a href="#" id="btn_facturas" class='btn btn-sm btn-facturas ml-2 mb-1' data-toggle="tooltip" title="Ver Facturas" data-placement="top">
+                                                    <i class="fal fa-file-invoice"></i>
+                                                </a>
+                                            </h2>
+                                            <ul class="ml-4 mb-0 fa-ul">
+                                                <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total: </strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</h5></li>
+                                                <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <h5> <strong>Calificación: </strong> </b> @Model.Calificacion</h5></li>
+                                                <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span>  <h5><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</h5></li>
+                                                <li class="strong mt-3">
+                                                    <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
+
+                                                    @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
+                                                    {
+                                                        <h5><strong>Correo:</strong><strong class="text-danger">@String.Format("Sin correo")</strong></h5>
+                                                    }
+                                                    else
+                                                    {
+                                                        <h5><strong>Correo:</strong> @Model.usuarios.correo_electronico</h5>
+                                                    }
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <h3 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
+                                                @Html.Raw(Model.Icono)
+                                                <strong class="ml-2">Estatus: </strong> @Model.Estatus
+                                            </h3>
+                                        </div>
+                                        <div class="col-5">
+                                          
+                                            <p class="text-sm">
+                                                @{decimal total = Convert.ToDecimal(@Model.RespuestasEncuesta[0].MontoPenalizacion + @Model.RespuestasEncuesta[1].MontoPenalizacion +
+                                                                                @Model.RespuestasEncuesta[2].MontoPenalizacion + @Model.RespuestasEncuesta[3].MontoPenalizacion);
+                                                }
+                                                @if (total > 0)
                                                 {
-                                                    <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                    <h5 class="text-danger">
+                                                        <b>Total Penalizable:</b> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", total)
+                                                    </h5>
                                                 }
                                                 else
                                                 {
-                                                    @Model.usuarios.correo_electronico
+                                                    <h5 class="text-danger">
+                                                        @*<b>No hay Monto Penalizable</b>*@
+                                                    </h5>
                                                 }
-                                                <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
-                                                    <i class="fal fa-edit"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-5">
-                                        @if (@Model.Estatus.Equals("Revisión"))
-                                        {
-                                            <h5 class="text-primary lblEstatus"><strong>Estatus: </strong> @Model.Estatus</h5>
-                                        }
-                                        else if (@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite de Pago"))
-                                        {
-                                            <h5 class="text-success lblEstatus"><strong>Estatus: </strong> @Model.Estatus </h5>
-                                        }
-                                        else if (@Model.Estatus.Equals("Rechazada") || Model.Estatus.Equals("Trámite Rechazado"))
-                                        {
-                                            <h5 class="text-danger lblEstatus"><strong>Estatus: </strong> @Model.Estatus </h5>
-                                        }
-                                        else
-                                        {
-                                            <h5 class="text-info lblEstatus"><strong>Estatus: </strong> @Model.Estatus </h5>
-                                        }
-                                        <p class="text-sm">
-                                            @{decimal total = Convert.ToDecimal(@Model.RespuestasEncuesta[0].MontoPenalizacion + @Model.RespuestasEncuesta[1].MontoPenalizacion +
-                                                                  @Model.RespuestasEncuesta[2].MontoPenalizacion + @Model.RespuestasEncuesta[3].MontoPenalizacion);
-                                            }
-                                            @if (total > 0)
-                                            {
-                                                <h5 class="text-danger">
-                                                    <b>Total Penalizable:</b> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", total)
-                                                </h5>
-                                            }
-                                            else
-                                            {
-                                                <h5 class="text-danger">
-                                                    @*<b>No hay Monto Penalizable</b>*@
-                                                    <b>** Penalizaciones en Construcción **</b>
-                                                </h5>
-                                            }
-                                        </p>
-                                        @*<ul class="ml-4 mb-0 fa-ul">
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Recolección: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Entrega: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Acuses: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Mal Estado: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Extraviadas: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[4].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Material: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[5].MontoPenalizacion)</li>
-                                                <li class="small mt-3"><span class="fa-li"><i class="fas fa-star"></i></span> <b> Penalización en Calidad y Eficiencia: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.PenaCalificacion)</li>
-                                            </ul>*@
-                                        <div>
-                                            <img src="~/img/web1.jpg" alt="Alternate Text" width="40%" />
+                                            </p>
+                                            @*<ul class="ml-4 mb-0 fa-ul">
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Recolección: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[0].MontoPenalizacion)</li>
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Entrega: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[1].MontoPenalizacion)</li>
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Acuses: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[2].MontoPenalizacion)</li>
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Mal Estado: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[3].MontoPenalizacion)</li>
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Extraviadas: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[4].MontoPenalizacion)</li>
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-tools"></i></span> <b>Penalización en Material: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.RespuestasEncuesta[5].MontoPenalizacion)</li>
+                <li class="small mt-3"><span class="fa-li"><i class="fas fa-star"></i></span> <b> Penalización en Calidad y Eficiencia: </b>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", @Model.PenaCalificacion)</li>
+            </ul>*@
+
                                         </div>
                                     </div>
                                 </div>
+                                @if (@Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
+                                {
+                                    <div class="card-footer">
+                                        <div class="text-right" id="divAutoriza"></div>
+                                    </div>
+                                }
                             </div>
-                            @if (@Model.Estatus.Equals("Autorizada") || Model.Estatus.Equals("Trámite Rechazado"))
-                            {
-                                <div class="card-footer">
-                                    <div class="text-right" id="divAutoriza"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="entregables_cedula" role="tabpanel" aria-labelledby="contact-tab">
+                    <div class="row justify-content-center align-items-center mt-4">
+                        <div class="col-lg-12">
+                            <h4 style="color: #24135f;">
+                                <i class="fas fa-calendar-check mr-3 text-success"></i><strong>Entregables Periódicos</strong>
+                            </h4>
+                            <p class="h6">El usuario adjuntó los siguientes entregables.</p>
+
+                        </div>
+                        <div class="row col-lg-12 mt-1 h6">
+                            <div class="col-lg-12">
+                                <div class="col-lg-12 mb-3">
+                                    @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado")) && ((@User.Claims.ElementAt(2).Value).Contains("Evaluador") || (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
+                                    {
+                                        <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                                    }
+                                    else if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("En Trámite")) && @User.Claims.ElementAt(2).Value.Contains("Telefonía Convencional"))
+                                    {
+                                        <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                                    }
                                 </div>
-                            }
+                                <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
+                                <table class="table table-hover table-striped table-bordered table-sm" id="tableEntregables">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Nombre</th>
+                                            <th>Fecha de Creación</th>
+                                            <th class="text-center">Estatus</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ string tipo = ""; }
+                                        @foreach (var entre in @Model.iEntregables)
+                                        {
+                                            <tr>
+                                                <td>@entre.TipoEntregable</td>
+                                                <td>@entre.NombreArchivo</td>
+                                                <td>@entre.FechaCreacion.ToString("dd-MM-yyyy")</td>
+                                                <td class="text-center @entre.Color font-weight-bold">
+                                                    @if (await sPermisos.GetPermisosByModulo("autorizar entregables", @Model.ServicioId, @user) != 0)
+                                                    {
+                                                        @if (@entre.Estatus.Equals("Rechazado"))
+                                                        {
+                                                            @Html.Raw(@entre.Icono) @entre.Estatus
+                                                            <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
+                                                                <i class="fas fa-check ml-1"></i>
+                                                            </a>
+                                                        }
+                                                        else if (@entre.Estatus.Equals("Autorizado"))
+                                                        {
+                                                            @Html.Raw(@entre.Icono) @entre.Estatus
+                                                            <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
+                                                                <i class="far fa-times"></i>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
+                                                                <i class="fas fa-check ml-1"></i>
+                                                            </a>
+                                                            <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
+                                                               data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
+                                                                <i class="far fa-times"></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.Raw(@entre.Icono) @entre.Estatus
+                                                    }
+                                                </td>
+                                                <td class="text-center">
+                                                    <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
+                                                       data-toggle="tooltip" title="Vista Previa de(la) @tipo" data-placement="top">
+                                                        <i class='fas fa-eye text-success'></i>
+                                                    </a>
+                                                    @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado")) ||
+                                                  (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
+                                                    {
+                                                        @if (!entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
+                                                        {
+                                                            <a href='#' class="text-center mr-2 update_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
+                                                               data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo" data-toggle="tooltip" title="Actualizar @entre.Tipo"
+                                                               data-placement="top">
+                                                                <i class='fas fa-check-circle text-primary'></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                    @if (@Model.Estatus.Equals("En Trámite") && (@entre.Tipo.Equals("Cedula_Firmada") || @entre.Tipo.Equals("Memorandum") || @entre.Tipo.Equals("ActaER"))
+                                               && @entre.ValidadoDas == false)
+                                                    {
+                                                        @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
+                                                        {
+                                                            <a href='#' class="text-center mr-2 valida_cedula" data-id="@entre.Id" data-tipo="@tipo" data-toggle="tooltip" title="Validar @tipo"
+                                                               data-placement="top">
+                                                                <i class='fas fa-check text-cjf'></i>
+                                                            </a>
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="entregables_cedula" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="col-lg-12 h3 mt-4">
-                    Entregables Periódicos
-                </div>
-                <div class="row col-lg-12">
-                    <div class="col-lg-8">
-                        <p class="h6">El usuario adjuntó los siguientes entregables.</p>
-                    </div>
-                </div>
-                <div class="row col-lg-12 mt-1 h6">
-                    <div class="col-lg-12">
-                        <div class="col-lg-12 mb-3">
-                            @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado")) && ((@User.Claims.ElementAt(2).Value).Contains("Evaluador") || (@User.Claims.ElementAt(2).Value).Contains("Administrador")))
+                        <div class="row col-lg-12 justify-content-end mb-3">
+                            @if (await sPermisos.GetPermisosByModulo("rechazar trámite", @Model.ServicioId, @user) != 0)
                             {
-                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                                <button href="" class="btn btn-danger float-right mr-3 rechazar_tramite"><i class="fas fa-check mr-2"></i>Rechazar Trámite</button>
                             }
-                            else if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("En Trámite")) && @User.Claims.ElementAt(2).Value.Contains("Telefonía Convencional"))
+                            @if (await sPermisos.GetPermisosByModulo("trámitar", @Model.ServicioId, @user) != 0)
                             {
-                                <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile' data-toggle="tooltip" title="Adjuntar Entregable"><i class="fas fa-plus"></i></a>
+                                <button href="" class="btn btn-info float-right mr-3 tramitar_cedula"><i class="fas fa-check mr-2"></i>Enviar a Trámite</button>
+                            }
+                            @if (await sPermisos.GetPermisosByModulo("trámitar a pago", @Model.ServicioId, @user) != 0)
+                            {
+                                <button href="" class="btn btn-success float-right mr-3 tramitar_pago"><i class="fas fa-check mr-2"></i>Tramitar Pago</button>
                             }
                         </div>
-                        <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
-                        <table class="table" id="tableEntregables">
-                            <thead>
-                                <tr>
-                                    <th>Tipo</th>
-                                    <th>Nombre</th>
-                                    <th>Fecha de Creación</th>
-                                    <th class="text-center">Estatus</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{ string tipo = ""; }
-                                @foreach (var entre in @Model.iEntregables)
-                                {
-                                    <tr>
-                                        <td>@entre.TipoEntregable</td>
-                                        <td>@entre.NombreArchivo</td>
-                                        <td>@entre.FechaCreacion.ToString("dd-MM-yyyy")</td>
-                                        <td class="text-center @entre.Color font-weight-bold">
-                                            @if (await sPermisos.GetPermisosByModulo("autorizar entregables", @Model.ServicioId, @user) != 0)
-                                            {
-                                                @if (@entre.Estatus.Equals("Rechazado"))
-                                                {
-                                                    @Html.Raw(@entre.Icono) @entre.Estatus
-                                                    <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
-                                                        <i class="fas fa-check ml-1"></i>
-                                                    </a>
-                                                }
-                                                else if (@entre.Estatus.Equals("Autorizado"))
-                                                {
-                                                    @Html.Raw(@entre.Icono) @entre.Estatus
-                                                    <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
-                                                        <i class="far fa-times"></i>
-                                                    </a>
-                                                }
-                                                else
-                                                {
-                                                    <a href="#" class='btn-xs btn-success mr-2 success_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Autorizar @tipo" data-placement="top">
-                                                        <i class="fas fa-check ml-1"></i>
-                                                    </a>
-                                                    <a href="#" class='btn btn-sm btn-danger mr-2 failed_entregable' data-id="@entre.Id" data-tipo="@tipo"
-                                                       data-toggle="tooltip" title="Rechazar @tipo" data-placement="top">
-                                                        <i class="far fa-times"></i>
-                                                    </a>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                @Html.Raw(@entre.Icono) @entre.Estatus
-                                            }
-                                        </td>
-                                        <td class="text-center">
-                                            <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
-                                               data-toggle="tooltip" title="Vista Previa de(la) @tipo" data-placement="top">
-                                                <i class='fas fa-eye text-success'></i>
-                                            </a>
-                                            @if ((@Model.Estatus.Equals("Autorizada") || @Model.Estatus.Equals("Trámite Rechazado")) ||
-                                               (@User.Claims.ElementAt(2).Value).Equals("Administrador"))
-                                            {
-                                                @if (!entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("editar entregables", @Model.ServicioId, @user) != 0)
-                                                {
-                                                    <a href='#' class="text-center mr-2 update_files" data-id="@entre.Id" data-coments="@entre.Comentarios"
-                                                       data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo" data-toggle="tooltip" title="Actualizar @entre.Tipo"
-                                                       data-placement="top">
-                                                        <i class='fas fa-check-circle text-primary'></i>
-                                                    </a>
-                                                }
-                                            }
-                                            @if (@Model.Estatus.Equals("En Trámite") && (@entre.Tipo.Equals("Cedula_Firmada") || @entre.Tipo.Equals("Memorandum") || @entre.Tipo.Equals("ActaER"))
-                                            && @entre.ValidadoDas == false)
-                                            {
-                                                @if (entre.Estatus.Equals("Autorizado") && await sPermisos.GetPermisosByModulo("validar cédula", @Model.ServicioId, @user) != 0)
-                                                {
-                                                    <a href='#' class="text-center mr-2 valida_cedula" data-id="@entre.Id" data-tipo="@tipo" data-toggle="tooltip" title="Validar @tipo"
-                                                       data-placement="top">
-                                                        <i class='fas fa-check text-cjf'></i>
-                                                    </a>
-                                                }
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="historial_cedula" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row justify-content-center align-items-center mt-4">
+
+                            <div class="col-lg-12">
+                                <h4 style="color: #24135f;">
+                                    <i class="fas fa-file-pdf  mr-3  text-primary"></i> <strong>Seguimiento de la Cédula</strong>
+                                </h4>
+                            </div>
+                            <div class="row col-lg-12">
+                                <table class="table table-hover table-striped table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Servicio</th>
+                                            <th>Usuario</th>
+                                            <th>Comentarios</th>
+                                            <th>Estatus</th>
+                                            <th>Fecha de Actualización</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var hist in @Model.historialCedulas)
+                                        {
+                                            <tr>
+                                                <td>@hist.Servicio</td>
+                                                <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                                <td>@hist.Comentarios</td>
+                                                <td>@hist.Estatus</td>
+                                                <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="historial_entregables" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row justify-content-center align-items-center mt-4">
+                            <div class="col-lg-12">
+                                <h4 style="color: #24135f;">
+                                    <i class="fas fa-clipboard-check mr-3 text-info"></i> <strong>Seguimiento de los Entregables</strong>
+                                </h4>
+                            </div>
+                            <div class="row col-lg-12">
+                                <table class="table table-hover table-striped table-bordered table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Servicio</th>
+                                            <th>Entregable</th>
+                                            <th>Usuario</th>
+                                            <th>Comentarios</th>
+                                            <th>Estatus</th>
+                                            <th>Fecha de Actualización</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var hist in @Model.historialEntregables)
+                                        {
+                                            <tr>
+                                                <td>@hist.Servicio</td>
+                                                <td>@hist.Tipo</td>
+                                                <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                                <td>@hist.Comentarios</td>
+                                                <td>@hist.Estatus</td>
+                                                <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="row col-lg-12 justify-content-end mb-3">
-                    @if (await sPermisos.GetPermisosByModulo("rechazar trámite", @Model.ServicioId, @user) != 0)
-                    {
-                        <button href="" class="btn btn-danger float-right mr-3 rechazar_tramite"><i class="fas fa-check mr-2"></i>Rechazar Trámite</button>
-                    }
-                    @if (await sPermisos.GetPermisosByModulo("trámitar", @Model.ServicioId, @user) != 0)
-                    {
-                        <button href="" class="btn btn-info float-right mr-3 tramitar_cedula"><i class="fas fa-check mr-2"></i>Enviar a Trámite</button>
-                    }
-                    @if (await sPermisos.GetPermisosByModulo("trámitar a pago", @Model.ServicioId, @user) != 0)
-                    {
-                        <button href="" class="btn btn-success float-right mr-3 tramitar_pago"><i class="fas fa-check mr-2"></i>Tramitar Pago</button>
-                    }
-                </div>
-            </div>
-            <div class="tab-pane fade" id="historial_cedula" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="row justify-content-center align-items-center mt-4">
-                    <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de la Cédula
-                    </div>
-                    <div class="row col-lg-12">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Servicio</th>
-                                    <th>Usuario</th>
-                                    <th>Comentarios</th>
-                                    <th>Estatus</th>
-                                    <th>Fecha de Actualización</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var hist in @Model.historialCedulas)
-                                {
-                                    <tr>
-                                        <td>@hist.Servicio</td>
-                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
-                                        <td>@hist.Comentarios</td>
-                                        <td>@hist.Estatus</td>
-                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <div class="tab-pane fade" id="historial_entregables" role="tabpanel" aria-labelledby="contact-tab">
-                <div class="row justify-content-center align-items-center mt-4">
-                    <div class="col-lg-12 h3 ml-4">
-                        Seguimiento de los Entregables
-                    </div>
-                    <div class="row col-lg-12">
-                        <table class="table mt-2">
-                            <thead>
-                                <tr>
-                                    <th>Servicio</th>
-                                    <th>Entregable</th>
-                                    <th>Usuario</th>
-                                    <th>Comentarios</th>
-                                    <th>Estatus</th>
-                                    <th>Fecha de Actualización</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var hist in @Model.historialEntregables)
-                                {
-                                    <tr>
-                                        <td>@hist.Servicio</td>
-                                        <td>@hist.Tipo</td>
-                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
-                                        <td>@hist.Comentarios</td>
-                                        <td>@hist.Estatus</td>
-                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
-</div>
 
-@* Modal para agregar facturas la cedula *@
-<div class="modal fade" id="modal-facturas">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-joke">
-                <h4 class="modal-title text-white">Agregar/Modificar Factura o Nota de Crédito</h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <input class="form-control" id="idFactura" type="hidden" />
-                <div class="row col-lg-12 mt-2">
-                    <div class="form-group col-lg-4" id="divTipoFactura">
-                        <label for="forFactura">El "XML" corresponde a:</label>
-                        <select id="tipoFactura" class="form-control">
-                            <option value="">Seleccione una opción</option>
-                            <option value="NC">Nota de Crédito</option>
-                        </select>
-                        <div class="col-sm-12 error_tipoFactura">
-                            <small id="dateHelp" class="text-danger">
-                                Por favor seleccione el tipo de archivo a subir
-                            </small>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-6">
-                        <label for="elegirArchivo">Seleccionar Archivo XML: </label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input file_factura" id="fileFactura" accept=".xml">
-                            <label class="custom-file-label" for="customFile">Subir archivo "XML"</label>
-                        </div>
-                        <div class="col-sm-12 error_customFile">
-                            <small id="dateHelp" class="text-danger">
-                                Por favor seleccione el archivo correspondiente
-                            </small>
-                        </div>
-                    </div>
+    @* Modal para agregar facturas la cedula *@
+    <div class="modal fade" id="modal-facturas">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-joke">
+                    <h4 class="modal-title text-white">Agregar/Modificar Factura o Nota de Crédito</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </div>
-            <div class="modal-footer justify-content-end">
-                <button type="button" class="btn btn-primary" id="agregarFactura">Guardar</button>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-@* FIN del Modal para agregar facturas la cedula *@
-
-@* Modal para ver las facturas de la cedula *@
-<div class="modal fade" id="modal-ver-facturas">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-joke">
-                <h4 class="modal-title text-white">Factura(s) Capturadas</h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-lg-12 mt-3">
-                        <table class="table table-responsive" id="listado_facturas">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Empresa</th>
-                                    <th>Folio Fiscal</th>
-                                    <th>Numero de la Factura</th>
-                                    <th>Subtotal de la Factura</th>
-                                    <th>Total</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="listaFacturas"></tbody>
-                        </table>
-                    </div>
-                    <div class="row col-lg-12 text-center">
-                        <div class="col-lg-12 objectPdf">
-
+                <div class="modal-body">
+                    <input class="form-control" id="idFactura" type="hidden" />
+                    <div class="row col-lg-12 mt-2">
+                        <div class="form-group col-lg-4" id="divTipoFactura">
+                            <label for="forFactura">El "XML" corresponde a:</label>
+                            <select id="tipoFactura" class="form-control">
+                                <option value="">Seleccione una opción</option>
+                                <option value="NC">Nota de Crédito</option>
+                            </select>
+                            <div class="col-sm-12 error_tipoFactura">
+                                <small id="dateHelp" class="text-danger">
+                                    Por favor seleccione el tipo de archivo a subir
+                                </small>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-@* FIN del Modal para ver las facturas de la cedula *@
-
-@* Modal para ver los conceptos de las facturas de la cedula *@
-<div class="modal fade" id="modal-ver-conceptos">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-joke">
-                <h4 class="modal-title text-white" id="factura_serie"></h4>
-                <button type="button" class="close close_conceptos text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class=" row col-lg-12" id="detalle_conceptos"></div>
-            </div>
-        </div>
-    </div>
-    <!-- /.modal-content -->
-</div>
-@* Fin de Modal para ver los conceptos de las facturas de la cedula *@
-
-@* Modal para la captura de Adjuntos *@
-<div class="modal fade" id="modal_evidencias">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-joke">
-                <h4 class="modal-title text-white">Adjuntar/Modificar Entregables</h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <input type="hidden" id="file_id" />
-                    <div class="form-group col-lg-4">
-                        <label for="tipoIncidencia">Tipo de Entregable:</label>
-                        <select class="form-control" id="tipo_entregable"></select>
-                        <div class="col-sm-12" id="error_tipoEntre">
-                            <small id="dateHelp" class="text-danger">
-                                Por favor seleccione el tipo de entregable
-                            </small>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-4">
-                        <label for="elegirArchivo">Fecha Presentación: </label>
-                        <input type="date" class="form-control" id="fecha_presentacion" accept=".pdf">
-                        <div class="col-sm-12" id="error_fechaPresentacion">
-                            <small id="dateHelp" class="text-danger">
-                                Por favor seleccione la fecha de presentación
-                            </small>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-4">
-                        <label for="elegirArchivo">Seleccionar Archivo: </label>
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
-                            <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
-                        </div>
-                        <div class="col-sm-12" id="error_customFile">
-                            <small id="dateHelp" class="text-danger">
-                                Por favor seleccione él archivo correspondiente
-                            </small>
-                        </div>
-                    </div>
-                    <div class="form-row col-lg-12 mt-2" id="comentariosEntregable">
-                        <div class="form-group mt-2 col-md-12">
-                            <label for="fechaCierre">Comentarios:</label><br>
-                            <textarea id="comentarios_entregable" class="form-control float-left"></textarea>
-                            <div class="col-sm-12" id="error_comentariosEntre">
-                                <small id="comentariosHelp" class="text-danger">
-                                    Por favor capture los comentarios correspondientes
+                        <div class="form-group col-lg-6">
+                            <label for="elegirArchivo">Seleccionar Archivo XML: </label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input file_factura" id="fileFactura" accept=".xml">
+                                <label class="custom-file-label" for="customFile">Subir archivo "XML"</label>
+                            </div>
+                            <div class="col-sm-12 error_customFile">
+                                <small id="dateHelp" class="text-danger">
+                                    Por favor seleccione el archivo correspondiente
                                 </small>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-primary" id="agregarFactura">Guardar</button>
+                </div>
             </div>
-            <div class="modal-footer justify-content-end">
-                <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
-            </div>
+            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
-@*Fin Modal para la captura de Incidencias *@
+    @* FIN del Modal para agregar facturas la cedula *@
 
-@* Modal para la ver Adjuntos *@
-<div class="modal fade" id="show_pdf">
-    <div class="modal-dialog modal-xl-view">
-        <div class="modal-content">
-            <div class="modal-header bg-joke">
-                <h4 class="modal-title text-white" id="titlePDF"></h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    @* Modal para ver las facturas de la cedula *@
+    <div class="modal fade" id="modal-ver-facturas">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-joke">
+                    <h4 class="modal-title text-white">Factura(s) Capturadas</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12 mt-3">
+                            <table class="table table-responsive" id="listado_facturas">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Empresa</th>
+                                        <th>Folio Fiscal</th>
+                                        <th>Numero de la Factura</th>
+                                        <th>Subtotal de la Factura</th>
+                                        <th>Total</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listaFacturas"></tbody>
+                            </table>
+                        </div>
+                        <div class="row col-lg-12 text-center">
+                            <div class="col-lg-12 objectPdf">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body-view">
-                <table class="table">
-                    <tr>
-                        <td><strong>Folio: </strong> @Model.Folio</td>
-                        <td><strong>Año: </strong>@Model.Anio</td>
-                        <td><strong>Mes: </strong>@Model.Mes</td>
-                        <td><strong>Administración: </strong>Dirección de Administración de Servicios</td>
-                        <td><strong>Estatus: </strong>@Model.Estatus </td>
-                    </tr>
-                </table>
-                <div class="row" id="objectPdf">
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    @* FIN del Modal para ver las facturas de la cedula *@
+
+    @* Modal para ver los conceptos de las facturas de la cedula *@
+    <div class="modal fade" id="modal-ver-conceptos">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-joke">
+                    <h4 class="modal-title text-white" id="factura_serie"></h4>
+                    <button type="button" class="close close_conceptos text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class=" row col-lg-12" id="detalle_conceptos"></div>
                 </div>
             </div>
         </div>
         <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-</div>
-@*Fin Modal para ver Adjuntos*@
+    @* Fin de Modal para ver los conceptos de las facturas de la cedula *@
+
+    @* Modal para la captura de Adjuntos *@
+    <div class="modal fade" id="modal_evidencias">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-joke">
+                    <h4 class="modal-title text-white">Adjuntar/Modificar Entregables</h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <input type="hidden" id="file_id" />
+                        <div class="form-group col-lg-4">
+                            <label for="tipoIncidencia">Tipo de Entregable:</label>
+                            <select class="form-control" id="tipo_entregable"></select>
+                            <div class="col-sm-12" id="error_tipoEntre">
+                                <small id="dateHelp" class="text-danger">
+                                    Por favor seleccione el tipo de entregable
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="elegirArchivo">Fecha Presentación: </label>
+                            <input type="date" class="form-control" id="fecha_presentacion" accept=".pdf">
+                            <div class="col-sm-12" id="error_fechaPresentacion">
+                                <small id="dateHelp" class="text-danger">
+                                    Por favor seleccione la fecha de presentación
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label for="elegirArchivo">Seleccionar Archivo: </label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customFile" accept=".pdf">
+                                <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
+                            </div>
+                            <div class="col-sm-12" id="error_customFile">
+                                <small id="dateHelp" class="text-danger">
+                                    Por favor seleccione él archivo correspondiente
+                                </small>
+                            </div>
+                        </div>
+                        <div class="form-row col-lg-12 mt-2" id="comentariosEntregable">
+                            <div class="form-group mt-2 col-md-12">
+                                <label for="fechaCierre">Comentarios:</label><br>
+                                <textarea id="comentarios_entregable" class="form-control float-left"></textarea>
+                                <div class="col-sm-12" id="error_comentariosEntre">
+                                    <small id="comentariosHelp" class="text-danger">
+                                        Por favor capture los comentarios correspondientes
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-primary" id="adjuntarArchivo">Adjuntar Entregable</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    @*Fin Modal para la captura de Incidencias *@
+
+    @* Modal para la ver Adjuntos *@
+    <div class="modal fade" id="show_pdf">
+        <div class="modal-dialog modal-xl-view">
+            <div class="modal-content">
+                <div class="modal-header bg-joke">
+                    <h4 class="modal-title text-white" id="titlePDF"></h4>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body-view">
+                    <table class="table">
+                        <tr>
+                            <td><strong>Folio: </strong> @Model.Folio</td>
+                            <td><strong>Año: </strong>@Model.Anio</td>
+                            <td><strong>Mes: </strong>@Model.Mes</td>
+                            <td><strong>Administración: </strong>Dirección de Administración de Servicios</td>
+                            <td><strong>Estatus: </strong>@Model.Estatus </td>
+                        </tr>
+                    </table>
+                    <div class="row" id="objectPdf">
+                    </div>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    @*Fin Modal para ver Adjuntos*@
 
 
-<style>
-    #view_pdf {
-        width: 100%;
-        height: 500px;
-    }
-</style>
+    <style>
+        #view_pdf {
+            width: 100%;
+            height: 500px;
+        }
 
-@section Scripts{
-    <script>
+        .titulo-principal {
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+            color: #24135f;
+            text-align: left;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 2s ease-in-out;
+            font-weight: bold;
+            position: relative; /* Agrega esta línea */
+            top: -20px; /* Ajusta el valor según sea necesario */
+            right: -10px;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .nav-link1 {
+            font-size: 1.1rem; /* Tamaño base del texto del tab */
+            padding: 0.9rem 1rem; /* Relleno del tab */
+            color: #6c757d; /* Color por defecto del texto (gris suave) */
+            border-color: #dee2e6 #dee2e6 #dee2e6; /* Borde gris para los inactivos */
+            background-color: #e9ecef; /* Fondo ligeramente gris para inactivos */
+            transition: all 0.3s ease-in-out; /* Transición suave para los cambios */
+            border-radius: 0.25rem 0.25rem 0 0; /* Bordes redondeados arriba */
+        }
+
+            /* ESTILO PARA EL TAB ACTIVO CON COLOR INTENSO */
+            .nav-link1.active {
+                color: #ffffff; /* Color del texto blanco para contrastar */
+                background-color: #24135f; /* ¡Fondo azul brillante! */
+                border-color: #007bff #007bff #007bff; /* Borde del mismo color para un look sólido */
+                font-weight: bold; /* Texto en negrita */
+                font-size: 1.25rem; /* Opcional: hacer el texto del tab activo un poco más grande */
+                /* Eliminamos el borde inferior blanco si queremos un bloque de color sólido */
+            }
+
+            /* Efecto al pasar el ratón (hover) para tabs inactivos */
+            .nav-link1:hover:not(.active) { /* Solo aplica a los tabs que NO estén activos */
+                color: #0056b3; /* Color del texto al pasar el ratón */
+                background-color: #d8e6f1; /* Fondo más claro al pasar el ratón */
+                border-color: #c0d7ed;
+            }
+    </style>
+
+    @section Scripts{
+        <script>
         $(function () {
             var model = @Html.Raw(Json.Serialize(@Model));
             var autoriza = @Html.Raw(Json.Serialize(autoriza));
@@ -1542,7 +1607,7 @@
                 });
             /**************************** Fin de Contar las Notas de Crédito a Subir ******************************/
         });
-    </script>
-}
+        </script>
+    }
 
 

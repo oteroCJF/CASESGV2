@@ -144,11 +144,11 @@ namespace CedulasEvaluacion.Controllers
             document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
             if ((await vIncidencias.getIncidencias(id)).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|","\n"), false, true);
@@ -227,11 +227,11 @@ namespace CedulasEvaluacion.Controllers
 
             if ((await iFumigacion.GetIncidenciasPregunta(id, 2)).Count == 0 && (await iFumigacion.GetIncidenciasPregunta(id, 3)).Count == 0 && (await iFumigacion.GetIncidenciasPregunta(id, 4)).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -311,11 +311,11 @@ namespace CedulasEvaluacion.Controllers
                 (await iMensajeria.getIncidenciasByTipoMensajeria(id, "Acuses")).Count == 0 && (await iMensajeria.getIncidenciasByTipoMensajeria(id, "Mal Estado")).Count == 0 &&
                 (await iMensajeria.getIncidenciasByTipoMensajeria(id, "Extraviadas")).Count == 0 && (await iMensajeria.getIncidenciasByTipoMensajeria(id, "Robadas")).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -392,11 +392,11 @@ namespace CedulasEvaluacion.Controllers
             document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
             if ((await iAgua.GetIncidenciasPregunta(id, 2)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 3)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 4)).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -473,11 +473,11 @@ namespace CedulasEvaluacion.Controllers
 
             if ((await iAgua.GetIncidenciasPregunta(id, 2)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 3)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 4)).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -549,11 +549,11 @@ namespace CedulasEvaluacion.Controllers
             document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
             if ((await iAgua.GetIncidenciasPregunta(id, 2)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 3)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 4)).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -628,11 +628,11 @@ namespace CedulasEvaluacion.Controllers
 
             if (totalIncidencias == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -707,11 +707,11 @@ namespace CedulasEvaluacion.Controllers
 
             if (totalIncidencias == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando retrasos en ciertos requerimientos, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando retrasos en ciertos requerimientos, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -789,11 +789,11 @@ namespace CedulasEvaluacion.Controllers
             document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
             if ((await iAgua.GetIncidenciasPregunta(id, 2)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 3)).Count == 0 && (await iAgua.GetIncidenciasPregunta(id, 4)).Count == 0)
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);
@@ -881,11 +881,11 @@ namespace CedulasEvaluacion.Controllers
 
             if (incidencias == 0 || cedula.FechaFinal < Convert.ToDateTime("2022-11-18"))
             {
-                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Consejo de la Judicatura Federal conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "Se hace constar que los servicios solicitados fueron atendidos a entera satisfacción del Órgano de Administración Judicial conforme se visualiza en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
             else
             {
-                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Consejo de la Judicatura Federal, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
+                document.Replace("|Declaraciones|", "\nSe hace constar que los servicios fueron recibidos por el Órgano de Administración Judicial, presentando incidencias, mismas que se vierten en la cédula automatizada para la supervisión y evaluación de servicios generales.", false, true);
             }
 
             document.Replace("|ImporteIVA|", acta.Total.Replace("|", "\n"), false, true);

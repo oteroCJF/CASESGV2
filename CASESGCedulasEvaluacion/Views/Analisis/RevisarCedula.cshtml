@@ -1,7 +1,13 @@
 ﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
     var title = TempData["Title"] as string;
-    ViewData["Title"] = "Revisión de la Cédula del Servicio de Análisis Microbiológicos con Folio: " + Model.Folio;
+    //ViewData["Title"] = "Revisión de la Cédula del Servicio de Análisis Microbiológicos con Folio: " + Model.Folio;
+
+    <div class="titulo-principal">
+        <b>
+            Revisión de la Cédula del Servicio de Análisis Microbiológicos
+        </b> <i class="fa-sharp fa-solid fa-bug mr-2"></i>
+    </div>
 
     int i = 0, p = 0, cf = 0, f = 0;
     int totalServicios = 0, totalServiciosNC = 0;
@@ -9,9 +15,22 @@
     decimal totalConceptosNC = 0, totalIVANC = 0;
 }
 
-<div class="row col-lg-12">
-    <div class="col-lg-12">
-        <a href="/analisis/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3'><i class="fal fa-arrow-left"></i></a>
+<div class="row align-items-center mb-4 border-bottom pb-3">
+    <div class="col-lg-1 d-none d-lg-block text-center border-right pr-3">
+        <i class="fas fa-file-signature fa-3x text-primary"></i>
+    </div>
+    <div class="col-lg-8 col-md-9">
+        <h4 class="mb-1 text-dark">
+            <span class="font-weight-bold display-5 text-decoration-underline" style="color: #24135f;">@Model.Folio</span> <br>
+            <small class="d-block text-muted mt-2">
+                <i class="fas fa-calendar-alt mr-2"></i> Evaluación correspondiente al mes de <b class="text-dark">@Model.Mes</b> del año <b class="text-dark">@Model.Anio</b>
+            </small>
+        </h4>
+    </div>
+    <div class="col-lg-3 col-md-3 text-right">
+        <a href="/analisis/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg shadow-sm' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 3px 72px;">
+            <i class="fas fa-arrow-left mr-2"></i> Regresar
+        </a>
     </div>
 </div>
 <div class="row">
@@ -22,7 +41,7 @@
                 if (pr.NoPregunta == 0)
                 {
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link @(pr.Abreviacion.Equals("InformacionGeneral") ? "active":"")" id="@(pr.Abreviacion.Equals("InformacionGeneral") ? "home-tab":"profile-tab")" data-toggle="tab" href="#@pr.Abreviacion" role="tab" aria-controls="home" aria-selected="true">
+                        <a class="nav-link1 @(pr.Abreviacion.Equals("InformacionGeneral") ? "active":"")" id="@(pr.Abreviacion.Equals("InformacionGeneral") ? "home-tab":"profile-tab")" data-toggle="tab" href="#@pr.Abreviacion" role="tab" aria-controls="home" aria-selected="true">
                             @pr.Valor
                         </a>
                     </li>
@@ -31,7 +50,7 @@
                 {
                     p++;
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#@pr.Abreviacion.Trim()" role="tab" aria-controls="profile" aria-selected="false">
+                        <a class="nav-link1" id="profile-tab" data-toggle="tab" href="#@pr.Abreviacion.Trim()" role="tab" aria-controls="profile" aria-selected="false">
                             @(pr.Tipo.Equals("Incidencia") ? "Pregunta "+p :pr.Valor)
                         </a>
                     </li>
@@ -47,45 +66,43 @@
                     <div class="tab-pane fade show active" id="@pr.Abreviacion" role="tabpanel" aria-labelledby="home-tab">
                         <div class="row justify-content-center align-items-center mt-4">
                             <div class="col-lg-12 h3 ml-4">
-                                Información General
+                                <h4 style="color: #24135f;">
+                                    <i class="fas fa-info-circle me-2"></i> <strong>Información General</strong>
+                                </h4>
+
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-12 mt-3">
                                 <div class="card bg-light d-flex flex-fill">
-                                    <div class="card-header border-bottom-0">
-                                        <h2 class="lead"><b>Inmueble Evaluado: </b> @Model.inmuebles.Nombre</h2>
-                                    </div>
                                     <div class="card-body pt-0">
                                         <div class="row">
                                             <div class="col-lg-7 mr-2">
-                                                <p class="text-medium">Evaluación correspondiente al mes <b>@Model.Mes</b> del año <b>@Model.Anio</b></p>
                                                 <ul class="ml-4 mb-0 fa-ul">
-                                                    <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <b>Facturación Total: </b>: @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
-                                                    <li class="medium mt-3"><span class="fa-li"><i class="fad fa-star"></i></span> <b>Calificación: </b> @Model.Calificacion</li>
-                                                    <li class="medium mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <b>Elaboró: </b> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</li>
-                                                    <li class="medium mt-3">
+                                                    <li class="strong mt-3"><span class="fa-li"><i class="fas fa-building me-2"></i></span> <h5><strong>Inmueble Evaluado: </strong> <span>@Model.inmuebles.Nombre</span></h5></li>
+                                                    <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-dollar-sign"></i></span> <h5><strong>Facturación Total:</strong> @String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", Model.TotalMontoFactura)</li>
+                                                    <li class="strong mt-3"><span class="fa-li"><i class="fad fa-star"></i></span><h5><strong>Calificación: </strong> @Model.Calificacion</h5></li>
+                                                    <li class="strong mt-3"><span class="fa-li"><i class="fas fa-lg fa-user"></i></span> <h5><strong>Elaboró: </strong> @Model.usuarios.nombre_emp @Model.usuarios.paterno_emp @Model.usuarios.materno_emp</h5></li>
+                                                    <li class="strong mt-3">
                                                         <span class="fa-li"><i class="fas fa-lg fa-envelope mb-1"></i></span>
-                                                        <strong>Correo:</strong>
+
                                                         @if (@Model.usuarios.correo_electronico.Equals("") || @Model.usuarios.correo_electronico.Equals(null))
                                                         {
-                                                            <strong class="text-danger">@String.Format("Sin correo")</strong>
+                                                            <h5><strong>Correo:</strong><strong class="text-danger">@String.Format("Sin correo")</strong></h5>
                                                         }
                                                         else
                                                         {
-                                                            @Model.usuarios.correo_electronico
+                                                            <h5><strong>Correo:</strong> @Model.usuarios.correo_electronico</h5>
                                                         }
-                                                        <a href="#" id="btn_correo" class='btn-xs btn-primary ml-2' data-toggle="tooltip" title="Actualizar Correo Electrónico" data-placement="top">
-                                                            <i class="fal fa-edit"></i>
-                                                        </a>
+
                                                     </li>
                                                 </ul>
                                             </div>
                                             <div class="col-lg-4">
-                                                <h5 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
+                                                <h2 class="@(Model.Fondo.Replace("bg", "text")) lblEstatus">
                                                     @Html.Raw(Model.Icono)
                                                     <strong class="ml-2">Estatus: </strong> @Model.Estatus
-                                                </h5>
+                                                </h2>
                                             </div>
                                         </div>
                                     </div>
@@ -106,28 +123,32 @@
                 else if (pr.Abreviacion.Equals("facturacion"))
                 {
                     <div class="tab-pane fade mt-2 ml-3" id="facturacion" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="col-lg-12 h3 mt-4">
-                            Facturación del Servicio
+                        <div class="col-lg-12">
+                            <br>
+                            <h3 class="mb-3 text-center text-primary font-weight-bold">
+                                <i class="fas fa-file-invoice text-info"></i> <strong>Facturación del Servicio</strong>
+                            </h3>
+
                         </div>
                         <div class="row">
                             <div class="row col-lg-12">
-                                <p class="text-justify ml-3">
-                                    <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
-                                    la información de la factura que fue agregada.
-                                </p>
+                                @*<p class="text-justify ml-3">
+                                <strong style="color: dodgerblue;">NOTA: </strong>Favor de revisar que los <strong style="color: dodgerblue;"> datos de la cédula </strong> resaltados en color <strong style="color: dodgerblue;">Azul </strong> coincidan con
+                                la información de la factura que fue agregada.
+                            </p>*@
                                 <div class="col-lg-12 mt-3 ml-2">
-                                    <table class="table tblIncidencias tablaFacturas" width="100%">
+                                    <table class="table tblIncidencias tablaFacturas table-hover table-striped table-bordered table-sm" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
-                                                <th>Tipo</th>
-                                                <th>Empresa</th>
-                                                <th>Folio Fiscal</th>
-                                                <th>Número Factura</th>
-                                                <th>Subtotal Factura</th>
-                                                <th>IVA</th>
-                                                <th>Total</th>
-                                                <th>Acciones</th>
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Tipo</th>
+                                                <th class="text-center">Empresa</th>
+                                                <th class="text-center">Folio Fiscal</th>
+                                                <th class="text-center">Número Factura</th>
+                                                <th class="text-center">Subtotal Factura</th>
+                                                <th class="text-center">IVA</th>
+                                                <th class="text-center">Total</th>
+                                                <th class="text-center">Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody id="AA">
@@ -135,21 +156,21 @@
                                             {
                                                 f++;
                                                 <tr>
-                                                    <td>@f</td>
-                                                    <td>@(fac.Tipo.Equals("NC") ? "Nota de Crédito":fac.Tipo)</td>
-                                                    <td>@fac.emisor.Nombre</td>
-                                                    <td>
+                                                    <td class="text-center align-middle">@f</td>
+                                                    <td class="text-center align-middle">@(fac.Tipo.Equals("NC") ? "Nota de Crédito":fac.Tipo)</td>
+                                                    <td class="text-center align-middle">@fac.emisor.Nombre</td>
+                                                    <td class="text-center align-middle">
                                                         @fac.timbreFiscal.UUID
                                                         @if (!fac.cfdiRelacionado.UUID.Equals(""))
                                                         {
                                                             <p>Relacionado al Folio Fiscal: @fac.cfdiRelacionado.UUID</p>
                                                         }
                                                     </td>
-                                                    <td>@fac.comprobante.Folio</td>
-                                                    <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.SubTotal)</td>
-                                                    <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.traslado.Importe)</td>
-                                                    <td>@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.Total)</td>
-                                                    <td class="text-center">
+                                                    <td class="text-center align-middle">@fac.comprobante.Folio</td>
+                                                    <td class="text-center align-middle">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.SubTotal)</td>
+                                                    <td class="text-center align-middle">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.traslado.Importe)</td>
+                                                    <td class="text-center align-middle">@String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0:C}", fac.comprobante.Total)</td>
+                                                    <td class="text-center align-middle">
                                                         <a href="#" class="viewConceptosF" id="viewConceptos_@fac.Id" data-factura="@fac.Id">
                                                             <i class="fas fa-eye text-success"></i>
                                                         </a>
@@ -250,42 +271,48 @@
                 else if (pr.Abreviacion.Equals("Entregables"))
                 {
                     <div class="tab-pane fade" id="Entregables" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="col-lg-12 h3 mt-4">
-                            Entregables Adjuntados
-                        </div>
-                        <div class="row col-lg-12">
-                            <div class="col-lg-8">
-                                <p class="h6">El usuario adjunto los siguientes entregables.</p>
-                            </div>
-                        </div>
-                        <div class="row col-lg-12 mt-2 h6">
-                            <div class="col-lg-12">
-                                <h6 class="mt-4"><strong>Entregables Adjuntos</strong></h6>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Tipo</th>
-                                            <th>Nombre</th>
-                                            <th>Fecha de la Incidencia</th>
-                                            <th>Ver</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var entre in @Model.iEntregables)
-                                        {
+                        <div class="row justify-content-center mt-4">
+                            <div class="col-lg-10 col-md-10 col-sm-12">
+                                <h3 class="mb-3 text-center text-primary font-weight-bold">
+                                    <i class="fas fa-paperclip mr-2"></i> Entregables Adjuntos
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-bordered table-sm" id="entregablesAdjuntosTable">
+                                        <thead class="bg-light text-secondary">
                                             <tr>
-                                                <td>@entre.TipoEntregable</td>
-                                                <td>@entre.NombreArchivo</td>
-                                                <td>@entre.FechaCreacion.ToString("yyyy-MM-dd")</td>
-                                                <td>
-                                                    <a href='#' class='text-center mr-2 view_file' data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo">
-                                                        <i class='fas fa-eye text-success'></i>
-                                                    </a>
-                                                </td>
+                                                <th scope="col">Tipo</th>
+                                                <th scope="col">Nombre</th>
+                                                <th scope="col">Fecha de Adjunto</th>
+                                                <th scope="col">Ver</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.iEntregables != null && Model.iEntregables.Any())
+                                            {
+                                                @foreach (var entre in @Model.iEntregables)
+                                                {
+                                                    <tr>
+                                                        <td>@entre.TipoEntregable</td>
+                                                        <td>@entre.NombreArchivo</td>
+                                                        <td>@entre.FechaCreacion.ToString("yyyy-MM-dd")</td>
+                                                        <td class="text-center">
+                                                            <a href='#' class='view_file'
+                                                               data-id="@entre.Id" data-file="@entre.NombreArchivo" data-tipo="@entre.Tipo"
+                                                               data-toggle="tooltip" data-placement="top" title="Ver archivo">
+                                                                <i class='fas fa-eye text-success'></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                } }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted py-3">No hay entregables adjuntos disponibles.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -293,8 +320,11 @@
                 else if (pr.Abreviacion.Equals("DecutivasPenalizacion"))
                 {
                     <div class="tab-pane fade" id="DecutivasPenalizacion" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="col-lg-12 h3 mt-4 mb-4">
-                            Penalizaciones y Deductivas
+                        <div class="col-lg-10 col-md-10 col-sm-12">
+                            <br>
+                            <h3 class="mb-3 text-center text-primary font-weight-bold">
+                                <i class="fas fa-sensor-alert text-info"></i> <strong>Penalizaciones y Deductivas</strong>
+                            </h3>
                         </div>
                         <div class="row col-lg-12 mt-2 h6">
                             @if (Model.TotalDeductivas != 0 || Model.TotalPenalizaciones != 0)
@@ -405,34 +435,48 @@
                 else if (pr.Abreviacion.Equals("HistorialCedula"))
                 {
                     <div class="tab-pane fade" id="HistorialCedula" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="row justify-content-center align-items-center mt-4">
-                            <div class="col-lg-12 h3 ml-4">
-                                Seguimiento de la Cédula
-                            </div>
-                            <div class="row col-lg-12">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Servicio</th>
-                                            <th>Usuario</th>
-                                            <th>Comentarios</th>
-                                            <th>Estatus</th>
-                                            <th>Fecha de Actualización</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var hist in @Model.historialCedulas)
-                                        {
+                        <div class="row justify-content-center mt-4">
+                            <div class="col-lg-10 col-md-10 col-sm-12">
+                                <h3 class="mb-3 text-center text-primary font-weight-bold">
+                                    <i class="fas fa-history mr-2"></i> Seguimiento de la Cédula
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-bordered table-sm" id="seguimientoCedulaTable">
+                                        <thead class="bg-light text-secondary">
                                             <tr>
-                                                <td>@hist.Servicio</td>
-                                                <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
-                                                <td>@hist.Comentarios</td>
-                                                <td>@hist.Estatus</td>
-                                                <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                <th scope="col">Servicio</th>
+                                                <th scope="col">Usuario</th>
+                                                <th scope="col">Comentarios</th>
+                                                <th scope="col">Estatus</th>
+                                                <th scope="col">Fecha de Actualización</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.historialCedulas != null && Model.historialCedulas.Any())
+                                            {
+                                                @foreach (var hist in @Model.historialCedulas)
+                                                {
+                                                    <tr>
+                                                        <td>@hist.Servicio</td>
+                                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                                        <td>@hist.Comentarios</td>
+                                                        <td>
+                                                            <span class="badge @(hist.Estatus == "Pendiente" ? "badge-warning" : hist.Estatus == "En Revisión" ? "badge-info" : hist.Estatus == "Enviado a DAS" ? "badge-success" : "badge-secondary")">
+                                                                @hist.Estatus
+                                                            </span>
+                                                        </td>
+                                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    </tr>
+                                                } }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted py-3">No hay historial de seguimiento disponible.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -440,43 +484,61 @@
                 else if (pr.Abreviacion.Equals("HistorialEntregables"))
                 {
                     <div class="tab-pane fade" id="HistorialEntregables" role="tabpanel" aria-labelledby="contact-tab">
-                        <div class="row justify-content-center align-items-center mt-4">
-                            <div class="col-lg-12 h3 ml-4">
-                                Seguimiento de Entregables
-                            </div>
-                            <div class="row col-lg-12">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Servicio</th>
-                                            <th>Usuario</th>
-                                            <th>Comentarios</th>
-                                            <th>Estatus</th>
-                                            <th>Fecha de Actualización</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var hist in @Model.historialEntregables)
-                                        {
+                        <div class="row justify-content-center mt-4">
+                            <div class="col-lg-10 col-md-10 col-sm-12">
+                                <h3 class="mb-3 text-center text-primary font-weight-bold">
+                                    <i class="fas fa-file-pdf mr-2"></i> Seguimiento de Entregables
+                                </h3>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped table-bordered table-sm" id="seguimientoEntregablesTable">
+                                        <thead class="bg-light text-secondary">
                                             <tr>
-                                                <td>@hist.Servicio</td>
-                                                <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
-                                                <td>@hist.Comentarios</td>
-                                                <td>@hist.Estatus</td>
-                                                <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                <th scope="col">Servicio</th>
+                                                <th scope="col">Usuario</th>
+                                                <th scope="col">Comentarios</th>
+                                                <th scope="col">Estatus</th>
+                                                <th scope="col">Fecha de Actualización</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.historialEntregables != null && Model.historialEntregables.Any())
+                                            {
+                                                @foreach (var hist in @Model.historialEntregables)
+                                                {
+                                                    <tr>
+                                                        <td>@hist.Servicio</td>
+                                                        <td>@hist.usuarios.nombre_emp @hist.usuarios.paterno_emp @hist.usuarios.materno_emp</td>
+                                                        <td>@hist.Comentarios</td>
+                                                        <td>
+                                                            <span class="badge @(hist.Estatus == "Pendiente" ? "badge-warning" : hist.Estatus == "En Revisión" ? "badge-info" : hist.Estatus == "Completado" ? "badge-success" : "badge-secondary")">
+                                                                @hist.Estatus
+                                                            </span>
+                                                        </td>
+                                                        <td>@Convert.ToDateTime(@hist.FechaCreacion).ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    </tr>
+                                                } }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted py-3">No hay historial de entregables disponible.</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 }
                 else
                 {
-                    <div class="tab-pane fade" id="@pr.Abreviacion.Trim()" role="tabpanel" aria-labelledby="profile-tab">
-                        <div class="col-lg-12 h3 mt-4">
-                            @pr.Valor
+                    <div class="tab-pane fade" id="@pr.Abreviacion" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="col-lg-12 mt-4">
+                            <h3 class="text-primary fw-bold mb-3">
+                                <i class="fas fa-info-circle me-2"></i> @pr.Valor
+                            </h3>
+                            <hr class="mb-4">
                         </div>
                         @foreach (var res in Model.RespuestasEncuesta)
                         {
@@ -568,7 +630,7 @@
                 }
             }
         </div>
-    </div>
+                </div>
 </div>
 
 @* Modal para la ver Adjuntos *@
@@ -629,11 +691,67 @@
 </div>
 @* FIN del Modal para capturar el correo de notificación*@
 
+<style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .dataTables_filter {
+        display: block;
+    }
+
+    .nav-link1 {
+        font-size: 0.8rem; /* Tamaño base del texto del tab */
+        padding: 0.9rem 1rem; /* Relleno del tab */
+        color: black; /* Color por defecto del texto (gris suave) */
+        border-color: #dee2e6 #dee2e6 #dee2e6; /* Borde gris para los inactivos */
+        background-color: #e9ecef; /* Fondo ligeramente gris para inactivos */
+        transition: all 0.3s ease-in-out; /* Transición suave para los cambios */
+        border-radius: 0.25rem 0.25rem 0 0; /* Bordes redondeados arriba */
+    }
+
+        /* ESTILO PARA EL TAB ACTIVO CON COLOR INTENSO */
+        .nav-link1.active {
+            color: #ffffff; /* Color del texto blanco para contrastar */
+            background-color: #24135f; /* ¡Fondo azul brillante! */
+            border-color: #007bff #007bff #007bff; /* Borde del mismo color para un look sólido */
+            font-weight: bold; /* Texto en negrita */
+            font-size: 1.25rem; /* Opcional: hacer el texto del tab activo un poco más grande */
+            /* Eliminamos el borde inferior blanco si queremos un bloque de color sólido */
+        }
+
+        /* Efecto al pasar el ratón (hover) para tabs inactivos */
+        .nav-link1:hover:not(.active) { /* Solo aplica a los tabs que NO estén activos */
+            color: #0056b3; /* Color del texto al pasar el ratón */
+            background-color: #d8e6f1; /* Fondo más claro al pasar el ratón */
+            border-color: #c0d7ed;
+        }
+
+</style>
 @section Scripts{
     <script>
         $(function () {
             var model = @Html.Raw(Json.Serialize(@Model));
-            
+
             $('[data-toggle="tooltip"]').tooltip();
             $(".conceptosFactura").css("display", "none");
 

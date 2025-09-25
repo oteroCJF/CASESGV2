@@ -50,20 +50,23 @@ namespace CedulasEvaluacion.Controllers
 
 
                     table +=
-                            "<tr>" +
-                                "<td>" + i + "</td>" +
-                                "<td>" + inc.Tipo + "</td>" +
-                                "<td>" + inc.FechaIncidencia.ToString("dd/MM/yyyy") + "</td>" +
-                                //"<td>" + h + "</td>" +
-                                "<td>" + inc.Comentarios + "</td>" +
-                                "<td>" +
-                                    "<a href='#' class='text-center mr-2 update_incidencia' data-id='" + inc.Id + "' data-tipo='" + inc.Tipo + "' data-hora='" + inc.HoraPresentada +"' " +
-                                    " data-fechainci='" + inc.FechaIncidencia.ToString("yyyy-MM-dd") + "' data-coment='" + inc.Comentarios + "'>" +
-                                        "<i class='fas fa-edit text-primary'></i>" +
-                                    "</a>" +
-                                    "<a href='#' class='text-center mr-2 delete_incidencia' data-id='" + inc.Id + "'><i class='fas fa-times text-danger'></i></a>" +
-                                "</td>" +
-                            "</tr>";
+                     "<tr>" +
+                         "<td>" + i + "</td>" +
+                         "<td>" + inc.Tipo + "</td>" +
+                         "<td>" + inc.FechaIncidencia.ToString("dd/MM/yyyy") + "</td>" +
+                         "<td>" + inc.Comentarios + "</td>" +
+                         "<td>" +
+                             "<a href='#' class='text-center mr-2 update_incidencia' data-id='" + inc.Id + "' data-tipo='" + inc.Tipo + "' data-hora='" + inc.HoraPresentada + "' " +
+                             " data-fechainci='" + inc.FechaIncidencia.ToString("yyyy-MM-dd") + "' data-coment='" + inc.Comentarios + "'" +
+                             " title='Editar Incidencia'>" + 
+                                 "<i class='fas fa-edit text-primary fa-lg'></i>" +
+                             "</a>" +
+                             "<a href='#' class='text-center mr-2 delete_incidencia' data-id='" + inc.Id + "'" +
+                             " title='Eliminar Incidencia'>" + 
+                                 "<i class='fas fa-times text-danger fa-lg'></i>" +
+                             "</a>" +
+                         "</td>" +
+                     "</tr>";
                 }
                 return Ok(table);
             }

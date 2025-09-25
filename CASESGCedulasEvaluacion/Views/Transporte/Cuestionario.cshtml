@@ -1,11 +1,20 @@
 ﻿@model CedulasEvaluacion.Entities.MCedula.CedulaEvaluacion;
 @{
-    ViewData["Title"] = "Cédula del Servicio de Transporte para Personas Servidoras Públicas con Folio: " + Model.Folio;
+//ViewData["Title"] = "Cédula del Servicio de Transporte para Personas Servidoras Públicas con Folio: " + Model.Folio;
+    <div class="titulo-principal">
+        <b>
+            Cuestionario del Servicio de Transporte para Personas Servidoras Públicas
+        </b> <i class="fa-sharp fa-solid fa-bus-school mr-2"></i>
+    </div>
 }
 
 <div class="container-fluid" id="limpieza">
-    <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn-sm btn-warning float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 6px 72px; font-size: 22px;"><i class="fas fa-arrow-left"></i></a>
-    <a href="#" type='button' id="btn_facturas" class='btn-lg btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice"></i></a>
+    <a href="/transporte/index/@Model.ServicioId@Model.URL" type='button' class='btn btn-warning btn-lg float-right mr-2 mb-3' data-toggle="tooltip" title="Regresar al listado de cédulas" data-placement="top" style="padding: 6px 72px;">
+        <i class="fas fa-arrow-left mr-2"></i> Regresar
+    </a>
+    <a href="#" type='button' id="btn_facturas" class='btn-lg btn-facturas float-right mr-2 mb-3' data-toggle="tooltip" title="Ver/Agregar Factura(s) o Nota(s) de Crédito" data-placement="top"><i class="fal fa-file-invoice mr-3"></i>Ver/Agregar Facturas o NC</a>
+    </div>
+    
     <div class="row col-lg-12 mt-2 mb-3">
         <table class="table table-info-summary">
             <tbody>
@@ -114,7 +123,7 @@
                                     </div>
                                     <div class="action-buttons mt-4" id="diviPregunta2">
                                         <button type='button' class='btn btn-primary btn-custom-action mr-3 addIncidencias' data-pregunta="2"><i class="fas fa-plus-circle mr-1"></i> Capturar Incidencia</button>
-                                        <button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="2"><i class="fas fa-eye mr-1"></i> Consultar Incidencias</button>
+                                        @*<button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="2"><i class="fas fa-eye mr-1"></i> Consultar Incidencias</button>*@
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +145,7 @@
                                     </div>
                                     <div class="action-buttons mt-4" id="diviPregunta3">
                                         <button type='button' class='btn btn-primary btn-custom-action mr-3 addIncidencias' data-pregunta="3"><i class="fas fa-plus-circle mr-1"></i> Capturar Incidencia</button>
-                                        <button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="3"><i class="fas fa-eye mr-1"></i> Consultar Incidencias</button>
+                                        @*<button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="3"><i class="fas fa-eye mr-1"></i> Consultar Incidencias</button>*@
                                     </div>
                                 </div>
                             </div>
@@ -160,7 +169,7 @@
                                     </div>
                                     <div class="action-buttons mt-4" id="diviPregunta4">
                                         <button type='button' class='btn btn-primary btn-custom-action mr-3 addIncidencias' data-pregunta="4"><i class="fas fa-plus-circle mr-1"></i> Capturar Incidencia</button>
-                                        <button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="4"><i class="fas fa-eye mr-1"></i> Consultar Incidencias</button>
+                                        @*<button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="4"><i class="fas fa-eye mr-1"></i> Consultar Incidencias</button>*@
                                     </div>
                                 </div>
                             </div>
@@ -182,7 +191,7 @@
                                     </div>
                                     <div class="action-buttons mt-4" id="diviPregunta5">
                                         <button type='button' class='btn btn-primary btn-custom-action mr-3 addIncidencias' data-pregunta="5"><i class="fas fa-plus-circle mr-1"></i> Capturar Incidencia</button>
-                                        <button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="5"><i class="fas fa-eye mr-1"></i> Consultar Incidencia</button>
+                                        @*<button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="5"><i class="fas fa-eye mr-1"></i> Consultar Incidencia</button>*@
                                     </div>
                                 </div>
                             </div>
@@ -204,7 +213,7 @@
                                     </div>
                                     <div class="action-buttons mt-4" id="diviPregunta6">
                                         <button type='button' class='btn btn-primary btn-custom-action mr-3 addIncidencias' data-pregunta="6"><i class="fas fa-plus-circle mr-1"></i> Capturar Incidencia</button>
-                                        <button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="6"><i class="fas fa-eye mr-1"></i> Consultar Incidencia</button>
+                                        @*<button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="6"><i class="fas fa-eye mr-1"></i> Consultar Incidencia</button>*@
                                     </div>
                                 </div>
                             </div>
@@ -222,19 +231,46 @@
                                         <div class="icheck-success d-inline ml-4 radio-option">
                                             <input type="radio" name="pregunta7" value="false" id="radioSuccess12" class="pregunta7" data-pregunta="7">
                                             <label for="radioSuccess12">No</label>
-                                        </div>                                      
+                                        </div>
                                     </div>
                                     <div class="action-buttons mt-4" id="diviPregunta7">
                                         <button type='button' class='btn btn-primary btn-custom-action mr-3 addIncidencias' data-pregunta="7"><i class="fas fa-plus-circle mr-1"></i> Capturar Incidencia</button>
-                                        <button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="7"><i class="fas fa-eye mr-1"></i> Consultar Incidencia</button>
+                                        @*<button type='button' class='btn btn-outline-secondary btn-custom-action viewIncidencias' data-pregunta="7"><i class="fas fa-eye mr-1"></i> Consultar Incidencia</button>*@
                                     </div>
                                 </div>
                             </div>
                             @* Fin de la Pregunta 7 *@
 
+                            @*TABLA DE INCIDENCIAS QUE SE VA A MOSTRAR PARA CADA PREGUNTA *@
+
+                            <div id="incidenciasContainer" style="display: none;">
+                                <div class="card shadow-sm mb-4">
+                                    <div class="card-body">
+                                        <div class="alert text-center py-2" role="alert">
+                                            <i class="fas fa-info-circle mr-2"></i><strong class="h5"><strong>Consulta y gestiona las incidencias registradas.</strong></strong>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-hover table-striped table-bordered text-center" id="incidenciasDataTable">
+                                                <thead class="bg-dark text-white">
+                                                    <tr>
+                                                        <th scope="col" class="font-weight-bold">#</th>
+                                                        <th scope="col" class="font-weight-bold">Tipo</th>
+                                                        <th scope="col" class="font-weight-bold">Fecha de Incidencia</th>
+                                                        <th scope="col" class="font-weight-bold">Comentarios</th>
+                                                        <th scope="col" class="font-weight-bold">Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl_incidencias">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*TABLA DE INCIDENCIAS QUE SE VA A MOSTRAR PARA CADA PREGUNTA *@
 
                             @* Entregables *@
-                            <div class="tab-pane fade mt-2 ml-3" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
+                            <div class="tab-pane fade p-4" id="entregables" role="tabpanel" aria-labelledby="contact-tab">
                                 <div class="col-lg-12 mt-3">
                                     <h3>Adjuntar Entregables</h3>
                                     <p>
@@ -242,10 +278,14 @@
                                         <span style="color: green; font-weight: bold;">Cédula Autorizada:</span> Adjuntar Acta-Entrega, Cédula Firmada y Nota de Crédito.
                                     </p>
 
-                                    <a href="#" type='button' class='btn-sm btn-success mr-2 float-right btn_addFile'><i class="fas fa-plus"></i></a>
+                                    <a href="#" type="button" class="btn-lg btn-success mr-2 float-right btn_addFile">
+                                        <i class="fas fa-file-upload mr-3"></i>Adjuntar Entregable
+                                    </a> 
+                                    <br>
+                                    <br>
                                 </div>
                                 <div class="row col-lg-12 mt-3">
-                                    <table class="table" id="tblEntregables">
+                                    <table class="table table-hover table-striped table-bordered table-sm" id="tblEntregables">
                                         <thead>
                                             <tr>
                                                 <th>Entregable</th>
@@ -269,6 +309,8 @@
                     <button type="button" class="btn btn-success float-right btn_guardar">Guardar Cédula</button>
                 </div>
             </div>
+
+
         }
         else
         {
@@ -911,6 +953,28 @@
 </div>
 @*Fin Modal para ver Adjuntos*@
 <style>
+    .titulo-principal {
+        font-family: Arial, sans-serif;
+        font-size: 25px;
+        color: #24135f;
+        text-align: left;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeIn 2s ease-in-out;
+        font-weight: bold;
+        position: relative; /* Agrega esta línea */
+        top: -20px; /* Ajusta el valor según sea necesario */
+        right: -10px;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
     .radio-group {
         display: flex;
         align-items: center;
@@ -1731,6 +1795,8 @@
                                                 }).then(function () {
                                                     $('input:radio[name="pregunta2N"][value="true"]').prop('checked', true);
                                                     guardaCedula();
+                                                    window.location.reload();
+
                                                     $('#diviPregunta2').css('display', 'none');
                                                 });
                                             });
@@ -1755,6 +1821,7 @@
                 } else {
                     $('#diviPregunta2').css('display', 'block');
                 }
+                guardaCedula();
             });
 
             $('.pregunta3').change(function () {
@@ -1796,6 +1863,7 @@
                                                 }).then(function () {
                                                     $('input:radio[name="pregunta3"][value="true"]').prop('checked', true);
                                                     guardaCedula();
+                                                    window.location.reload();
                                                     $('#diviPregunta3').css('display', 'none');
                                                 });
                                             });
@@ -1820,6 +1888,7 @@
                 } else {
                     $('#diviPregunta3').css('display', 'block');
                 }
+                guardaCedula();
             });
 
             $('.pregunta4').change(function () {
@@ -1861,6 +1930,7 @@
                                                 }).then(function () {
                                                     $('input:radio[name="pregunta4"][value="true"]').prop('checked', true);
                                                     guardaCedula();
+                                                    window.location.reload();
                                                     $('#diviPregunta4').css('display', 'none');
                                                 });
                                             });
@@ -1885,6 +1955,7 @@
                 } else {
                     $('#diviPregunta4').css('display', 'block');
                 }
+                guardaCedula();
             });
 
             $('.pregunta5').change(function () {
@@ -1926,6 +1997,7 @@
                                                 }).then(function () {
                                                     $('input:radio[name="pregunta5"][value="true"]').prop('checked', true);
                                                     guardaCedula();
+                                                    window.location.reload();
                                                     $('#diviPregunta5').css('display', 'none');
                                                 });
                                             });
@@ -1949,6 +2021,7 @@
                 } else {
                     $('#diviPregunta5').css('display', 'block');
                 }
+                guardaCedula();
             });
 
             $('.pregunta6').change(function () {
@@ -1990,6 +2063,7 @@
                                                 }).then(function () {
                                                     $('input:radio[name="pregunta6"][value="true"]').prop('checked', true);
                                                     guardaCedula();
+                                                    window.location.reload();
                                                     $('#diviPregunta6').css('display', 'none');
                                                 });
                                             });
@@ -2013,6 +2087,7 @@
                 } else {
                     $('#diviPregunta6').css('display', 'block');
                 }
+                guardaCedula();
             });
 
             $('.pregunta7').change(function () {
@@ -2054,6 +2129,8 @@
                                                 }).then(function () {
                                                     $('input:radio[name="pregunta7"][value="true"]').prop('checked', true);
                                                     guardaCedula();
+                                                    window.location.reload();
+
                                                     $('#diviPregunta7').css('display', 'none');
                                                 });
                                             });
@@ -2077,6 +2154,7 @@
                 } else {
                     $('#diviPregunta7').css('display', 'block');
                 }
+                guardaCedula();
             });
    
             /******************************* FIN Cambio de Respuestas ************************************/
@@ -2279,6 +2357,9 @@
                                         'html': "La incidencia fue actualizada correctamente."
                                     });
                                     guardaCedula();
+
+                                    window.location.reload();
+
                                 }
                             }).catch(error => {
                                 Swal.fire({
@@ -3012,8 +3093,124 @@
                         }
                     });
                 /*Enviar de guardar la cedula*/
-
+                
             /********************************** FIN GUARDAR/ENVIAR CÉDULA **********************************/
+
+            $(document).ready(function () {
+
+                // 1. Definimos la función para cargar las incidencias.
+                // Es una buena práctica para reutilizar el código.
+                function cargarIncidencias(numeroDePregunta) {
+                    // Muestra un indicador de carga o limpia la tabla anterior
+                    $("#tbl_incidencias").html('<tr><td colspan="5" class="text-center">Cargando incidencias...</td></tr>');
+
+                    axios.get('/transporte/tablaIncidencias/' + model.id + '/' + numeroDePregunta)
+                        .then(table => {
+                            $("#tbl_incidencias").html(table.data);
+                            // Si la tabla se carga correctamente, no es necesario mostrar el modal aquí
+                            // a menos que quieras que aparezca automáticamente en la primera carga.
+                            // En este caso, lo moveremos al final del script para la carga inicial.
+                        })
+                        .catch(error => {
+                            console.error("Error al cargar incidencias:", error);
+                            $("#tbl_incidencias").html('<tr><td colspan="5" class="text-center text-danger">No se pudieron cargar las incidencias.</td></tr>');
+                        });
+                }
+
+                // 2. Vinculamos la carga de incidencias al evento de cambio de pestaña.
+                // Escucha el evento 'shown.bs.tab' en cualquier pestaña dentro del contenedor.
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    // 'e.target' es la nueva pestaña que se está mostrando
+                    let idTab = $(e.target).attr('href'); // Obtiene el href: "#pregunta_2", "#pregunta_3", etc.
+                    let numeroDePregunta = idTab.split('_')[1]; // Extrae el número del ID (ej. "2")
+
+                    console.log("Cambiando a la pestaña de la pregunta:", numeroDePregunta);
+
+                    // Llamamos a la función de carga con el número de pregunta extraído.
+                    cargarIncidencias(numeroDePregunta);
+                });
+
+                // 3. Carga inicial al entrar a la página.
+                // Carga las incidencias para la primera pestaña visible por defecto.
+                // La primera pestaña es la que tiene la clase 'active'.
+                let primeraPreguntaId = $('.tab-pane.show.active').attr('id');
+                let numeroDePreguntaInicial = primeraPreguntaId.split('_')[1];
+                cargarIncidencias(numeroDePreguntaInicial);
+
+                // Opcional: Si quieres que el modal se muestre automáticamente al inicio.
+                // $("#modal-consultaIncidencias").modal('show');
+
+                // 4. Mantenemos el manejador de clics del botón por si se sigue usando.
+                // Es posible que quieras eliminar este bloque si el comportamiento automático es suficiente.
+                $(".viewIncidencias").click(function () {
+                    let pregunta = $(this).data('pregunta');
+                    cargarIncidencias(pregunta);
+                    $("#modal-consultaIncidencias").modal('show'); // El modal se muestra al hacer clic en el botón.
+                });
+
+            });
+
+            $(document).ready(function () {
+
+                // Función para cargar las incidencias.
+                // Ahora incluye la lógica para mostrar u ocultar el contenedor.
+                function cargarIncidencias(numeroDePregunta) {
+                    let tablaTbody = $("#tbl_incidencias");
+                    let contenedorTabla = $("#incidenciasContainer");
+
+                    // Muestra un mensaje de carga mientras se obtienen los datos.
+                    tablaTbody.html('<tr><td colspan="5" class="text-center">Cargando incidencias...</td></tr>');
+
+                    axios.get('/transporte/tablaIncidencias/' + model.id + '/' + numeroDePregunta)
+                        .then(table => {
+                            // Verificar si los datos de la tabla están vacíos.
+                            if (table.data && table.data.trim() !== '') {
+                                // Si hay datos, mostramos el contenedor y los insertamos.
+                                contenedorTabla.show();
+                                tablaTbody.html(table.data);
+                            } else {
+                                // Si no hay datos, ocultamos el contenedor.
+                                contenedorTabla.hide();
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error al cargar incidencias:", error);
+                            // Ocultamos el contenedor en caso de error.
+                            contenedorTabla.hide();
+                        });
+                }
+
+                // Escuchamos el evento de cambio de pestaña
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                    let idTab = $(e.target).attr('href').substring(1);
+                    let numeroDePregunta = parseInt(idTab.split('_')[1]);
+
+                    // Verificamos si el número de pregunta está entre 2 y 7.
+                    if (numeroDePregunta >= 2 && numeroDePregunta <= 7) {
+                        // Si está en el rango, llamamos a la función de carga.
+                        // La función se encargará de mostrar u ocultar el contenedor.
+                        cargarIncidencias(numeroDePregunta);
+                    } else {
+                        // Para cualquier otra pestaña, ocultamos el contenedor.
+                        $("#incidenciasContainer").hide();
+                    }
+                });
+
+                // Lógica para la carga inicial de la página
+                let primeraPreguntaActiva = $('.tab-pane.show.active').attr('id');
+                if (primeraPreguntaActiva) {
+                    let numeroDePreguntaInicial = parseInt(primeraPreguntaActiva.split('_')[1]);
+
+                    if (numeroDePreguntaInicial >= 2 && numeroDePreguntaInicial <= 7) {
+                        // Llamamos a la función de carga, que se encargará de mostrar
+                        // u ocultar el contenedor de la tabla.
+                        cargarIncidencias(numeroDePreguntaInicial);
+                    } else {
+                        $("#incidenciasContainer").hide();
+                    }
+                }
+            });
+
         });
     </script>
 }

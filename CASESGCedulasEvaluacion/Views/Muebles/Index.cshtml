@@ -47,11 +47,11 @@
                         <strong>NOTA:</strong> Para el estatus <strong class="text-danger">Rechazado</strong>, debes seleccionar el ícono <i class="fas fa-pencil-alt text-primary"></i> para editar el cuestionario. Luego, envíalo nuevamente a la DAS con las correcciones solicitadas para su revisión.
                     </p>
                     <table id="tblIncidencias" class="table table-hover table-striped table-bordered table-sm" width="100%">
-                        <thead style="background-color: #24135f; color: white;">
+                        <thead>
                             <tr>
                                 <th class="text-center">ID</th>
                                 <th class="text-center">Estatus</th>
-                                <th class="text-center">Inmuebl Origen</th>
+                                <th class="text-center">Inmueble Origen</th>
                                 <th class="text-center">Inmueble Destino</th>
                                 <th class="text-center">Folio</th>
                                 <th class="text-center">Mes</th>
@@ -70,7 +70,6 @@
                             {
                                 i++;
                                 <tr>
-
                                     <td class="text-center align-middle">@i</td>
                                     <td class="@(item.Fondo.Replace("bg","text")) text-center align-middle" style="font-weight: bold">@Html.DisplayFor(modelItem => item.Estatus)</td>
                                     <td class="text-center align-middle">@Html.DisplayFor(modelItem => item.Nombre)</td>
