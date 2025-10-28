@@ -1349,7 +1349,7 @@
             <Top>7.57829cm</Top>
             <Left>1.48737cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.69648cm</Width>
+            <Width>17.69646cm</Width>
             <ZIndex>3</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -2171,8 +2171,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>44.5474cm</Top>
-            <Left>10.85388cm</Left>
+            <Top>45.1824cm</Top>
+            <Left>7.04388cm</Left>
             <Height>1.43058cm</Height>
             <Width>6.54414cm</Width>
             <ZIndex>27</ZIndex>
@@ -3360,7 +3360,7 @@
             <Top>10.78615cm</Top>
             <Left>1.48738cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.69647cm</Width>
+            <Width>17.69646cm</Width>
             <ZIndex>32</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -3873,7 +3873,7 @@
             <Top>13.99035cm</Top>
             <Left>1.48738cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.67149cm</Width>
+            <Width>17.67151cm</Width>
             <ZIndex>33</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -4899,7 +4899,7 @@
             <Top>20.43533cm</Top>
             <Left>1.51682cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.63979cm</Width>
+            <Width>17.63981cm</Width>
             <ZIndex>35</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -5412,7 +5412,7 @@
             <Top>26.72183cm</Top>
             <Left>1.51682cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.66703cm</Width>
+            <Width>17.66701cm</Width>
             <ZIndex>36</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -6951,7 +6951,7 @@
             <Top>23.58015cm</Top>
             <Left>1.51682cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.63979cm</Width>
+            <Width>17.63981cm</Width>
             <ZIndex>39</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -7464,7 +7464,7 @@
             <Top>36.24565cm</Top>
             <Left>1.50245cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.6814cm</Width>
+            <Width>17.68141cm</Width>
             <ZIndex>40</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -7977,7 +7977,7 @@
             <Top>39.45985cm</Top>
             <Left>1.5342cm</Left>
             <Height>1.82117cm</Height>
-            <Width>17.62241cm</Width>
+            <Width>17.62243cm</Width>
             <ZIndex>41</ZIndex>
             <Visibility>
               <Hidden>=IIF(CountRows()&gt;0,false,true)</Hidden>
@@ -8121,82 +8121,8 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox81">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Supervisó:</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>____________________________</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Lic. Erika Luisa Anzures Rojas</Value>
-                    <Style>
-                      <FontStyle>Normal</FontStyle>
-                      <FontWeight>Bold</FontWeight>
-                      <TextDecoration>None</TextDecoration>
-                      <Color>#000000</Color>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Subdirectora de Área</Value>
-                    <Style>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>44.5474cm</Top>
-            <Left>1.11341in</Left>
-            <Height>1.43058cm</Height>
-            <Width>7.07331cm</Width>
-            <ZIndex>45</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
         </ReportItems>
-        <Height>18.22101in</Height>
+        <Height>18.35157in</Height>
         <Style>
           <Border>
             <Style>None</Style>
