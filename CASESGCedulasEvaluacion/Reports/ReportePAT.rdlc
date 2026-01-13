@@ -652,86 +652,6 @@
               </Border>
             </Style>
           </Tablix>
-          <Textbox Name="Textbox84">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value />
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>____________________________</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Ing. Laura Cecilia Briseño Sáinz</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Subdirectora de Área</Value>
-                    <Style>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>3.80453cm</Top>
-            <Left>13.9166cm</Left>
-            <Height>0.98961cm</Height>
-            <Width>6.50668cm</Width>
-            <ZIndex>1</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
           <Textbox Name="Textbox4">
             <CanGrow>true</CanGrow>
             <KeepTogether>true</KeepTogether>
@@ -756,7 +676,7 @@
             <Left>7.27027cm</Left>
             <Height>0.50815cm</Height>
             <Width>12.05146cm</Width>
-            <ZIndex>2</ZIndex>
+            <ZIndex>1</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -791,7 +711,7 @@
             <Left>7.27027cm</Left>
             <Height>0.63677cm</Height>
             <Width>12.05146cm</Width>
-            <ZIndex>3</ZIndex>
+            <ZIndex>2</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -843,7 +763,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. José Antonio Colín Pacheco</Value>
+                    <Value>Mtra. Nina Raziel Juárez Castillón</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -872,7 +792,7 @@
             <Left>14.5392cm</Left>
             <Height>0.77255cm</Height>
             <Width>6.80213cm</Width>
-            <ZIndex>4</ZIndex>
+            <ZIndex>3</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -952,7 +872,7 @@
             <Left>5.29707cm</Left>
             <Height>0.77255cm</Height>
             <Width>6.80213cm</Width>
-            <ZIndex>5</ZIndex>
+            <ZIndex>4</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1003,7 +923,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Erika Luisa Anzures Rojas</Value>
+                    <Value>Lic. José Antonio Colín Pacheco</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -1016,7 +936,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Subdirectora de Área</Value>
+                    <Value>Subdirector de Área</Value>
                     <Style>
                       <FontSize>9pt</FontSize>
                     </Style>
@@ -1029,10 +949,10 @@
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
             <Top>3.81763cm</Top>
-            <Left>6.5335cm</Left>
+            <Left>10.3435cm</Left>
             <Height>0.98961cm</Height>
             <Width>6.50668cm</Width>
-            <ZIndex>6</ZIndex>
+            <ZIndex>5</ZIndex>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1044,7 +964,7 @@
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>4.80724cm</Height>
+        <Height>5.12474cm</Height>
         <Style />
       </Body>
       <Width>26.64423cm</Width>
@@ -1238,7 +1158,7 @@
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>0.93765cm</Height>
+          <Height>0.91648cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
