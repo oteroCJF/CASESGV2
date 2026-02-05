@@ -1818,7 +1818,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>42.6283cm</Top>
+            <Top>45.4858cm</Top>
             <Left>1.11341in</Left>
             <Height>1.43058cm</Height>
             <Width>7.07331cm</Width>
@@ -2146,7 +2146,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Lic. Rosalía Nancy Ramírez Germán</Value>
+                    <Value>Lic. Mario Gerardo Montiel Castañeda</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -2159,7 +2159,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>Directora de Área</Value>
+                    <Value>Director de Área</Value>
                     <Style>
                       <FontSize>9pt</FontSize>
                     </Style>
@@ -2171,8 +2171,8 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>45.1824cm</Top>
-            <Left>10.85388cm</Left>
+            <Top>51.13728cm</Top>
+            <Left>7.0101cm</Left>
             <Height>1.43058cm</Height>
             <Width>6.54414cm</Width>
             <ZIndex>27</ZIndex>
@@ -8106,7 +8106,7 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>42.6283cm</Top>
+            <Top>45.4858cm</Top>
             <Left>10.85388cm</Left>
             <Height>1.43058cm</Height>
             <Width>6.54414cm</Width>
@@ -8121,79 +8121,8 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox81">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Supervisó:</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>____________________________</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Lic. Monserrat Rojas Salazar</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Subdirectora de Área</Value>
-                    <Style>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>45.1824cm</Top>
-            <Left>2.82806cm</Left>
-            <Height>1.43058cm</Height>
-            <Width>7.07331cm</Width>
-            <ZIndex>45</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
         </ReportItems>
-        <Height>18.4349in</Height>
+        <Height>20.69601in</Height>
         <Style>
           <Border>
             <Style>None</Style>

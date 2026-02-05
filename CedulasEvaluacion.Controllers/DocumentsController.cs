@@ -590,6 +590,7 @@ namespace CedulasEvaluacion.Controllers
 
             Document document = new Document();
             var path = @"E:\Plantillas CASESGV2\DocsV2\Acta ER\Acta Entrega - Recepción Telefonía Convencional.docx";
+            //var path = @"C:\Users\coterog\Desktop\Acta Entrega - Recepción Telefonía Convencional.docx";
             document.LoadFromFile(path);
 
             //Creamos la Tabla
@@ -598,17 +599,30 @@ namespace CedulasEvaluacion.Controllers
            
             document.Replace("|Folio|", cedula.Folio, false, true);
 
-            document.Replace("|MesEval|", cedula.Mes, false, true);
+            document.Replace("|MesEval|", cedula.Mes + " "+ cedula.Anio, false, true);
 
 
             DateTime fechaActual = DateTime.Now;
-            document.Replace("|Dia|", Convert.ToDateTime(cedula.FechaCreacion).Day + "", false, true);
-            document.Replace("|Mes|", Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")), false, true);
-            document.Replace("|Anio|", Convert.ToDateTime(cedula.FechaCreacion).Year + "", false, true);
-            document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
-            document.Replace("|DiaActual|", Convert.ToDateTime(cedula.FechaCreacion).Day + " de " + Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")) + " de " + Convert.ToDateTime(cedula.FechaCreacion).Year, false, true);
-            document.Replace("|HoraActual|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
-            document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            //document.Replace("|Dia|", Convert.ToDateTime(cedula.FechaCreacion).Day + "", false, true);
+            document.Replace("|Dia|", fechaActual.Day + "", false, true);
+            //document.Replace("|Mes|", Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")), false, true);
+            document.Replace("|Mes|", fechaActual.ToString("MMMM", CultureInfo.CreateSpecificCulture("es")), false, true);
+
+            //document.Replace("|Anio|", Convert.ToDateTime(cedula.FechaCreacion).Year + "", false, true);
+            document.Replace("|Anio|", fechaActual.Year + "", false, true);
+
+            //document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
+
+            //document.Replace("|DiaActual|", Convert.ToDateTime(cedula.FechaCreacion).Day + " de " + Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")) + " de " + Convert.ToDateTime(cedula.FechaCreacion).Year, false, true);
+            document.Replace("|DiaActual|", fechaActual.Day + " de " + fechaActual.ToString("MMMM", CultureInfo.CreateSpecificCulture("es")) + " de " + fechaActual.Year, false, true);
+
+            //document.Replace("|HoraActual|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            document.Replace("|HoraActual|", fechaActual.Hour + ":00", false, true);
+
+            //document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
+
             for (var i = 0; i < tiposCelular.Length; i++)
             {
                 convencional = await iConvencional.ListIncidenciasTipoConvencional(id, tiposConv[i]);
@@ -654,7 +668,7 @@ namespace CedulasEvaluacion.Controllers
                 document.SaveToStream(ms1, Spire.Doc.FileFormat.Docx2013);
                 toArray = ms1.ToArray();
             }
-            return File(toArray, "application/ms-word", "ActaER_Analisis_" + cedula.Mes + ".docx");
+            return File(toArray, "application/ms-word", "ActaER_TCSA_" + cedula.Mes + ".docx");
         }
 
         [Route("/documents/actaCelular/{id?}/{servicio?}")]
@@ -669,6 +683,7 @@ namespace CedulasEvaluacion.Controllers
 
             Document document = new Document();
             var path = @"E:\Plantillas CASESGV2\DocsV2\Acta ER\Acta Entrega - Recepción Telefonía Celular.docx";
+            //var path = @"C:\Users\coterog\Desktop\Acta Entrega - Recepción Telefonía Celular.docx";
             document.LoadFromFile(path);
 
             //Creamos la Tabla
@@ -677,17 +692,26 @@ namespace CedulasEvaluacion.Controllers
 
             document.Replace("|Folio|", cedula.Folio, false, true);
 
-            document.Replace("|MesEval|", cedula.Mes, false, true);
+            document.Replace("|MesEval|", cedula.Mes + " " + cedula.Anio, false, true);
 
 
             DateTime fechaActual = DateTime.Now;
-            document.Replace("|Dia|", Convert.ToDateTime(cedula.FechaCreacion).Day + "", false, true);
-            document.Replace("|Mes|", Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")), false, true);
-            document.Replace("|Anio|", Convert.ToDateTime(cedula.FechaCreacion).Year + "", false, true);
-            document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
-            document.Replace("|DiaActual|", Convert.ToDateTime(cedula.FechaCreacion).Day + " de " + Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")) + " de " + Convert.ToDateTime(cedula.FechaCreacion).Year, false, true);
-            document.Replace("|HoraActual|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
-            document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            //document.Replace("|Dia|", Convert.ToDateTime(cedula.FechaCreacion).Day + "", false, true);
+            //document.Replace("|Mes|", Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")), false, true);
+            //document.Replace("|Anio|", Convert.ToDateTime(cedula.FechaCreacion).Year + "", false, true);
+            //document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            //document.Replace("|DiaActual|", Convert.ToDateTime(cedula.FechaCreacion).Day + " de " + Convert.ToDateTime(cedula.FechaCreacion).ToString("MMMM", CultureInfo.CreateSpecificCulture("es")) + " de " + Convert.ToDateTime(cedula.FechaCreacion).Year, false, true);
+            //document.Replace("|HoraActual|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+            //document.Replace("|Hora|", Convert.ToDateTime(cedula.FechaCreacion).Hour + ":00", false, true);
+        
+            document.Replace("|Dia|", fechaActual.Day + "", false, true);
+            document.Replace("|Mes|", fechaActual.ToString("MMMM", CultureInfo.CreateSpecificCulture("es")), false, true);
+            document.Replace("|Anio|", fechaActual.Year + "", false, true);
+            document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
+            document.Replace("|DiaActual|", fechaActual.Day + " de " + fechaActual.ToString("MMMM", CultureInfo.CreateSpecificCulture("es")) + " de " + fechaActual.Year, false, true);
+            document.Replace("|HoraActual|", fechaActual.Hour + ":00", false, true);
+            document.Replace("|Hora|", fechaActual.Hour + ":00", false, true);
+
             for (var i = 0; i<tiposCelular.Length;i++)
             {
                 celular = await iCelular.ListIncidenciasTipoCelular(id, tiposCelular[i]);

@@ -6772,7 +6772,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>_________________________</Value>
+                    <Value>__________________________________</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -6783,7 +6783,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>  Lic. Rosalía Nancy Ramírez Germán</Value>
+                    <Value>       Lic. Mario Gerardo Montiel Castañeda</Value>
                     <Style>
                       <FontWeight>Bold</FontWeight>
                     </Style>
@@ -6796,7 +6796,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>     Directora de Área</Value>
+                    <Value>     Director de Área</Value>
                     <Style>
                       <FontSize>9pt</FontSize>
                     </Style>
@@ -6808,10 +6808,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>40.10767cm</Top>
-            <Left>11.10351cm</Left>
+            <Top>40.5557cm</Top>
+            <Left>6.67692cm</Left>
             <Height>1.43058cm</Height>
-            <Width>6.64146cm</Width>
+            <Width>7.72459cm</Width>
             <ZIndex>26</ZIndex>
             <Style>
               <Border>
@@ -6843,7 +6843,8 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>_________________________</Value>
+                    <Value>__________________________________
+</Value>
                     <Style />
                   </TextRun>
                   <TextRun>
@@ -6872,10 +6873,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>37.5465cm</Top>
-            <Left>4.34535cm</Left>
+            <Top>37.65233cm</Top>
+            <Left>3.30818cm</Left>
             <Height>1.43058cm</Height>
-            <Width>5.23416cm</Width>
+            <Width>7.77073cm</Width>
             <ZIndex>27</ZIndex>
             <Style>
               <Border>
@@ -7975,7 +7976,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>_________________________</Value>
+                    <Value>__________________________________</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -8011,10 +8012,10 @@
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>37.5465cm</Top>
+            <Top>37.65233cm</Top>
             <Left>11.10351cm</Left>
             <Height>1.43058cm</Height>
-            <Width>6.64146cm</Width>
+            <Width>7.72459cm</Width>
             <ZIndex>45</ZIndex>
             <Style>
               <Border>
@@ -8026,79 +8027,8 @@
               <PaddingBottom>2pt</PaddingBottom>
             </Style>
           </Textbox>
-          <Textbox Name="Textbox122">
-            <CanGrow>true</CanGrow>
-            <KeepTogether>true</KeepTogether>
-            <Paragraphs>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>Supervisó:</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>_________________________</Value>
-                    <Style />
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>  Lic. Monserrat Rojas Salazar</Value>
-                    <Style>
-                      <FontWeight>Bold</FontWeight>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-              <Paragraph>
-                <TextRuns>
-                  <TextRun>
-                    <Value>     Subdirectora de Área</Value>
-                    <Style>
-                      <FontSize>9pt</FontSize>
-                    </Style>
-                  </TextRun>
-                </TextRuns>
-                <Style>
-                  <TextAlign>Center</TextAlign>
-                </Style>
-              </Paragraph>
-            </Paragraphs>
-            <rd:DefaultName>Textbox79</rd:DefaultName>
-            <Top>40.10767cm</Top>
-            <Left>3.64046cm</Left>
-            <Height>1.43058cm</Height>
-            <Width>6.64146cm</Width>
-            <ZIndex>46</ZIndex>
-            <Style>
-              <Border>
-                <Style>None</Style>
-              </Border>
-              <PaddingLeft>2pt</PaddingLeft>
-              <PaddingRight>2pt</PaddingRight>
-              <PaddingTop>2pt</PaddingTop>
-              <PaddingBottom>2pt</PaddingBottom>
-            </Style>
-          </Textbox>
         </ReportItems>
-        <Height>16.55781in</Height>
+        <Height>16.86337in</Height>
         <Style>
           <Border>
             <Style>None</Style>
